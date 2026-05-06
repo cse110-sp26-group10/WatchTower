@@ -36,8 +36,8 @@
 | T03 | Conduct user research and create personas | Product & Design Team | 🔲 Not Started | Use Figma |
 | T04 | Create initial wireframes and user flow | Product & Design Team | 🔲 Not Started | Use Figma |
 | T05 | Build early prototype (LLM assistance allowed) | Product & Design Team | 🔲 Not Started | Focus on core flow |
-| T06 | Finalize and document MVP definition | Leadership / Product | 🔲 Not Started | |
-| T07 | Attend Professor Powell’s office hours | Evan / Available Members | 🔲 Not Started | Wed 2 PM - 4 PM |
+| T06 | Finalize and document MVP definition | Leadership / Product | 🔄 In Progress | |
+| T07 | Attend Professor Powell’s office hours | Evan / Available Members | ✅ Done | Wed 2 PM - 4 PM |
 | T08 | Maintain Sprint 1 documentation in GitHub | Nicole | 🔄 In Progress | |
 
 > Status options: 🔲 Not Started · 🔄 In Progress · ✅ Done · 🚫 Blocked
@@ -50,7 +50,16 @@
 
 | Name | Did | Doing | Blockers |
 |------|-----|-------|----------|
-| | | | |
+| Nicole Sutedja | Created repository structure, finished Sprint 1 notes, created project doc, created and assigned roles for this sprint | Prepare questions for Powell, plan out GitHub Issues, flush out MVP definition | None |
+| Kaley Chung | Started communicating in the Product & Design Team channel | Delegate roles & understand aligned tasks for every role | None |
+| Jensen Guo | Figured out subteam roles and signed up for tasks on the tracker | Begin learning Figma and start on wireframes | None |
+| Prakhar Shah | Started communicating and finished subdivision of roles within the team | Look at requirements for role and research user personas | None |
+| Bethany Miyamoto | Figured out roles in subteam development; assigned as data engineer | Research and brainstorm data that should be tracked/tested | None |
+| Kevin Wang | Divided roles within the development team; assigned as frontend developer | Build the dashboard prototype | None |
+| Han Yang-Lin | Divided roles within development team; assigned as backend developer | Research observability tools, write the ADR, build prototype file structure | None |
+| Aron Wu | Started communicating; decided to collaborate on tasks this sprint | Begin working on testing plan | None |
+| Benedict Luis | Discussed approach to testing tasks; determined a testing plan is the best next step | Develop a testing plan | None |
+| Evan Marriott | Planned tasks for this sprint | Work on defining the MVP for the project | None |
 
 ### Stand-up 2 — 05/07/2026 (Thursday)
 
