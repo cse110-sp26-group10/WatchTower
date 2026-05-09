@@ -65,7 +65,16 @@
 
 | Name | Did | Doing | Blockers |
 |------|-----|-------|----------|
-| | | | |
+| Nicole Sutedja | Met with Powell to understand MVP requirements | Update MVP definition, check-in with the different teams | Ensuring the team has the same/aligned goals |
+| Kaley Chung | Started with User Researcher / Persona Lead & Listing Key Points | Finishing up research | Having midterms/quizzes |
+| Jensen Guo | Began wireframing the dashboard and other pages using Figma | Finish the wireframes (estimated by saturday night) | I don't have a good understanding of the build/deployment signals, if there's any examples of them that would help a lot |
+| Prakhar Shah | started on research for user personas | start crafting user personas | midterm and huge time commitment tomorrow |
+| Bethany Miyamoto | Started on mock data JS file for errors, performance, signals, deployments | Finish file and connect to prototype for testing | None |
+| Kevin Wang | start building a dashboard prototype and the basic filtering logic | Finish them and start building the issue detail prototype | None |
+| Han Yang-Lin | Conducted research on product and web analytics tools | start building the prototype file structure | None |
+| Aron Wu | Started drafting testing plan | Complete testing plan | None |
+| Benedict Luis | testing plan drafted on 2 separate testing plan (Aron’s and mine) | refine both testing plan with Aron to finalize the official one | Midtemrs and quizzes |
+| Evna Marriott | | | |
 
 ### Stand-up 3 — 05/10/2026 (Sunday)
 
