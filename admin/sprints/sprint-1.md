@@ -58,7 +58,7 @@
 | Kevin Wang | Divided roles within the development team; assigned as frontend developer | Build the dashboard prototype | None |
 | Han Yang-Lin | Divided roles within development team; assigned as backend developer | Research observability tools, write the ADR, build prototype file structure | None |
 | Aron Wu | Started communicating; decided to collaborate on tasks this sprint | Begin working on testing plan | None |
-| Benedict Luis | Discussed approach to testing tasks; determined a testing plan is the best next step | Develop a testing plan | None |
+| Benedict Luis | Discussed approach to testing tasks; determined a testing plan for the best next step | Develop a testing plan | None |
 | Evan Marriott | Planned tasks for this sprint | Work on defining the MVP for the project | None |
 
 ### Stand-up 2 — 05/07/2026 (Thursday)
