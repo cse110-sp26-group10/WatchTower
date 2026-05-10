@@ -74,7 +74,7 @@
 | Han Yang-Lin | Conducted research on product and web analytics tools | start building the prototype file structure | None |
 | Aron Wu | Started drafting testing plan | Complete testing plan | None |
 | Benedict Luis | testing plan drafted on 2 separate testing plan (Aron’s and mine) | refine both testing plan with Aron to finalize the official one | Midtemrs and quizzes |
-| Evan Marriott | | | |
+| Evan Marriott | Prepare questions to ask TA for project | Create Github issues for all tasks | Time |
 
 ### Stand-up 3 — 05/10/2026 (Sunday)
 
