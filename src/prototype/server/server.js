@@ -1,6 +1,8 @@
 import Event from "./assets/Event.js";
 import http from "http";
 
+let logs = [];
+
 const server = http.createServer((req, res) => {
     res.setHeader("Access-Control-Allow-Origin", "*"); // Allow any site
     res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
@@ -9,7 +11,12 @@ const server = http.createServer((req, res) => {
     if (req.method === "OPTIONS") {
         res.writeHead(204);
         res.end();
-        return;
+    } else if (req.method === "GET") {
+        if (req.url === "/api/data") {
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify(logs));
+            console.log("\nLogs sent");
+        }
     } else if (req.method === "POST") {
         let body = "";
         req.on("data", chunk => {
@@ -21,14 +28,17 @@ const server = http.createServer((req, res) => {
         req.on("end", () => {
             try {
                 let event = new Event(body);
+                if (!event.valid) throw new Error("Invalid event");
                 event.set_field("ip", req.socket.remoteAddress);
-                console.log(JSON.stringify(event, null, 2));
+                logs.push(event);
                 res.writeHead(200, { "Content-Type": "application/json" });
                 res.end(JSON.stringify({ status: "success" }));
+                console.log("\nEvent logged");
+                console.log(JSON.stringify(event, null, 2));
             } catch (error) {
-                console.log("Invalid log");
                 res.writeHead(400);
-                res.end("Invalid log");
+                res.end("Invalid event");
+                console.log("\nInvalid event");
             }
         });
     }

@@ -21,7 +21,7 @@ const METADATA_FIELDS = {
     "page_load": new Set(["load_time"]),
     "error": new Set(["severity", "message"]),
     "survey": new Set(["rating", "message"]),
-    "click": new Set(["element_id", "mouse_x", "mouse_y", "input_delay"])
+    "click": new Set(["element_id", "element_class", "input_delay"])
 }
 const MAX_CLOCK_SKEW_SECONDS = 300;
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -107,8 +107,7 @@ function validate_metadata(event) {
             break;
         case "click":
             if (typeof metadata.element_id !== "string") return false;
-            if (typeof metadata.mouse_x !== "number") return false;
-            if (typeof metadata.mouse_y !== "number") return false;
+            if (typeof metadata.element_class !== "string") return false;
             if (typeof metadata.input_delay !== "number") return false;
             break;
     }
@@ -125,6 +124,7 @@ function cleanup_extra_fields(object, fields) {
 
 export default class Event {
     constructor(json) {
+        this.valid = false;
         let event = parse_json(json);
         if (event === null) return null;
         if (typeof event !== "object") return null;
@@ -147,18 +147,19 @@ export default class Event {
         cleanup_extra_fields(event.deployment, DEPLOYMENT_FIELDS);
         cleanup_extra_fields(event.metadata, METADATA_FIELDS[event.event_type]);
         cleanup_extra_fields(event, EVENT_FIELDS);
-        Object.assign(this, event);
+        this.event = event;
+        this.valid = true;
     }
 
     set_field(field, value) {
         if (!EVENT_FIELDS.has(field)) return false;
-        this[field] = value;
+        this.event[field] = value;
         return true;
     }
 
     set_metadata_field(field, value) {
         if (!METADATA_FIELDS.has(field)) return false;
-        this.metadata[field] = value;
+        this.event.metadata[field] = value;
         return true;
     }
 }
