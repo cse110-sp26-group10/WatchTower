@@ -80,7 +80,15 @@
 
 | Name | Did | Doing | Blockers |
 |------|-----|-------|----------|
-| | | | |
+| Nicole Sutedja | | | |
+| Kaley Chung | | | |
+| Jensen Guo | | | |
+| Prakhar Shah | | | |
+| Bethany Miyamoto | | | |
+| Kevin Wang | | | |
+| Han Yang-Lin | | | |
+| Benedict Luis | | | |
+| Evan Marriott | Created all 41 Sprint 1 GitHub issues with labels, priorities, and acceptance criteria. Wrote and closed professor questions, Sprint 2 task ideas, two ADRs (vanilla JS decision, mock data decision), and CI plan. Reorganized docs into subfolders | Continue finalizing structure and planning for next sprint | Can't finalize MVP updates until TA sync with Audria happens |
 
 ---
 
