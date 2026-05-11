@@ -147,6 +147,18 @@ export default class Event {
         cleanup_extra_fields(event.deployment, DEPLOYMENT_FIELDS);
         cleanup_extra_fields(event.metadata, METADATA_FIELDS[event.event_type]);
         cleanup_extra_fields(event, EVENT_FIELDS);
-        return event;
+        Object.assign(this, event);
+    }
+
+    set_field(field, value) {
+        if (!EVENT_FIELDS.has(field)) return false;
+        this[field] = value;
+        return true;
+    }
+
+    set_metadata_field(field, value) {
+        if (!METADATA_FIELDS.has(field)) return false;
+        this.metadata[field] = value;
+        return true;
     }
 }

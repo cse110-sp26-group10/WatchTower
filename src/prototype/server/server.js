@@ -10,9 +10,7 @@ const server = http.createServer((req, res) => {
         res.writeHead(204);
         res.end();
         return;
-    }
-
-    if (req.method === "POST") {
+    } else if (req.method === "POST") {
         let body = "";
         req.on("data", chunk => {
             body += chunk.toString();
@@ -23,6 +21,7 @@ const server = http.createServer((req, res) => {
         req.on("end", () => {
             try {
                 let event = new Event(body);
+                event.set_field("ip", req.socket.remoteAddress);
                 console.log(JSON.stringify(event, null, 2));
                 res.writeHead(200, { "Content-Type": "application/json" });
                 res.end(JSON.stringify({ status: "success" }));
