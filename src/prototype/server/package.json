@@ -2,7 +2,7 @@
   "name": "watchtower-server",
   "version": "1.0.0",
   "type": "module",
-  "main": "./assets/server.js",
+  "main": "./server.js",
   "scripts": {
     "start": "node ."
   }

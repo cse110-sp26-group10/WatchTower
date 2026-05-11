@@ -1,4 +1,4 @@
-import Event from "./Event.js";
+import Event from "./assets/Event.js";
 import http from "http";
 
 const server = http.createServer((req, res) => {
