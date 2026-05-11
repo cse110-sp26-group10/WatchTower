@@ -74,13 +74,21 @@
 | Han Yang-Lin | Conducted research on product and web analytics tools | start building the prototype file structure | None |
 | Aron Wu | Started drafting testing plan | Complete testing plan | None |
 | Benedict Luis | testing plan drafted on 2 separate testing plan (Aron’s and mine) | refine both testing plan with Aron to finalize the official one | Midtemrs and quizzes |
-| Evan Marriott | | | |
+| Evan Marriott | Prepare questions to ask TA for project | Create Github issues for all tasks | Time |
 
 ### Stand-up 3 — 05/10/2026 (Sunday)
 
 | Name | Did | Doing | Blockers |
 |------|-----|-------|----------|
-| | | | |
+| Nicole Sutedja | | | |
+| Kaley Chung | | | |
+| Jensen Guo | | | |
+| Prakhar Shah | | | |
+| Bethany Miyamoto | | | |
+| Kevin Wang | | | |
+| Han Yang-Lin | | | |
+| Benedict Luis | | | |
+| Evan Marriott | Created all 41 Sprint 1 GitHub issues with labels, priorities, and acceptance criteria. Wrote and closed professor questions, Sprint 2 task ideas, two ADRs (vanilla JS decision, mock data decision), and CI plan. Reorganized docs into subfolders | Continue finalizing structure and planning for next sprint | Can't finalize MVP updates until TA sync with Audria happens |
 
 ---
 
