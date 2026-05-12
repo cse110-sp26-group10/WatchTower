@@ -350,4 +350,7 @@ document.addEventListener('DOMContentLoaded', () => {
   render();
 });
 
-setInterval(render, DASHBOARD_UPDATE_INTERVAL * 1000);
+setInterval(async function() {
+  await updateEvents();
+  render();
+}, DASHBOARD_UPDATE_INTERVAL * 1000);

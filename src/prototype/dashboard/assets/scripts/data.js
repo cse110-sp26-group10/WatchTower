@@ -115,18 +115,13 @@ function getDeployment(id) {
  * @returns {Array}
  */
 async function getDataFromServer() {
-    try {
-        let response = await fetch("http://localhost:8080/api/data");
-        if (!response.ok) {
-            throw new Error("Network response failed")
-        }
-        let data = await response.json();
-        console.log("Response:", data);
-        return data;
-    } catch (error) {
-        console.log("Logging failed:", error);
-        return [];
-    }
+  let response = await fetch("http://localhost:8080/api/data");
+  if (!response.ok) {
+      throw new Error("Network response failed")
+  }
+  let data = await response.json();
+  console.log("Response:", data);
+  return data;
 }
 
 /**
@@ -134,24 +129,26 @@ async function getDataFromServer() {
  * @returns {Array}
  */
 function getDeploymentsFromEvents() {
-    let deploymentIds = new Set();
-    let deployments = [];
-    EVENTS.forEach((event) => {
-        if (deploymentIds.has(event.deployment.id)) return;
-        deploymentIds.add(event.deployment.id);
-        deployments.push(event.deployment);
-    })
-    return deployments;
+  let deploymentIds = new Set();
+  let deployments = [];
+  EVENTS.forEach((event) => {
+    if (deploymentIds.has(event.deployment.id)) return;
+    deploymentIds.add(event.deployment.id);
+    deployments.push(event.deployment);
+  })
+  return deployments;
 }
 
 /**
  * Update the events and deployments.
  */
 async function updateEvents() {
+  try {
     EVENTS = await getDataFromServer();
     DEPLOYMENTS = getDeploymentsFromEvents();
+  } catch (error) {
+    console.log("Event update failed:", error);
+  }
 }
 
-window.WatchTowerData = { getEvents, getDeployments, getDeployment };
-updateEvents();
-setInterval(updateEvents, DATA_UPDATE_INTERVAL * 1000);
+window.WatchTowerData = { getEvents, getDeployments, getDeployment, updateEvents };
