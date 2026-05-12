@@ -7,7 +7,7 @@
  * trimmed schema; we read only fields that schema guarantees.
  */
 
-const DASHBOARD_UPDATE_INTERVAL = 10;
+const DASHBOARD_UPDATE_INTERVAL = 5;
 
 /** Currently selected deployment filter; 'all' means no filter. */
 let activeDeploymentId = 'all';

@@ -81,7 +81,7 @@ window.addEventListener("click", (event) => {
     click.event_type = "click";
     click.metadata = {
         "element_id": event.target.id,
-        "element_class": event.target.className,
+        "element_class": event.target.className.toString(),
         "input_delay": performance.now() - event.timeStamp
     }
     logEvent(click);
