@@ -95,4 +95,4 @@ survey.metadata = {
     "message": "This is a test."
 };
 console.log(survey);
-await logEvent(survey);
+logEvent(survey);
