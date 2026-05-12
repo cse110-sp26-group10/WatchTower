@@ -30,9 +30,10 @@ function event_template() {
     let event = {};
     event.timestamp = new Date().toISOString();
     event.deployment = {
-        "id": "test_deployment",
-        "version": "v0",
-        "commit_hash": "abcdef"
+        "id": "dep_abcd",
+        "version": "0.0.0",
+        "commit_hash": "a1b2c3d",
+        "deployed_at": "2026-03-25T00:00:00Z"
     };
     event.user_id = get_user_id();
     event.current_url = window.location.href;

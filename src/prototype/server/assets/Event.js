@@ -15,7 +15,9 @@ const EVENT_FIELDS = new Set([
 const DEPLOYMENT_FIELDS = new Set([
     "id",
     "version",
-    "commit_hash"
+    "commit_hash",
+    "deployed_at",
+    "author"
 ]);
 const METADATA_FIELDS = {
     "page_load": new Set(["load_time"]),
@@ -66,6 +68,13 @@ function validate_deployment(event) {
     if (typeof deployment.id !== "string") return false;
     if (typeof deployment.version !== "string") return false;
     if (typeof deployment.commit_hash !== "string") return false;
+    let date = new Date(deployment.deployed_at);
+    if (isNaN(date)) return false;
+    if (date.toISOString() !== timestamp) return false;
+    let now = new Date();
+    if (date <= now - MAX_CLOCK_SKEW_SECONDS * 1000) return false; // Timestamp too far back
+    if (date > now) return false; // Timestamp in the future
+    if (typeof deployment.author !== "string") return false;
     return true;
 }
 
