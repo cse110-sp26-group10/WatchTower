@@ -30,7 +30,7 @@ const server = http.createServer((req, res) => {
                 let event = new Event(body);
                 if (!event.valid) throw new Error("Invalid event");
                 event.set_field("ip", req.socket.remoteAddress);
-                logs.push(event);
+                logs.push(event.event);
                 res.writeHead(200, { "Content-Type": "application/json" });
                 res.end(JSON.stringify({ status: "success" }));
                 console.log("\nEvent logged");

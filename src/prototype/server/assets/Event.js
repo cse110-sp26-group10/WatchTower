@@ -68,11 +68,11 @@ function validateDeployment(event) {
     if (typeof deployment.id !== "string") return false;
     if (typeof deployment.version !== "string") return false;
     if (typeof deployment.commit_hash !== "string") return false;
+    if (typeof deployment.deployed_at !== "string") return false;
     let date = new Date(deployment.deployed_at);
     if (isNaN(date)) return false;
-    if (date.toISOString() !== timestamp) return false;
+    if (date.toISOString() !== deployment.deployed_at) return false;
     let now = new Date();
-    if (date <= now - MAX_CLOCK_SKEW_SECONDS * 1000) return false; // Timestamp too far back
     if (date > now) return false; // Timestamp in the future
     if (typeof deployment.author !== "string") return false;
     return true;

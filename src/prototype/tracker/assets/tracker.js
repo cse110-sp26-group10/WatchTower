@@ -23,7 +23,7 @@ function getUserId() {
         userId = crypto.randomUUID(); // Generate new user_id
         localStorage.setItem("watchtower_user_id", userId);
     }
-    return user_id;
+    return userId;
 }
 
 function eventTemplate() {
@@ -33,7 +33,8 @@ function eventTemplate() {
         "id": "dep_abcd",
         "version": "0.0.0",
         "commit_hash": "a1b2c3d",
-        "deployed_at": "2026-03-25T00:00:00Z"
+        "deployed_at": "2026-03-25T00:00:00.000Z",
+        "author": "kevin"
     };
     event.user_id = getUserId();
     event.current_url = window.location.href;
