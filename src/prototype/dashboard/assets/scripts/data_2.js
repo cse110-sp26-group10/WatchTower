@@ -1,4 +1,4 @@
-async function get_data() {
+async function getDataFromServer() {
     try {
         let response = await fetch("http://localhost:8080/api/data");
         if (!response.ok) {
@@ -13,4 +13,4 @@ async function get_data() {
     }
 }
 
-let data = await get_data();
+let data = await getDataFromServer();
