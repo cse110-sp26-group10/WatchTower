@@ -100,32 +100,49 @@
 | Sprint 1 Duration: 1 Week | Shorter cycle for planning/research allows for faster regrouping. | N/A |
 | Asynchronous Slack Stand-ups | More efficient than live meetings for brief status updates. | N/A |
 | Use Figma for Design/Research | Provides a centralized, collaborative space for visual planning. | N/A |
+|Vanilla HTML, CSS, JS chosen for tech stack|JS frameworks prohibited, reduces complexity, and adds accessibility for all members|[Link](/docs/adr/001-use-vanilla-html-css-js.md)|
+|Static mock data for prototype|Validates MVP design and UCD direction without making infrastructure commitments|[Link](/docs/adr/002-use-mock-data-for-prototype.md)|
 
 ---
 
 ## Sprint Review
 
 ### What was completed:
--
+- Prototype development is going well, frontend built, good progress towards completion across frontend backend and dashboard, individual parts working 
+- Wireframes made, research into similar products and project expectations done
+- Testing plan developed and finalized
+- ADRs created for crucial decisions, questions prepared for TA and professor
+- Repo and prototype file structures defined
 
 ### What was not completed:
--
+- User personas
 
 ### Reason(s):
--
+- Not confirmed completed
 
 ---
 
 ## Sprint Retrospective
 
-### What went well:
--
+### What went well:  
+-  Solo development worked well across all teams
+-  Tasks were completed efficiently
+-  Collaborative efforts also worked well
+-  Check-ins and sprint went well
+-  Everyone is on task, wireframes demos and dashboard all look great
 
 ### What didn't go well:
--
+- Not as much communication during solo development
+- Concerns about code conflicts in prototype as a result of decentralized development
+- Wireframe developed with less influence from user research and desired features
 
 ### What we'll do differently:
--
+- Begin using GitHub Issues to track tasks and retire the Google Sheets task tracker
+- Schedule a meeting to merge code and fix issues if they come up.
+- Update changelog accordingly, include both features and bug fixes
+- Begin working together and collaborating more within teams
+- Begin thinking about implementing tests 
+- Update wireframe to reflect user research and desired features
 
 ---
 
