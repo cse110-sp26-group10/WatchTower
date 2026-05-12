@@ -85,14 +85,6 @@ window.addEventListener("click", (event) => {
     log_event(click);
 });
 
-window.addEventListener("load", () => {
-    let page_load = event_template();
-    page_load.event_type = "page_load";
-    page_load.metadata = {
-        "load_time": performance.getEntriesByType("navigation")[0].duration
-    }
-})
-
 // Sample survey
 let survey = event_template();
 survey.event_type = "survey";
