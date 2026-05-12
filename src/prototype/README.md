@@ -14,12 +14,12 @@ prototype/
 │   │       └── styles.css
 │   └── index.html
 ├── server/                  # Receive and validate payloads
-│   └── assets/              # JS
-│       └── server.js        # Core server logic
+│   ├── assets/              # JS
+│   │   └── Event.js         # Contains the Event class
+│   └── server.js            # Core server logic
 ├── tracker/                 # Tracks events in browser
 │   ├── assets/              # JS
 │   │   └── tracker.js       # Core tracking logic
 │   └── watchtower.js        # Loads in other necessary scripts
 └── README.md                # You are here
-
 ```
