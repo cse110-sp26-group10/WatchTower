@@ -81,14 +81,14 @@
 | Name | Did | Doing | Blockers |
 |------|-----|-------|----------|
 | Nicole Sutedja | Check in with each team, checked GitHub issues, update MVP with definition & informed development | Update Figma with user research & possibly style guide, plan for next sprint | deciding on how to alert the user of issues & if required waiting to tell TA about external dependencies |
-| Kaley Chung | | | |
+| Kaley Chung | Completed company research and realistic features and what to avoid for project | Finish the remaining research | Midterms and quizzes |
 | Jensen Guo | Drafted low fidelity initial wireframes for the dashboard, issue detail, user feedback, and requirements | terate and refine the wireframes based off feedback, and add them to the repo | None |
 | Prakhar Shah | | | |
 | Bethany Miyamoto | Finished up mock data file and started a feedback widget for feedback and filtering | Finish the js files and push | None |
 | Kevin Wang | communicated with teammates about the shape of log data, built the prototype for dashboard | Build exploratory issue detail prototype | None |
 | Han Yang-Lin | Created the file structure for the prototype. Started writing basic logic for validating client signals | Continue working on server.js to connect issues to signals | None |
 | Aron Wu | Finished testing plan with Ben. Finalized unit test ideas and e2e flows | Help update testing evidence log | None |
-| Benedict Luis | Reviewed and finalized testing plan ideas with Aron and decided what to combine into the official sprint 1's testing plan. Added sections for future unit tests, the E2E demo flow and manual testing. Update stand up 2. | Add or help collect testing evidence later, such as screenshots of the dashboard, filters, issue detail view and maybe deployment signal connection. Finish up stand up 3 log. | None |
+| Benedict Luis | Reviewed and finalized testing plan ideas with Aron and decided what to combine into the official sprint 1's testing plan. Added sections for future unit tests, the E2E demo flow and manual testing. Update stand up 2 | Add or help collect testing evidence later, such as screenshots of the dashboard, filters, issue detail view and maybe deployment signal connection. Finish up stand up 3 log | None |
 | Evan Marriott | Created all 41 Sprint 1 GitHub issues with labels, priorities, and acceptance criteria. Wrote and closed professor questions, Sprint 2 task ideas, two ADRs (vanilla JS decision, mock data decision), and CI plan. Reorganized docs into subfolders | Continue finalizing structure and planning for next sprint | Can't finalize MVP updates until TA sync with Audria happens |
 
 ---
