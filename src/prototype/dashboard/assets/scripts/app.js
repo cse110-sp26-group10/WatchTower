@@ -7,6 +7,8 @@
  * trimmed schema; we read only fields that schema guarantees.
  */
 
+const DASHBOARD_UPDATE_INTERVAL = 5;
+
 /** Currently selected deployment filter; 'all' means no filter. */
 let activeDeploymentId = 'all';
 
@@ -351,3 +353,8 @@ document.addEventListener('DOMContentLoaded', () => {
   populateDeploymentFilter();
   render();
 });
+
+setInterval(async function() {
+  await updateEvents();
+  render();
+}, DASHBOARD_UPDATE_INTERVAL * 1000);
