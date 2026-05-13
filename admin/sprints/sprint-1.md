@@ -83,7 +83,7 @@
 | Nicole Sutedja | Check in with each team, checked GitHub issues, update MVP with definition & informed development | Update Figma with user research & possibly style guide, plan for next sprint | deciding on how to alert the user of issues & if required waiting to tell TA about external dependencies |
 | Kaley Chung | Completed company research and realistic features and what to avoid for project | Finish the remaining research | Midterms and quizzes |
 | Jensen Guo | Drafted low fidelity initial wireframes for the dashboard, issue detail, user feedback, and requirements | terate and refine the wireframes based off feedback, and add them to the repo | None |
-| Prakhar Shah | | | |
+| Prakhar Shah | Completed detailed research. Compiled it into 3 user personnas, 13 user stories. Created a ReadMe for early observability as well | Finish CSE 135 site research | Midterms and assignments. multiple deadlines due this week |
 | Bethany Miyamoto | Finished up mock data file and started a feedback widget for feedback and filtering | Finish the js files and push | None |
 | Kevin Wang | communicated with teammates about the shape of log data, built the prototype for dashboard | Build exploratory issue detail prototype | None |
 | Han Yang-Lin | Created the file structure for the prototype. Started writing basic logic for validating client signals | Continue working on server.js to connect issues to signals | None |
