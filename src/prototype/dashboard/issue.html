@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WatchTower — Issue Detail</title>
+  <link rel="stylesheet" href="assets/styles/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <a class="brand-name" href="index.html">WatchTower</a>
+    </div>
+    <div class="topbar-meta">
+      <a href="index.html" class="back-link">&larr; back to dashboard</a>
+    </div>
+  </header>
+
+  <main class="dashboard">
+    <section class="issue-header">
+      <div id="issue-banner" class="status-banner" data-level="ok">Issue —</div>
+      <div class="issue-meta-line">
+        <span class="type-pill" id="issue-type">—</span>
+        <span class="issue-meta" id="issue-when">—</span>
+        <span class="issue-meta" id="issue-path">—</span>
+      </div>
+    </section>
+
+    <section class="issue-primary panel">
+      <header class="panel-header">
+        <h2>Details</h2>
+        <span class="panel-hint" id="issue-id">—</span>
+      </header>
+      <div id="issue-primary-body"></div>
+    </section>
+
+    <section class="panel-grid">
+      <article class="panel">
+        <header class="panel-header">
+          <h2>Context</h2>
+          <span class="panel-hint">where it happened</span>
+        </header>
+        <ul class="kv-list" id="context-list"></ul>
+      </article>
+
+      <article class="panel">
+        <header class="panel-header">
+          <h2>Deployment</h2>
+          <span class="panel-hint">which build started the fire</span>
+        </header>
+        <ul class="kv-list" id="deployment-list"></ul>
+      </article>
+    </section>
+
+    <section class="panel">
+      <header class="panel-header">
+        <h2>Related Signals</h2>
+        <span class="panel-hint">same path + deployment, within 30 min</span>
+      </header>
+      <ul class="activity-list" id="related-list"></ul>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>WatchTower prototype • mock data • frontend-only</span>
+  </footer>
+
+  <script src="assets/scripts/data.js"></script>
+  <script src="assets/scripts/issue.js"></script>
+</body>
+</html>

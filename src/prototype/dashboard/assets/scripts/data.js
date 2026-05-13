@@ -24,8 +24,11 @@ const DEPLOYMENTS = [
 
 const deploymentById = (id) => DEPLOYMENTS.find((d) => d.id === id);
 
+let __eventCounter = 0;
+
 /**
- * Build one event in the trimmed shape.
+ * Build one event in the trimmed shape. Assigns a stable, deterministic id
+ * based on insertion order so the issue-detail page can link to it.
  * @param {Object} p
  * @param {string} p.deployment_id
  * @param {string} p.event_type
@@ -35,7 +38,9 @@ const deploymentById = (id) => DEPLOYMENTS.find((d) => d.id === id);
  */
 function makeEvent({ deployment_id, event_type, minsAgo, pathname, meta }) {
   const d = deploymentById(deployment_id);
+  __eventCounter += 1;
   return {
+    id: `evt_${String(__eventCounter).padStart(3, '0')}`,
     event_type,
     timestamp: minutesAgo(minsAgo),
     created_at: minutesAgo(minsAgo),
@@ -109,4 +114,39 @@ function getDeployment(id) {
   return deploymentById(id);
 }
 
-window.WatchTowerData = { getEvents, getDeployments, getDeployment };
+/**
+ * Look up a single event by its assigned id (e.g. "evt_004").
+ * @param {string} id
+ * @returns {Object|undefined}
+ */
+function getEvent(id) {
+  return MOCK_EVENTS.find((e) => e.id === id);
+}
+
+/**
+ * Find signals contextually related to a given event: same pathname AND same
+ * deployment, within a +/- 30-minute window. Used by the issue-detail page
+ * to surface "what else was happening around this issue".
+ * @param {Object} event
+ * @returns {Array<Object>}
+ */
+function getRelatedEvents(event) {
+  if (!event) return [];
+  const eventTs = new Date(event.timestamp).getTime();
+  const windowMs = 30 * 60 * 1000;
+  const depId = event.deployment && event.deployment.id;
+  return MOCK_EVENTS.filter((e) => {
+    if (e.id === event.id) return false;
+    if (e.pathname !== event.pathname) return false;
+    if (!e.deployment || e.deployment.id !== depId) return false;
+    return Math.abs(new Date(e.timestamp).getTime() - eventTs) <= windowMs;
+  }).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+}
+
+window.WatchTowerData = {
+  getEvents,
+  getDeployments,
+  getDeployment,
+  getEvent,
+  getRelatedEvents,
+};

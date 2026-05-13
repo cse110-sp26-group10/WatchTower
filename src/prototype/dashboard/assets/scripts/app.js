@@ -99,11 +99,13 @@ function renderErrors(events) {
     .map(
       (e) => `
         <li class="event-row">
-          <span class="severity-badge sev-${escapeHtml(e.metadata.severity)}">${escapeHtml(e.metadata.severity)}</span>
-          <div class="event-body">
-            <div class="event-message">${escapeHtml(e.metadata.message)}</div>
-            <div class="event-meta">${escapeHtml(e.pathname)} • ${relativeTime(e.timestamp)}</div>
-          </div>
+          <a class="event-link" href="issue.html?id=${encodeURIComponent(e.id)}">
+            <span class="severity-badge sev-${escapeHtml(e.metadata.severity)}">${escapeHtml(e.metadata.severity)}</span>
+            <div class="event-body">
+              <div class="event-message">${escapeHtml(e.metadata.message)}</div>
+              <div class="event-meta">${escapeHtml(e.pathname)} • ${relativeTime(e.timestamp)}</div>
+            </div>
+          </a>
         </li>`
     )
     .join('');
@@ -169,11 +171,13 @@ function renderFeedback(events) {
       const tone = rating <= 2 ? 'rating-low' : rating >= 4 ? 'rating-high' : 'rating-mid';
       return `
         <li class="event-row">
-          <span class="rating-badge ${tone}" title="${rating}/5">${stars}</span>
-          <div class="event-body">
-            <div class="event-message">${escapeHtml(e.metadata.comment || '(no comment)')}</div>
-            <div class="event-meta">${escapeHtml(e.pathname)} • ${relativeTime(e.timestamp)}</div>
-          </div>
+          <a class="event-link" href="issue.html?id=${encodeURIComponent(e.id)}">
+            <span class="rating-badge ${tone}" title="${rating}/5">${stars}</span>
+            <div class="event-body">
+              <div class="event-message">${escapeHtml(e.metadata.comment || '(no comment)')}</div>
+              <div class="event-meta">${escapeHtml(e.pathname)} • ${relativeTime(e.timestamp)}</div>
+            </div>
+          </a>
         </li>`;
     })
     .join('');
