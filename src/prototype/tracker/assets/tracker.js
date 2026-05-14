@@ -86,13 +86,3 @@ window.addEventListener("click", (event) => {
     }
     logEvent(click);
 });
-
-// Sample survey
-let survey = eventTemplate();
-survey.event_type = "survey";
-survey.metadata = {
-    "rating": 5,
-    "message": "This is a test."
-};
-console.log(survey);
-logEvent(survey);
