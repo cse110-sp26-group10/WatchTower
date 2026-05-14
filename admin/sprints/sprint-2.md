@@ -1,4 +1,4 @@
-# Sprint #X — [Sprint Goal]
+# Sprint 2 — Integration, Testing Infrastructure, and Design Refinement
 
 **Project:** WatchTower <br>
 **Dates:** 05/11/2026 – 05/17/2026 <br>
@@ -7,7 +7,7 @@
 
 ## Sprint Goal
 
-> One sentence describing what this sprint is trying to accomplish.
+> Connect the backend and frontend into a working end-to-end prototype, finalize wireframes and user research, and establish the ESLint/CI testing strategy so the team is ready for feature development in Sprint 3.
 
 ---
 
@@ -25,6 +25,7 @@
 | Bethany Miyamoto | Development  | Pairing |
 | Aron Wu | Quality & Ops | Pairing |
 | Benedict Luis | Quality & Ops | Pairing |
+
 > Mode: `Pairing` / `Mobbing` / `Solo`
 
 ---
@@ -33,9 +34,21 @@
 
 | ID | Task | Assignee(s) | Status | Notes |
 |----|------|-------------|--------|-------|
-| T01 | | | 🔲 Not Started | |
-| T02 | | | 🔲 Not Started | |
-| T03 | | | 🔲 Not Started | |
+| T01 | Connect backend server to frontend dashboard (wire real/mock data to UI) | Han Yang-Lin, Kevin Wang, Bethany Miyamoto | 🔄 In Progress | Priority: use mock data first, swap to real signals once stable |
+| T02 | Finalize event signal structure and decide on database | Han Yang-Lin | 🔲 Not Started | Outcome of dev team meeting from Sprint 1 |
+| T03 | Complete and merge user personas | Prakhar Shah | 🔲 Not Started | Carried over from Sprint 1 |
+| T04 | Finish remaining user research (build/deployment signal context) | Kaley Chung | 🔲 Not Started | Unblock Jensen's wireframe work |
+| T05 | Iterate wireframes based on user research and MVP feedback | Jensen Guo | 🔲 Not Started | Incorporate TA Audria's arrow/user-flow notes |
+| T06 | Add wireframes to repo (Figma export or link) | Jensen Guo | 🔄 In Progress | |
+| T07 | Define ESLint configuration and document testing strategy | Aron Wu, Benedict Luis | 🔲 Not Started | Write ADR if ESLint is approved by TA; confirm with Audria first |
+| T08 | Add ESLint + HTML/CSS validation to GitHub Actions CI pipeline | Benedict Luis | 🔲 Not Started | Blocked until TA approves ESLint dependency |
+| T09 | Add JSDoc comments to all existing JS files | All Developers | 🔲 Not Started | Required per process guide; do incrementally |
+| T10 | Write initial unit tests for backend signal validation logic | Han Yang-Lin, Aron Wu | 🔲 Not Started | Testing must be verifiable early in repo |
+| T11 | Update CHANGELOG.md for all Sprint 2 changes | All Members | 🔄 In Progress | Per process guide — every notable change logged |
+| T12 | Update GENAI.md with any AI tool usage this sprint | All Members | 🔲 Not Started | Mandatory disclosure |
+| T13 | Hold dev team sync to coordinate frontend/backend merge | Nicole / Evan | 🔲 Not Started | Prevent code conflicts flagged in Sprint 1 retro |
+| T14 | TA sync with Audria — confirm ESLint approval & alert/notification approach | Nicole / Evan | 🔲 Not Started | Blocking ESLint ADR and alert feature direction |
+| T15 | Maintain Sprint 2 documentation in GitHub | Nicole, Ben | 🔄 In Progress | |
 
 > Status options: 🔲 Not Started · 🔄 In Progress · ✅ Done · 🚫 Blocked
 
@@ -43,50 +56,50 @@
 
 ## Stand-ups
 
-### Stand-up 1 — MM/DD/YYYY
+### Stand-up 1 — 05/12/2026
 
 | Name | Did | Doing | Blockers |
 |------|-----|-------|----------|
-| Nicole Sutedja | finished in-class activity doc & submitted, scheduled dev team meeting | Sprint 2 goals md | None |
-| Kaley Chung | Completed first key point and started with looking at build signals | Finish the remaining research, ask team to review before commiting to github | Midterms and quizzes |
-| Jensen Guo | Began updating wireframes more in accordance with the resources TA Audria showed (arrows showing user flow) and the MVP | User summary page, refine the other pages | None |
-| Prakhar Shah | started researching the cse 135 site | finish research and detail my findings | busy and midterms |
+| Nicole Sutedja | Finished in-class activity doc & submitted, scheduled dev team meeting | Sprint 2 goals md | None |
+| Kaley Chung | Completed first key point and started looking at build signals | Finish the remaining research, ask team to review before committing to GitHub | Midterms and quizzes |
+| Jensen Guo | Began updating wireframes in accordance with TA Audria's resources (arrows showing user flow) and the MVP | User summary page, refine the other pages | None |
+| Prakhar Shah | Started researching the CSE 135 site | Finish research and detail findings | Busy and midterms |
 | Bethany Miyamoto | Done with mock, feedback, and filtering data and pushed for review | Meet with team and coordinate between frontend/backend/example data | None |
-| Kevin Wang | dashboard prototype and issue details, asked for feedback from prof. Powell | adjust the layout based on the feedback, add details based on MVP definition | other ddls |
-| Han Yang-Lin | Created a backend Node.js server to validate incoming event signals, wrote a browser script tracker.js that tracks events like page load, errors, and clicks in the browser and send them to the server, and worked on data.js to retrieve data from the server needed for the dashboard | Finalize the event signal structure and decide which database to use in the developer meeting, and continue working to finish the MVP using mock data | Project/homework deadlines due this week |
-| Aron Wu | Researched linting and validation options with Ben and reviewed CI plan. Considering ESLint as option | Talk to Audria about using ESLint, also looking into ESLint and JSDoc documentation generations and adding them to GitHub Actions pipelines | None |
-| Benedict Luis | Discussed linting/validation with Aron and reviewed the CI plan in docs/process. Researched ESLint as a possible option, but it may need an ADR since it adds a dependency. Finished up some loose ends on the worksheet | Look into adding ESLint, HTML/CSS validation, and JSDoc documentation generation to the GitHub Actions CI pipeline. Discuss on how to approach making the testing app in the Dev meet | None |
+| Kevin Wang | Dashboard prototype and issue details, asked for feedback from Prof. Powell | Adjust layout based on feedback, add details based on MVP definition | Other deadlines |
+| Han Yang-Lin | Created a backend Node.js server to validate incoming event signals, wrote tracker.js to track page load/errors/clicks and send to server, worked on data.js to retrieve data from server for the dashboard | Finalize event signal structure and decide on database in dev meeting, continue working on MVP with mock data | Project/homework deadlines due this week |
+| Aron Wu | Researched linting and validation options with Ben and reviewed CI plan; considering ESLint as option | Talk to Audria about using ESLint, look into ESLint and JSDoc documentation generation for GitHub Actions pipelines | None |
+| Benedict Luis | Discussed linting/validation with Aron and reviewed CI plan in docs/process; researched ESLint as a possible option (may need ADR due to new dependency); finished loose ends on worksheet | Look into adding ESLint, HTML/CSS validation, and JSDoc documentation generation to GitHub Actions CI pipeline; discuss testing app approach at dev meeting | None |
+| Evan Marriott | Finished portion of the in-class activity and prepared for Sprint 2 | Continue managing project progress and development | None |
+
+### Stand-up 2 — 05/14/2026
+
+| Name | Did | Doing | Blockers |
+|------|-----|-------|----------|
+| Nicole Sutedja | | | |
+| Kaley Chung | | | |
+| Jensen Guo | | | |
+| Prakhar Shah | | | |
+| Bethany Miyamoto | | | |
+| Kevin Wang | | | |
+| Han Yang-Lin | | | |
+| Aron Wu | | | |
+| Benedict Luis | | | |
 | Evan Marriott | | | |
 
-### Stand-up 2 — MM/DD/YYYY
+### Stand-up 3 — 05/16/2026
 
 | Name | Did | Doing | Blockers |
 |------|-----|-------|----------|
-| | | | |
-| | | | |
-| | | | |
-| | | | |
-| | | | |
-| | | | |
-| | | | |
-| | | | |
-| | | | |
-| | | | |
-
-### Stand-up 3 — MM/DD/YYYY
-
-| Name | Did | Doing | Blockers |
-|------|-----|-------|----------|
-| | | | |
-| | | | |
-| | | | |
-| | | | |
-| | | | |
-| | | | |
-| | | | |
-| | | | |
-| | | | |
-| | | | |
+| Nicole Sutedja | | | |
+| Kaley Chung | | | |
+| Jensen Guo | | | |
+| Prakhar Shah | | | |
+| Bethany Miyamoto | | | |
+| Kevin Wang | | | |
+| Han Yang-Lin | | | |
+| Aron Wu | | | |
+| Benedict Luis | | | |
+| Evan Marriott | | | |
 
 ---
 
@@ -94,7 +107,8 @@
 
 | Decision | Rationale | ADR Link |
 |----------|-----------|----------|
-| | | |
+| ESLint adoption (pending TA approval) | Standardizes code quality and enables automated linting in CI; adds a dependency so requires ADR | TBD — `/docs/adr/003-eslint-linting.md` |
+| Database selection for event signals | Needed to move off mock data and support real signal ingestion | TBD after dev sync |
 
 ---
 
@@ -128,7 +142,7 @@
 
 | Metric | Value |
 |--------|-------|
-| Tasks Planned | |
+| Tasks Planned | 15 |
 | Tasks Completed | |
 | PRs Opened | |
 | PRs Merged | |
@@ -139,4 +153,4 @@
 
 ## Notes & Misc
 
->
+> Key carryovers from Sprint 1 retro: use GitHub Issues (not Google Sheets) for task tracking, hold a dev sync before merging prototype code, update wireframes to reflect actual user research, and begin writing unit tests incrementally.
