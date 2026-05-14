@@ -156,14 +156,13 @@ async function updateEvents() {
   }
 }
 
-window.WatchTowerData = { getEvents, getDeployments, getDeployment, updateEvents };
 /**
  * Look up a single event by its assigned id (e.g. "evt_004").
  * @param {string} id
  * @returns {Object|undefined}
  */
 function getEvent(id) {
-  return MOCK_EVENTS.find((e) => e.id === id);
+  return EVENTS.find((e) => e.id === id);
 }
 
 /**
@@ -178,7 +177,7 @@ function getRelatedEvents(event) {
   const eventTs = new Date(event.timestamp).getTime();
   const windowMs = 30 * 60 * 1000;
   const depId = event.deployment && event.deployment.id;
-  return MOCK_EVENTS.filter((e) => {
+  return EVENTS.filter((e) => {
     if (e.id === event.id) return false;
     if (e.pathname !== event.pathname) return false;
     if (!e.deployment || e.deployment.id !== depId) return false;
@@ -192,4 +191,5 @@ window.WatchTowerData = {
   getDeployment,
   getEvent,
   getRelatedEvents,
+  updateEvents,
 };
