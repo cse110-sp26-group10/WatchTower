@@ -23,6 +23,7 @@ function saveCart(items) {
 }
 
 function addToCart(productId, size) {
+  if (!productId || !size) return;
   const items = getCart();
   const existing = items.find(i => i.productId === productId && i.size === size);
   if (existing) {
