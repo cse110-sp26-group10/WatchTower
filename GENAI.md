@@ -3,4 +3,4 @@ All team members must record the date, tool, purpose, and a brief discussion of 
 
 | Date | Contributor | Tool Used | Purpose | Discussion/Outcome |
 | :--- | :--- | :--- | :--- | :--- |
-| [Date] | [Name] | [Name of AI] | [e.g., Protopying CSS] | [Explain why it was used and how it was vetted] |
+| 2026-05-14 | Evan Marriott | Claude (claude-sonnet-4-6) | Generating the WatchTower test app — 5-page vanilla JS clothing store including HTML pages, shared CSS, cart/product logic, checkout form validation, post-purchase survey, and error trigger button | Code reviewed page by page before committing. All logic understood and verified functional. Escaping and security reviewed. |
