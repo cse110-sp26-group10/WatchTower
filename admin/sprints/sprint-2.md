@@ -35,20 +35,20 @@
 | ID | Task | Assignee(s) | Status | Notes |
 |----|------|-------------|--------|-------|
 | T01 | Connect backend server to frontend dashboard (wire real/mock data to UI) | Han Yang-Lin, Kevin Wang, Bethany Miyamoto | 🔄 In Progress | Priority: use mock data first, swap to real signals once stable |
-| T02 | Finalize event signal structure and decide on database | Han Yang-Lin | 🔲 Not Started | Outcome of dev team meeting from Sprint 1 |
-| T03 | Complete and merge user personas | Prakhar Shah | 🔲 Not Started | Carried over from Sprint 1 |
-| T04 | Finish remaining user research (build/deployment signal context) | Kaley Chung | 🔲 Not Started | Unblock Jensen's wireframe work |
+| T02 | Finalize event signal structure and decide on database | Han Yang-Lin | 🔄 In Progress | Outcome of dev team meeting from Sprint 1 |
+| T03 | Complete and merge user personas | Prakhar Shah | ✅ Done  | Carried over from Sprint 1 |
+| T04 | Finish remaining user research (build/deployment signal context) | Kaley Chung | ✅ Done  | Unblock Jensen's wireframe work |
 | T05 | Iterate wireframes based on user research and MVP feedback | Jensen Guo | 🔲 Not Started | Incorporate TA Audria's arrow/user-flow notes |
 | T06 | Add wireframes to repo (Figma export or link) | Jensen Guo | 🔄 In Progress | |
-| T07 | Define ESLint configuration and document testing strategy | Aron Wu, Benedict Luis | 🔲 Not Started | Write ADR if ESLint is approved by TA; confirm with Audria first |
-| T08 | Add ESLint + HTML/CSS validation to GitHub Actions CI pipeline | Benedict Luis | 🔲 Not Started | Blocked until TA approves ESLint dependency |
+| T07 | Define ESLint configuration and document testing strategy | Aron, Benedict Luis | 🔄 In Progress | Write ADR if ESLint is approved by TA; confirm with Audria first |
+| T08 | Add ESLint + HTML/CSS validation to GitHub Actions CI pipeline | Benedict Luis | 🔄 In Progress | Blocked until TA approves ESLint dependency |
 | T09 | Add JSDoc comments to all existing JS files | All Developers | 🔲 Not Started | Required per process guide; do incrementally |
-| T10 | Write initial unit tests for backend signal validation logic | Han Yang-Lin, Aron Wu | 🔲 Not Started | Testing must be verifiable early in repo |
+| T10 | Write initial unit tests for backend signal validation logic | Benedict, Aron | 🔲 Not Started | Testing must be verifiable early in repo |
 | T11 | Update CHANGELOG.md for all Sprint 2 changes | All Members | 🔄 In Progress | Per process guide — every notable change logged |
 | T12 | Update GENAI.md with any AI tool usage this sprint | All Members | 🔲 Not Started | Mandatory disclosure |
-| T13 | Hold dev team sync to coordinate frontend/backend merge | Nicole / Evan | 🔲 Not Started | Prevent code conflicts flagged in Sprint 1 retro |
-| T14 | TA sync with Audria — confirm ESLint approval & alert/notification approach | Nicole / Evan | 🔲 Not Started | Blocking ESLint ADR and alert feature direction |
-| T15 | Maintain Sprint 2 documentation in GitHub | Nicole, Ben | 🔄 In Progress | |
+| T13 | Hold dev team sync to coordinate frontend/backend merge | Nicole / Evan | ✅ Done  | Prevent code conflicts flagged in Sprint 1 retro |
+| T14 | TA sync with Audria — confirm ESLint approval & alert/notification approach | Ben, Aron | 🔲 Not Started | Blocking ESLint ADR and alert feature direction |
+| T15 | Maintain Sprint 2 documentation in GitHub | Nicole, Benedict | 🔄 In Progress | |
 
 > Status options: 🔲 Not Started · 🔄 In Progress · ✅ Done · 🚫 Blocked
 
