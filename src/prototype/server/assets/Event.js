@@ -64,6 +64,7 @@ function validateTimestamp(event) {
 
 function validateDeployment(event) {
     let deployment = event.deployment;
+    if (deployment === null) return false;
     if (typeof deployment !== "object") return false;
     if (typeof deployment.id !== "string") return false;
     if (typeof deployment.version !== "string") return false;
@@ -101,6 +102,7 @@ function validateReferrer(event) {
 
 function validateMetadata(event) {
     let metadata = event.metadata;
+    if (metadata === null) return false;
     if (typeof metadata !== "object") return false;
     switch (event.event_type) {
         case "page_load":
@@ -123,6 +125,19 @@ function validateMetadata(event) {
     return true;
 }
 
+function validateEvent(event) {
+    if (event === null) return false;
+    if (typeof event !== "object") return false;
+    if (!validateEventType(event)) return false;
+    if (!validateTimestamp(event)) return false;
+    if (!validateDeployment(event)) return false;
+    if (!validateUser(event)) return false;
+    if (!validateURL(event)) return false;
+    if (!validateReferrer(event)) return false;
+    if (!validateMetadata(event)) return false;
+    return true;
+}
+
 function cleanupExtraFields(object, fields) {
     Object.keys(object).forEach(key => {
         if (!fields.has(key)) {
@@ -135,15 +150,7 @@ export default class Event {
     constructor(json) {
         this.valid = false;
         let event = parseJSON(json);
-        if (event === null) return null;
-        if (typeof event !== "object") return null;
-        if (!validateEventType(event)) return null;
-        if (!validateTimestamp(event)) return null;
-        if (!validateDeployment(event)) return null;
-        if (!validateUser(event)) return null;
-        if (!validateURL(event)) return null;
-        if (!validateReferrer(event)) return null;
-        if (!validateMetadata(event)) return null;
+        if (!validateEvent(event)) return null;
         event.created_at = new Date().toISOString();
         let urlObject = new URL(event.current_url);
         event.host = urlObject.host;
