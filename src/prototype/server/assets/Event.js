@@ -15,7 +15,9 @@ const EVENT_FIELDS = new Set([
 const DEPLOYMENT_FIELDS = new Set([
     "id",
     "version",
-    "commit_hash"
+    "commit_hash",
+    "deployed_at",
+    "author"
 ]);
 const METADATA_FIELDS = {
     "page_load": new Set(["load_time"]),
@@ -31,7 +33,7 @@ const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-
  * @param {string} json A valid JSON string.
  * @returns The Object, Array, string, boolean, or null value corresponding to the given JSON text.
  */
-function parse_json(json) {
+function parseJSON(json) {
     try {
         return JSON.parse(json);
     } catch (error) {
@@ -39,16 +41,16 @@ function parse_json(json) {
     }
 }
 
-function validate_event_type(event) {
-    let event_type = event.event_type;
-    if (typeof event_type !== "string") return false;
-    if (event_type in METADATA_FIELDS) {
+function validateEventType(event) {
+    let eventType = event.event_type;
+    if (typeof eventType !== "string") return false;
+    if (eventType in METADATA_FIELDS) {
         return true;
     }
     return false;
 }
 
-function validate_timestamp(event) {
+function validateTimestamp(event) {
     let timestamp = event.timestamp;
     if (typeof timestamp !== "string") return false;
     let date = new Date(timestamp);
@@ -60,40 +62,45 @@ function validate_timestamp(event) {
     return true;
 }
 
-function validate_deployment(event) {
+function validateDeployment(event) {
     let deployment = event.deployment;
-    if (deployment === null) return false;
     if (typeof deployment !== "object") return false;
     if (typeof deployment.id !== "string") return false;
     if (typeof deployment.version !== "string") return false;
     if (typeof deployment.commit_hash !== "string") return false;
+    if (typeof deployment.deployed_at !== "string") return false;
+    let date = new Date(deployment.deployed_at);
+    if (isNaN(date)) return false;
+    if (date.toISOString() !== deployment.deployed_at) return false;
+    let now = new Date();
+    if (date > now) return false; // Timestamp in the future
+    if (typeof deployment.author !== "string") return false;
     return true;
 }
 
-function validate_user(event) {
-    let user_id = event.user_id;
-    if (typeof user_id !== "string") return false;
-    if (!UUID_REGEX.test(user_id)) return false;
+function validateUser(event) {
+    let userId = event.user_id;
+    if (typeof userId !== "string") return false;
+    if (!UUID_REGEX.test(userId)) return false;
     return true;
 }
 
-function validate_url(event) {
-    let current_url = event.current_url;
-    if (typeof current_url !== "string") return false;
-    if (!URL.canParse(current_url)) return false;
+function validateURL(event) {
+    let currentURL = event.current_url;
+    if (typeof currentURL !== "string") return false;
+    if (!URL.canParse(currentURL)) return false;
     return true;
 }
 
-function validate_referrer(event) {
+function validateReferrer(event) {
     let referrer = event.referrer;
     if (typeof referrer !== "string") return false;
     if (referrer !== "" && !URL.canParse(referrer)) return false;
     return true;
 }
 
-function validate_metadata(event) {
+function validateMetadata(event) {
     let metadata = event.metadata;
-    if (metadata === null) return false;
     if (typeof metadata !== "object") return false;
     switch (event.event_type) {
         case "page_load":
@@ -116,19 +123,6 @@ function validate_metadata(event) {
     return true;
 }
 
-function validateEvent(event) {
-    if (event === null) return false;
-    if (typeof event !== "object") return false;
-    if (!validateEventType(event)) return false;
-    if (!validateTimestamp(event)) return false;
-    if (!validateDeployment(event)) return false;
-    if (!validateUser(event)) return false;
-    if (!validateURL(event)) return false;
-    if (!validateReferrer(event)) return false;
-    if (!validateMetadata(event)) return false;
-    return true;
-}
-
 function cleanupExtraFields(object, fields) {
     Object.keys(object).forEach(key => {
         if (!fields.has(key)) {
@@ -141,7 +135,15 @@ export default class Event {
     constructor(json) {
         this.valid = false;
         let event = parseJSON(json);
-        if (!validateEvent(event)) return null;
+        if (event === null) return null;
+        if (typeof event !== "object") return null;
+        if (!validateEventType(event)) return null;
+        if (!validateTimestamp(event)) return null;
+        if (!validateDeployment(event)) return null;
+        if (!validateUser(event)) return null;
+        if (!validateURL(event)) return null;
+        if (!validateReferrer(event)) return null;
+        if (!validateMetadata(event)) return null;
         event.created_at = new Date().toISOString();
         let urlObject = new URL(event.current_url);
         event.host = urlObject.host;
@@ -151,9 +153,9 @@ export default class Event {
         } else {
             event.referring_domain = "";
         }
-        cleanup_extra_fields(event.deployment, DEPLOYMENT_FIELDS);
-        cleanup_extra_fields(event.metadata, METADATA_FIELDS[event.event_type]);
-        cleanup_extra_fields(event, EVENT_FIELDS);
+        cleanupExtraFields(event.deployment, DEPLOYMENT_FIELDS);
+        cleanupExtraFields(event.metadata, METADATA_FIELDS[event.event_type]);
+        cleanupExtraFields(event, EVENT_FIELDS);
         this.event = event;
         this.valid = true;
     }
