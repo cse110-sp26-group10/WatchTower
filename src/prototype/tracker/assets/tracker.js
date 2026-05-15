@@ -1,4 +1,4 @@
-async function logEvent(event) {
+async function log_event(event) {
     try {
         let response = await fetch("http://localhost:8080", {
             method: "POST",
@@ -17,72 +17,80 @@ async function logEvent(event) {
     }
 }
 
-function getUserId() {
-    let userId = localStorage.getItem("watchtower_user_id");
-    if (userId === null) {
-        userId = crypto.randomUUID(); // Generate new user_id
-        localStorage.setItem("watchtower_user_id", userId);
+function get_user_id() {
+    let user_id = localStorage.getItem("watchtower_user_id");
+    if (user_id === null) {
+        user_id = crypto.randomUUID(); // Generate new user_id
+        localStorage.setItem("watchtower_user_id", user_id);
     }
-    return userId;
+    return user_id;
 }
 
-function eventTemplate() {
+function event_template() {
     let event = {};
     event.timestamp = new Date().toISOString();
     event.deployment = {
-        "id": "dep_abcd",
-        "version": "0.0.0",
-        "commit_hash": "a1b2c3d",
-        "deployed_at": "2026-03-25T00:00:00.000Z",
-        "author": "kevin"
+        "id": "test_deployment",
+        "version": "v0",
+        "commit_hash": "abcdef"
     };
-    event.user_id = getUserId();
+    event.user_id = get_user_id();
     event.current_url = window.location.href;
     event.referrer = document.referrer;
     return event;
 }
 
-let loadTimeObserver = new PerformanceObserver((list) => {
+let load_time_observer = new PerformanceObserver((list) => {
     list.getEntries().forEach((entry) => {
-        let pageLoad = eventTemplate();
-        pageLoad.event_type = "page_load";
-        pageLoad.metadata = {
+        let page_load = event_template();
+        page_load.event_type = "page_load";
+        page_load.metadata = {
             "load_time": entry.loadEventEnd - entry.startTime
         }
-        logEvent(pageLoad);
+        log_event(page_load);
     });
 });
-loadTimeObserver.observe({ type: "navigation", buffered: true });
+load_time_observer.observe({ type: "navigation", buffered: true });
 
 window.onerror = function(message, source, lineno, colno, error) {
-    let errorEvent = eventTemplate();
-    errorEvent.event_type = "error";
-    errorEvent.metadata = {
+    let error_event = event_template();
+    error_event.event_type = "error";
+    error_event.metadata = {
         "severity": "critical",
         "message": message
     }
-    logEvent(errorEvent);
+    log_event(error_event);
 };
 
 let originalWarn = console.warn;
 console.warn = function(...args) {
     originalWarn.apply(console, args);
-    let errorEvent = eventTemplate();
-    errorEvent.event_type = "error";
-    errorEvent.metadata = {
+    let error_event = event_template();
+    error_event.event_type = "error";
+    error_event.metadata = {
         "severity": "warning",
         "message": args[0]
     }
-    logEvent(errorEvent);
+    log_event(error_event);
 }
 
 window.addEventListener("click", (event) => {
-    let click = eventTemplate();
+    let click = event_template();
     click.event_type = "click";
     click.metadata = {
         "element_id": event.target.id,
-        "element_class": event.target.className.toString(),
+        "element_class": event.target.className,
         "input_delay": performance.now() - event.timeStamp
     }
-    logEvent(click);
+    log_event(click);
 });
+
+// Sample survey
+let survey = event_template();
+survey.event_type = "survey";
+survey.metadata = {
+    "rating": 5,
+    "message": "This is a test."
+};
+console.log(survey);
+await log_event(survey);
