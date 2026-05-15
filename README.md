@@ -64,6 +64,6 @@ watchtower/
 ## Documentation
 
 - [MVP Definition](specs/MVP_DEFINITION.md)
-- [Technical Specs](specs/TECHNICAL_SPECS.md)
+- [Technical Specs](specs/TECHNICAL_SPEC.md)
 - [Changelog](CHANGELOG.md)
 - [AI Disclosure](GENAI.md)
