@@ -27,14 +27,14 @@ const server = http.createServer((req, res) => {
         });
         req.on("end", () => {
             try {
-                let event = new Event(body);
-                if (!event.valid) throw new Error("Invalid event");
-                event.set_field("ip", req.socket.remoteAddress);
-                logs.push(event);
+                let eventObject = new Event(body);
+                if (!eventObject.valid) throw new Error("Invalid event");
+                eventObject.set_field("ip", req.socket.remoteAddress);
+                logs.push(eventObject.event);
                 res.writeHead(200, { "Content-Type": "application/json" });
                 res.end(JSON.stringify({ status: "success" }));
                 console.log("\nEvent logged");
-                console.log(JSON.stringify(event, null, 2));
+                console.log(JSON.stringify(eventObject, null, 2));
             } catch (error) {
                 res.writeHead(400);
                 res.end("Invalid event");
