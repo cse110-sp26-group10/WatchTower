@@ -75,15 +75,15 @@
 
 | Name | Did | Doing | Blockers |
 |------|-----|-------|----------|
-| Nicole Sutedja | | | |
+| Nicole Sutedja | met with dev team, resolved conflicts in data details, assigned tasks to dev & testing team, updated docs in repo | ensure user stories incorporated into features | confirmation to use ESLint & database research |
 | Kaley Chung | | | |
-| Jensen Guo | | | |
+| Jensen Guo | Design ADR, linked design docs, began iteration on wireframes | Sync wireframes with frontend development, continue iteration on wireframes | None |
 | Prakhar Shah | | | |
 | Bethany Miyamoto | | | |
-| Kevin Wang | | | |
-| Han Yang-Lin | | | |
-| Aron Wu | | | |
-| Benedict Luis | | | |
+| Kevin Wang | had a meeting with development team, team leader, and the quality&operations team | adjust the dashboard layout | None |
+| Han Yang-Lin | Met with the development team to finalize data structure and assign new tasks | Start working on uptime monitoring and researching on databases | None |
+| Aron Wu | Had dev meeting to discuss development and testing plan. Checked in with Audria on linting dependency. Discussed with Ben on implementing linting locally and integration into CI pipeline | Implement linting + validation on prototype branch. Write ADR for ESLint. Set up GitHub Action for lint and validation check | None |
+| Benedict Luis | Had a dev meeting on how to develop the test app, check in with Audria if our testing preference fits the project. Discussed with Aaron on how we could implement the lint test | Add linting + validation to GitHub Actions once it works locally. Also check if JSDoc should be included | None |
 | Evan Marriott | | | |
 
 ### Stand-up 3 — 05/16/2026
