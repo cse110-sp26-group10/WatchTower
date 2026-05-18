@@ -31,14 +31,14 @@
 
 | ID | Task | Assignee(s) | Status | Notes |
 |----|------|-------------|--------|-------|
-| T01 | Review project overview and documentation requirements | All team members | 🔄 In Progress | Review GitHub structure |
+| T01 | Review project overview and documentation requirements | All team members | ✅ Done | Review GitHub structure |
 | T02 | Assign Sprint 1 roles and update task tracker | Nicole / Evan |  ✅ Done | |
-| T03 | Conduct user research and create personas | Product & Design Team | 🔲 Not Started | Use Figma |
-| T04 | Create initial wireframes and user flow | Product & Design Team | 🔲 Not Started | Use Figma |
-| T05 | Build early prototype (LLM assistance allowed) | Product & Design Team | 🔲 Not Started | Focus on core flow |
-| T06 | Finalize and document MVP definition | Leadership / Product | 🔄 In Progress | |
+| T03 | Conduct user research and create personas | Product & Design Team | ✅ Done | Use Figma |
+| T04 | Create initial wireframes and user flow | Product & Design Team | ✅ Done | Use Figma |
+| T05 | Build early prototype (LLM assistance allowed) | Development Team | ✅ Done | Focus on core flow |
+| T06 | Finalize and document MVP definition | Leadership / Product | ✅ Done | |
 | T07 | Attend Professor Powell’s office hours | Evan / Available Members | ✅ Done | Wed 2 PM - 4 PM |
-| T08 | Maintain Sprint 1 documentation in GitHub | Nicole | 🔄 In Progress | |
+| T08 | Maintain Sprint 1 documentation in GitHub | Nicole, Ben | ✅ Done | |
 
 > Status options: 🔲 Not Started · 🔄 In Progress · ✅ Done · 🚫 Blocked
 
@@ -151,11 +151,11 @@
 | Metric | Value |
 |--------|-------|
 | Tasks Planned | 8 |
-| Tasks Completed | |
-| PRs Opened | |
-| PRs Merged | |
+| Tasks Completed | 8 |
+| PRs Opened | 2 |
+| PRs Merged | 2 |
 | Lines of Code Added | |
-| Unit Tests Written | |
+| Unit Tests Written | 0 |
 
 ---
 
