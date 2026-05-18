@@ -12,9 +12,6 @@ The main purpose of observability tools is to enable software developers to unde
 - LogRocket: A session replay and product analytics tool that allows developers to understand user behavior before encountering an error.
 - Honeycomb: A tool that allows developers to slice and dice through events by any attribute to locate unpredictable problems.
 
-
----
-
 ### Sentry
 **Focus:** Error monitoring & performance tracing
 
@@ -24,8 +21,6 @@ The main purpose of observability tools is to enable software developers to unde
 - Distributed tracing with spans across services
 - Alerting rules based on error thresholds
 - Source maps for readable frontend stack traces
-
----
 
 ### PostHog
 **Focus:** Product analytics & user behavior
@@ -37,8 +32,6 @@ The main purpose of observability tools is to enable software developers to unde
 - Heatmaps
 - Self-hostable
 
----
-
 ### Datadog
 **Focus:** Infrastructure & full-stack observability
 
@@ -49,8 +42,6 @@ The main purpose of observability tools is to enable software developers to unde
 - Dashboards and alerting
 - Very broad integration surface (500+ integrations)
 
----
-
 ### New Relic
 **Focus:** Application performance monitoring (APM)
 
@@ -60,8 +51,6 @@ The main purpose of observability tools is to enable software developers to unde
 - Dashboards and alerting
 - AI-powered anomaly detection
 
----
-
 ### LogRocket
 **Focus:** Frontend session replay & debugging
 
@@ -70,8 +59,6 @@ The main purpose of observability tools is to enable software developers to unde
 - Redux/state inspection
 - Error grouping with user context
 - Funnel and conversion analysis
-
----
 
 ### Features
 
