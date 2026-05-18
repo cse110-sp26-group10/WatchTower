@@ -12,6 +12,67 @@ The main purpose of observability tools is to enable software developers to unde
 - LogRocket: A session replay and product analytics tool that allows developers to understand user behavior before encountering an error.
 - Honeycomb: A tool that allows developers to slice and dice through events by any attribute to locate unpredictable problems.
 
+
+---
+
+### Sentry
+**Focus:** Error monitoring & performance tracing
+
+- Automatic error capture with stack traces
+- Groups duplicate errors by fingerprint to reduce noise
+- Links errors to specific releases and deployments
+- Distributed tracing with spans across services
+- Alerting rules based on error thresholds
+- Source maps for readable frontend stack traces
+
+---
+
+### PostHog
+**Focus:** Product analytics & user behavior
+
+- Event tracking (clicks, page views, custom actions)
+- Funnels, retention charts, user paths
+- Session replay (watch what users did before an error)
+- Feature flags and A/B testing
+- Heatmaps
+- Self-hostable
+
+---
+
+### Datadog
+**Focus:** Infrastructure & full-stack observability
+
+- Metrics, logs, and traces in one platform
+- Host-level monitoring (CPU, memory, disk)
+- APM with automatic service maps
+- Log aggregation and search
+- Dashboards and alerting
+- Very broad integration surface (500+ integrations)
+
+---
+
+### New Relic
+**Focus:** Application performance monitoring (APM)
+
+- Agent-based instrumentation for app performance
+- Transaction tracing and slow query detection
+- Log management & infrastructure monitoring
+- Dashboards and alerting
+- AI-powered anomaly detection
+
+---
+
+### LogRocket
+**Focus:** Frontend session replay & debugging
+
+- Session replay tied to errors and network requests
+- Console log and network request capture
+- Redux/state inspection
+- Error grouping with user context
+- Funnel and conversion analysis
+
+---
+
 ### Features
 
 - Error Tracking and Crash Reporting: Captures unhandled exceptions and crashes with detailed stack traces, environment details, and user context to help developers fix bugs.
