@@ -155,7 +155,7 @@ WatchTower is operational-facing software. Every integration decision must accou
 - **Build signal ingest must not block UI rendering.** Signals should be loaded asynchronously; if the store returns slowly, the error timeline should render first.
 - **Volume is low.** A student project deploys a handful of times per day. There is no scaling concern for this feature. Do not over-engineer the storage or ingest path.
 
-## 8. Summary
+## 8. Key Takaways 
 
 Build signals are the bridge between code changes and production incidents. The most valuable thing they enable is a shared timeline where a developer can see "the error rate went up, and we deployed 8 minutes before that." Enterprise tools build elaborate correlation engines on top of this foundation, but the foundation itself is simple: record what was deployed, when, and whether it succeeded, then show it next to the other signals.
 
@@ -166,4 +166,3 @@ For WatchTower, the implementation is:
 3. Shared record storage with the rest of WatchTower's event types.
 4. Fail-safe integration so WatchTower downtime never blocks a deploy.
 
-That is the full scope for MVP. Correlation logic, DORA dashboards, and webhook integrations are documented here as future directions but explicitly deferred until the core system is stable.
