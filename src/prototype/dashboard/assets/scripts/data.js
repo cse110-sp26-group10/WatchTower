@@ -87,6 +87,8 @@ let EVENTS = [
   makeEvent({ deployment_id: 'dep_6c0a', event_type: 'click', minsAgo: 25, pathname: '/profile' }),
 ];
 
+let UPTIME_LOG = [];
+
 /**
  * Returns the current set of mock events, optionally filtered by deployment.
  * @param {{ deploymentId?: string }} [opts]
@@ -119,12 +121,26 @@ function getDeployment(id) {
  * Get the event log from the server.
  * @returns {Array}
  */
-async function getDataFromServer() {
-  let response = await fetch("http://localhost:8080/api/data");
+async function getEventsFromServer() {
+  const response = await fetch("http://localhost:8080/api/events");
   if (!response.ok) {
       throw new Error("Network response failed")
   }
-  let data = await response.json();
+  const data = await response.json();
+  console.log("Response:", data);
+  return data;
+}
+
+/**
+ * Get the event log from the server.
+ * @returns {Array}
+ */
+async function getUptimeLogFromServer() {
+  const response = await fetch("http://localhost:8080/api/uptime");
+  if (!response.ok) {
+      throw new Error("Network response failed")
+  }
+  const data = await response.json();
   console.log("Response:", data);
   return data;
 }
@@ -134,8 +150,8 @@ async function getDataFromServer() {
  * @returns {Array}
  */
 function getDeploymentsFromEvents() {
-  let deploymentIds = new Set();
-  let deployments = [];
+  const deploymentIds = new Set();
+  const deployments = [];
   EVENTS.forEach((event) => {
     if (deploymentIds.has(event.deployment.id)) return;
     deploymentIds.add(event.deployment.id);
@@ -149,7 +165,7 @@ function getDeploymentsFromEvents() {
  */
 async function updateEvents() {
   try {
-    EVENTS = await getDataFromServer();
+    EVENTS = await getEventsFromServer();
     DEPLOYMENTS = getDeploymentsFromEvents();
   } catch (error) {
     console.log("Event update failed:", error);
