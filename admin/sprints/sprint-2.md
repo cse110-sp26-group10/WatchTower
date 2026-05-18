@@ -76,30 +76,30 @@
 | Name | Did | Doing | Blockers |
 |------|-----|-------|----------|
 | Nicole Sutedja | met with dev team, resolved conflicts in data details, assigned tasks to dev & testing team, updated docs in repo | ensure user stories incorporated into features | confirmation to use ESLint & database research |
-| Kaley Chung | | | |
+| Kaley Chung | Saw there was work on http://observability-tools.md/ and read it | Combine the work on http://observability-tools.md/ with my research | Quizzes and Midterms |
 | Jensen Guo | Design ADR, linked design docs, began iteration on wireframes | Sync wireframes with frontend development, continue iteration on wireframes | None |
-| Prakhar Shah | | | |
-| Bethany Miyamoto | | | |
+| Prakhar Shah | added cse135 site review | finalize finishing all research | None |
+| Bethany Miyamoto | filter.js added to main. met with dev team and working on research for uptime monitoring | finalize a database and method for uptime monitoring | None |
 | Kevin Wang | had a meeting with development team, team leader, and the quality&operations team | adjust the dashboard layout | None |
 | Han Yang-Lin | Met with the development team to finalize data structure and assign new tasks | Start working on uptime monitoring and researching on databases | None |
 | Aron Wu | Had dev meeting to discuss development and testing plan. Checked in with Audria on linting dependency. Discussed with Ben on implementing linting locally and integration into CI pipeline | Implement linting + validation on prototype branch. Write ADR for ESLint. Set up GitHub Action for lint and validation check | None |
 | Benedict Luis | Had a dev meeting on how to develop the test app, check in with Audria if our testing preference fits the project. Discussed with Aaron on how we could implement the lint test | Add linting + validation to GitHub Actions once it works locally. Also check if JSDoc should be included | None |
-| Evan Marriott | | | |
+| Evan Marriott | marked issues as completed | test app build | None |
 
 ### Stand-up 3 — 05/16/2026
 
 | Name | Did | Doing | Blockers |
 |------|-----|-------|----------|
-| Nicole Sutedja | | | |
-| Kaley Chung | | | |
-| Jensen Guo | | | |
-| Prakhar Shah | | | |
+| Nicole Sutedja | Finished Sprint 2 goals, did some personal research on databases and logic | check with each team, update documents to ensure up to date info | None |
+| Kaley Chung | Check on GitHub and check work on http://observability-tools.md/. Start research for build signals section | Finish the content for http://build-signals.md./ | Quizzes |
+| Jensen Guo | Finalizing dashboard wireframing and talking with frontend about design | continue working with frontend about design choices, update other wireframe pages | None |
+| Prakhar Shah | marked tasks as completed and finished writing up research, finish sprint 2 goals | check in with team | None |
 | Bethany Miyamoto | | | |
-| Kevin Wang | | | |
-| Han Yang-Lin | | | |
+| Kevin Wang | updated the dashboard, highlighting the important messages, talk with design about the dashboard | implement the nav bar and other pages, and the up time component | midterm |
+| Han Yang-Lin | Implemented uptime tracking and logging, and did basic research on databases | Finalize with the team which database to use and begin implementation | None |
 | Aron Wu | | | |
-| Benedict Luis | | | |
-| Evan Marriott | | | |
+| Benedict Luis | Review ADR and updated stand up log | try to get ESLint working locally and get the GitHub Action pipeline for linting to work | None |
+| Evan Marriott | completed test app implementation | fix changelog to not include things about test app because it should only be about watchtower | None |
 
 ---
 
