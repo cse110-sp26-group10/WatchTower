@@ -4,7 +4,7 @@ The main purpose of observability tools is to enable software developers to unde
 
 ## Traditional Observability Tools
 
-### Popular Tools
+### Popular Tools Overview
 
 - Sentry: A tool that focuses on code-level health by monitoring the code, alerting when and where a function fails.
 - Datadog: A powerful unified platform that excels that correlating data across the entire environment.
