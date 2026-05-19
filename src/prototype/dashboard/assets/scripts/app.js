@@ -59,6 +59,20 @@ function averageRating(events) {
 }
 
 /**
+ * Average page-load time in ms across page_load events, or null if none.
+ * @param {Array<Object>} events
+ * @returns {number|null}
+ */
+function averageLoadTime(events) {
+  const samples = events
+    .filter((e) => e.event_type === 'page_load')
+    .map((e) => Number(e.metadata && e.metadata.load_time))
+    .filter((n) => Number.isFinite(n));
+  if (samples.length === 0) return null;
+  return Math.round(samples.reduce((s, n) => s + n, 0) / samples.length);
+}
+
+/**
  * Render the status banner and the summary tiles.
  * @param {Array<Object>} events
  */
@@ -76,7 +90,9 @@ function renderHeader(events) {
   };
 
   document.getElementById('summary-errors').textContent = counts.error;
-  document.getElementById('summary-page-loads').textContent = counts.page_load;
+  const avgLoad = averageLoadTime(events);
+  document.getElementById('summary-page-loads').textContent =
+    avgLoad != null ? `${avgLoad} ms` : '—';
   document.getElementById('summary-avg-rating').textContent =
     averageRating(events) > 0 ? `${averageRating(events)} / 5` : '—';
   document.getElementById('summary-clicks').textContent = counts.click;
@@ -113,8 +129,11 @@ function renderErrors(events) {
     .join('');
 }
 
+const SLOW_LOAD_MS = 1500;
+const PERF_BAR_MAX_MS = 3000;
+
 /**
- * Populate the Page Loads panel — a recent list grouped by pathname.
+ * Populate the Page Loads panel — grouped by pathname with avg load time.
  * @param {Array<Object>} events
  */
 function renderPageLoads(events) {
@@ -129,25 +148,39 @@ function renderPageLoads(events) {
   const groups = new Map();
   for (const e of loads) {
     const key = e.pathname || '(unknown)';
-    const g = groups.get(key) || { pathname: key, count: 0, last: e.timestamp };
+    const g = groups.get(key) || { pathname: key, count: 0, totalMs: 0, samples: 0, last: e.timestamp };
     g.count += 1;
+    const t = Number(e.metadata && e.metadata.load_time);
+    if (Number.isFinite(t)) {
+      g.totalMs += t;
+      g.samples += 1;
+    }
     if (new Date(e.timestamp) > new Date(g.last)) g.last = e.timestamp;
     groups.set(key, g);
   }
 
-  const rows = Array.from(groups.values()).sort((a, b) => b.count - a.count);
+  const rows = Array.from(groups.values())
+    .map((g) => ({ ...g, avgMs: g.samples > 0 ? Math.round(g.totalMs / g.samples) : null }))
+    .sort((a, b) => (b.avgMs ?? -1) - (a.avgMs ?? -1));
 
   list.innerHTML = rows
-    .map(
-      (g) => `
-        <li class="event-row click-row">
-          <div class="click-head">
-            <span class="click-id">${escapeHtml(g.pathname)}</span>
-            <span class="click-count">${g.count}×</span>
+    .map((g) => {
+      const hasTime = g.avgMs != null;
+      const slow = hasTime && g.avgMs >= SLOW_LOAD_MS;
+      const pct = hasTime ? Math.min(100, Math.round((g.avgMs / PERF_BAR_MAX_MS) * 100)) : 0;
+      const timeLabel = hasTime ? `${g.avgMs} ms` : '—';
+      return `
+        <li class="event-row perf-row">
+          <div class="perf-head">
+            <span class="perf-path">${escapeHtml(g.pathname)}</span>
+            <span class="perf-time ${slow ? 'is-slow' : ''}">${timeLabel}</span>
           </div>
-          <div class="event-meta">last ${relativeTime(g.last)}</div>
-        </li>`
-    )
+          <div class="perf-bar">
+            <div class="perf-bar-fill ${slow ? 'is-slow' : ''}" style="width: ${pct}%"></div>
+          </div>
+          <div class="event-meta">${g.count}× • last ${relativeTime(g.last)}</div>
+        </li>`;
+    })
     .join('');
 }
 
@@ -256,8 +289,10 @@ function summarizeEvent(e) {
   switch (e.event_type) {
     case 'error':
       return `[${e.metadata.severity}] ${e.metadata.message} (${e.pathname})`;
-    case 'page_load':
-      return `${e.pathname} loaded`;
+    case 'page_load': {
+      const t = Number(e.metadata && e.metadata.load_time);
+      return Number.isFinite(t) ? `${e.pathname} loaded in ${t} ms` : `${e.pathname} loaded`;
+    }
     case 'survey':
       return `Rating ${e.metadata.rating}/5${e.metadata.comment ? ` — ${e.metadata.comment}` : ''}`;
     case 'click':

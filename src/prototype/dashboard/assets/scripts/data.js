@@ -66,12 +66,12 @@ let EVENTS = [
   makeEvent({ deployment_id: 'dep_7e1b', event_type: 'error', minsAgo: 34, pathname: '/profile',    meta: { severity: 'warning',  message: 'Image asset failed to load: avatar.png' } }),
 
   // ---- Page loads ----
-  makeEvent({ deployment_id: 'dep_8f2c', event_type: 'page_load', minsAgo: 1,  pathname: '/' }),
-  makeEvent({ deployment_id: 'dep_8f2c', event_type: 'page_load', minsAgo: 3,  pathname: '/checkout' }),
-  makeEvent({ deployment_id: 'dep_8f2c', event_type: 'page_load', minsAgo: 6,  pathname: '/cart' }),
-  makeEvent({ deployment_id: 'dep_7e1b', event_type: 'page_load', minsAgo: 9,  pathname: '/' }),
-  makeEvent({ deployment_id: 'dep_7e1b', event_type: 'page_load', minsAgo: 15, pathname: '/profile' }),
-  makeEvent({ deployment_id: 'dep_6c0a', event_type: 'page_load', minsAgo: 22, pathname: '/checkout' }),
+  makeEvent({ deployment_id: 'dep_8f2c', event_type: 'page_load', minsAgo: 1,  pathname: '/',         meta: { load_time: 420 } }),
+  makeEvent({ deployment_id: 'dep_8f2c', event_type: 'page_load', minsAgo: 3,  pathname: '/checkout', meta: { load_time: 2180 } }),
+  makeEvent({ deployment_id: 'dep_8f2c', event_type: 'page_load', minsAgo: 6,  pathname: '/cart',     meta: { load_time: 760 } }),
+  makeEvent({ deployment_id: 'dep_7e1b', event_type: 'page_load', minsAgo: 9,  pathname: '/',         meta: { load_time: 380 } }),
+  makeEvent({ deployment_id: 'dep_7e1b', event_type: 'page_load', minsAgo: 15, pathname: '/profile',  meta: { load_time: 1450 } }),
+  makeEvent({ deployment_id: 'dep_6c0a', event_type: 'page_load', minsAgo: 22, pathname: '/checkout', meta: { load_time: 2640 } }),
 
   // ---- Surveys ----
   makeEvent({ deployment_id: 'dep_8f2c', event_type: 'survey', minsAgo: 4,  pathname: '/checkout', meta: { rating: 2, comment: 'Checkout button felt unresponsive.' } }),

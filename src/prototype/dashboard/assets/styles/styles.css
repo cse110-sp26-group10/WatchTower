@@ -69,14 +69,19 @@ body {
 .status-section { margin-bottom: 16px; }
 
 .status-banner {
-  padding: 10px 12px;
-  border: 1px solid #999;
+  padding: 18px 20px;
+  border: 2px solid #999;
+  border-left-width: 8px;
   font-weight: bold;
-  margin-bottom: 12px;
+  font-size: 18px;
+  letter-spacing: 0.3px;
+  margin-bottom: 16px;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
 }
-.status-banner[data-level="ok"]       { background: #e8f5e9; border-color: #66bb6a; }
-.status-banner[data-level="degraded"] { background: #fff8e1; border-color: #ffb300; }
-.status-banner[data-level="down"]     { background: #ffebee; border-color: #ef5350; }
+.status-banner[data-level="ok"]       { background: #e8f5e9; border-color: #2e7d32; color: #1b5e20; }
+.status-banner[data-level="degraded"] { background: #fff3cd; border-color: #f57c00; color: #8a5a00; }
+.status-banner[data-level="down"]     { background: #ffebee; border-color: #c62828; color: #b71c1c; }
 
 .summary-grid {
   display: grid;
@@ -90,6 +95,22 @@ body {
 }
 .summary-label { font-size: 11px; color: #555; display: block; }
 .summary-value { font-size: 18px; font-weight: bold; }
+
+.summary-tile.is-emphasized {
+  border: 2px solid #c62828;
+  background: #fff5f5;
+  padding: 10px 12px;
+}
+.summary-tile.is-emphasized .summary-label {
+  color: #c62828;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.summary-tile.is-emphasized .summary-value {
+  font-size: 24px;
+  color: #b71c1c;
+}
 
 /* Panels */
 
@@ -106,6 +127,15 @@ body {
   background: #fff;
 }
 
+.panel.is-emphasized {
+  grid-column: 1 / -1;
+  border: 2px solid #c62828;
+  border-top-width: 6px;
+  background: #fffafa;
+  padding: 14px 16px;
+  box-shadow: 0 1px 4px rgba(198,40,40,0.15);
+}
+
 .panel-header {
   display: flex;
   justify-content: space-between;
@@ -116,6 +146,14 @@ body {
 }
 .panel-header h2 { font-size: 13px; margin: 0; }
 .panel-hint { font-size: 11px; color: #777; }
+
+.panel.is-emphasized .panel-header h2 {
+  font-size: 16px;
+  color: #c62828;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.panel.is-emphasized .event-list { max-height: 360px; }
 
 .event-list, .activity-list {
   list-style: none;
