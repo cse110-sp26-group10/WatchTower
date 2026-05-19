@@ -87,7 +87,30 @@ let EVENTS = [
   makeEvent({ deployment_id: 'dep_6c0a', event_type: 'click', minsAgo: 25, pathname: '/profile' }),
 ];
 
-let UPTIME_LOG = [];
+/**
+ * Mock uptime probe results. Schema per prototype README:
+ *   { timestamp, status: "up"|"down", response_time (ms) }
+ * Newest entry represents current state.
+ */
+let UPTIME_LOG = [
+  { timestamp: minutesAgo(180), status: 'up',   response_time: 142 },
+  { timestamp: minutesAgo(120), status: 'down', response_time: 0   },
+  { timestamp: minutesAgo(118), status: 'up',   response_time: 168 },
+  { timestamp: minutesAgo(60),  status: 'up',   response_time: 155 },
+  { timestamp: minutesAgo(30),  status: 'up',   response_time: 138 },
+  { timestamp: minutesAgo(5),   status: 'up',   response_time: 129 },
+  { timestamp: minutesAgo(1),   status: 'up',   response_time: 134 },
+];
+
+/**
+ * Returns the uptime probe log, newest first.
+ * @returns {Array<{timestamp:string,status:string,response_time:number}>}
+ */
+function getUptimeLog() {
+  return UPTIME_LOG
+    .slice()
+    .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+}
 
 /**
  * Returns the current set of mock events, optionally filtered by deployment.
@@ -210,5 +233,6 @@ window.WatchTowerData = {
   getDeployment,
   getEvent,
   getRelatedEvents,
+  getUptimeLog,
   updateEvents,
 };

@@ -73,15 +73,69 @@ function averageLoadTime(events) {
 }
 
 /**
+ * Render the unified status card: uptime probe is the headline, the
+ * error-derived health label appears as the sub-line, with probe stats on
+ * the right. Uptime is global (not deployment-scoped); the health sub IS
+ * deployment-scoped via the events arg.
+ * @param {Array<Object>} events deployment-filtered event list
+ */
+function renderUptime(events) {
+  const log = (window.WatchTowerData.getUptimeLog && window.WatchTowerData.getUptimeLog()) || [];
+  const card = document.getElementById('uptime-card');
+  const statusEl = document.getElementById('uptime-status');
+  const subEl = document.getElementById('uptime-sub');
+  const respEl = document.getElementById('uptime-response');
+  const pctEl = document.getElementById('uptime-percent');
+  const lastEl = document.getElementById('uptime-last');
+
+  const health = deriveStatus(events || []);
+
+  if (log.length === 0) {
+    card.dataset.status = 'unknown';
+    card.dataset.health = health.level;
+    statusEl.textContent = 'Unknown';
+    subEl.textContent = 'no probes yet';
+    respEl.textContent = '—';
+    pctEl.textContent = '—';
+    lastEl.textContent = '—';
+    return;
+  }
+
+  const latest = log[0];
+  const isUp = latest.status === 'up';
+  card.dataset.status = latest.status;
+  card.dataset.health = isUp ? health.level : 'down';
+  statusEl.textContent = isUp ? 'Online' : 'Offline';
+
+  if (!isUp) {
+    subEl.textContent = 'Service unreachable';
+  } else {
+    const crit = (events || []).filter((e) => e.event_type === 'error' && e.metadata.severity === 'critical').length;
+    const warn = (events || []).filter((e) => e.event_type === 'error' && e.metadata.severity === 'warning').length;
+    if (health.level === 'ok') {
+      subEl.textContent = 'All systems operational';
+    } else {
+      const parts = [];
+      if (crit > 0) parts.push(`${crit} critical error${crit === 1 ? '' : 's'}`);
+      if (warn > 0) parts.push(`${warn} warning${warn === 1 ? '' : 's'}`);
+      subEl.textContent = `${health.label} — ${parts.join(', ')}`;
+    }
+  }
+
+  const recent = log.slice(0, 20);
+  const upCount = recent.filter((p) => p.status === 'up').length;
+  const pct = Math.round((upCount / recent.length) * 100);
+
+  respEl.textContent = isUp ? `${latest.response_time} ms` : '—';
+  pctEl.textContent = `${pct}% (${recent.length} checks)`;
+  lastEl.textContent = relativeTime(latest.timestamp);
+}
+
+/**
  * Render the status banner and the summary tiles.
  * @param {Array<Object>} events
  */
 function renderHeader(events) {
-  const status = deriveStatus(events);
-  const banner = document.getElementById('status-banner');
-  banner.textContent = status.label;
-  banner.dataset.level = status.level;
-
   const counts = {
     error: events.filter((e) => e.event_type === 'error').length,
     page_load: events.filter((e) => e.event_type === 'page_load').length,
@@ -364,6 +418,7 @@ function renderDeploymentDetail() {
  */
 function render() {
   const events = window.WatchTowerData.getEvents({ deploymentId: activeDeploymentId });
+  renderUptime(events);
   renderHeader(events);
   renderErrors(events);
   renderPageLoads(events);
