@@ -32,7 +32,7 @@ function getUserId() {
 function eventTemplate() {
     const event = {};
     event.timestamp = new Date().toISOString();
-    event.deployment = {
+    event.deployment = (window.WatchTower = {}).deployment = { // Mock data
         "id": "dep_abcd",
         "version": "0.0.0",
         "commit_hash": "a1b2c3d",

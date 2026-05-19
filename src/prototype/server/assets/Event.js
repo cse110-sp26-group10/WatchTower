@@ -160,13 +160,13 @@ export default class Event {
         this.valid = true;
     }
 
-    set_field(field, value) {
+    setField(field, value) {
         if (!EVENT_FIELDS.has(field)) return false;
         this.event[field] = value;
         return true;
     }
 
-    set_metadata_field(field, value) {
+    setMetadataField(field, value) {
         if (!METADATA_FIELDS.has(field)) return false;
         this.event.metadata[field] = value;
         return true;

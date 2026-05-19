@@ -102,7 +102,7 @@ const server = http.createServer((req, res) => {
             try {
                 const eventObject = new Event(body);
                 if (!eventObject.valid) throw new Error("Invalid event");
-                eventObject.set_field("ip", req.socket.remoteAddress);
+                eventObject.setField("ip", req.socket.remoteAddress);
                 logEvent(eventObject);
                 res.writeHead(200, { "Content-Type": "application/json" });
                 res.end(JSON.stringify({ status: "success" }));
