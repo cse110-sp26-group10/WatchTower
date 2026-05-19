@@ -1,5 +1,5 @@
 export function attemptSuccess(attempt) {
-    return attempt.status >= 200 && attempt.status < 300;
+    return typeof attempt.status === "number" && attempt.status >= 200 && attempt.status < 300;
 }
 
 export class UptimeCheckAttempt {
