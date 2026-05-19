@@ -97,7 +97,7 @@
 | Bethany Miyamoto | | | |
 | Kevin Wang | updated the dashboard, highlighting the important messages, talk with design about the dashboard | implement the nav bar and other pages, and the up time component | midterm |
 | Han Yang-Lin | Implemented uptime tracking and logging, and did basic research on databases | Finalize with the team which database to use and begin implementation | None |
-| Aron Wu | | | |
+| Aron Wu | Finished ADR | Implement linting and some unit tests | None |
 | Benedict Luis | Review ADR and updated stand up log | try to get ESLint working locally and get the GitHub Action pipeline for linting to work | None |
 | Evan Marriott | completed test app implementation | fix changelog to not include things about test app because it should only be about watchtower | None |
 
