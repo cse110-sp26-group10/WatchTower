@@ -94,7 +94,7 @@
 | Kaley Chung | Check on GitHub and check work on http://observability-tools.md/. Start research for build signals section | Finish the content for http://build-signals.md./ | Quizzes |
 | Jensen Guo | Finalizing dashboard wireframing and talking with frontend about design | continue working with frontend about design choices, update other wireframe pages | None |
 | Prakhar Shah | marked tasks as completed and finished writing up research, finish sprint 2 goals | check in with team | None |
-| Bethany Miyamoto | | | |
+| Bethany Miyamoto | research for backend database (postgresql) | help with backend/frontend | None |
 | Kevin Wang | updated the dashboard, highlighting the important messages, talk with design about the dashboard | implement the nav bar and other pages, and the up time component | midterm |
 | Han Yang-Lin | Implemented uptime tracking and logging, and did basic research on databases | Finalize with the team which database to use and begin implementation | None |
 | Aron Wu | Finished ADR | Implement linting and some unit tests | None |
