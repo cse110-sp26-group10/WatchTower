@@ -349,12 +349,16 @@ function render() {
     `Updated ${new Date().toLocaleTimeString()}`;
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  populateDeploymentFilter();
-  render();
-});
-
-setInterval(async function() {
+/**
+ * Retrieve data from the server and render the dashboard
+ */
+async function update() {
   await updateEvents();
   render();
-}, DASHBOARD_UPDATE_INTERVAL * 1000);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  populateDeploymentFilter();
+  update();
+  setInterval(update, DASHBOARD_UPDATE_INTERVAL * 1000);
+});

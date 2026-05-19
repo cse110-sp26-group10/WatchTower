@@ -208,7 +208,8 @@ function renderNotFound(id) {
     `<div class="event-meta">No event matches id <code>${escapeHtml(id || '(none)')}</code>.</div>`;
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  await window.WatchTowerData.updateEvents();
   const id = new URLSearchParams(window.location.search).get('id');
   const event = id ? window.WatchTowerData.getEvent(id) : null;
 
