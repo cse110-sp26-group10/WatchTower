@@ -102,8 +102,8 @@ function renderUptime(events) {
   }
 
   const latest = log[0];
-  const isUp = latest.status === 'up';
-  card.dataset.status = latest.status;
+  const isUp = latest.is_up;
+  card.dataset.status = isUp ? 'up' : 'down';
   card.dataset.health = isUp ? health.level : 'down';
   statusEl.textContent = isUp ? 'Online' : 'Offline';
 
@@ -123,10 +123,10 @@ function renderUptime(events) {
   }
 
   const recent = log.slice(0, 20);
-  const upCount = recent.filter((p) => p.status === 'up').length;
+  const upCount = recent.filter((p) => p.is_up).length;
   const pct = Math.round((upCount / recent.length) * 100);
 
-  respEl.textContent = isUp ? `${latest.response_time} ms` : '—';
+  respEl.textContent = isUp ? `${latest.latency} ms` : '—';
   pctEl.textContent = `${pct}% (${recent.length} checks)`;
   lastEl.textContent = relativeTime(latest.timestamp);
 }
@@ -444,6 +444,7 @@ function render() {
  */
 async function update() {
   await updateEvents();
+  await updateUptimeLog();
   render();
 }
 

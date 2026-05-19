@@ -93,13 +93,13 @@ let EVENTS = [
  * Newest entry represents current state.
  */
 let UPTIME_LOG = [
-  { timestamp: minutesAgo(180), status: 'up',   response_time: 142 },
-  { timestamp: minutesAgo(120), status: 'down', response_time: 0   },
-  { timestamp: minutesAgo(118), status: 'up',   response_time: 168 },
-  { timestamp: minutesAgo(60),  status: 'up',   response_time: 155 },
-  { timestamp: minutesAgo(30),  status: 'up',   response_time: 138 },
-  { timestamp: minutesAgo(5),   status: 'up',   response_time: 129 },
-  { timestamp: minutesAgo(1),   status: 'up',   response_time: 134 },
+  { timestamp: minutesAgo(180), is_up: true, status: 200,  latency: 142, attempts: [{timestamp: minutesAgo(180), status: 200, latency: 142, error: null}] },
+  { timestamp: minutesAgo(120), is_up: false, status: 404, latency: 0,   attempts: [{timestamp: minutesAgo(180), status: 404, latency: 0, error: null}]   },
+  { timestamp: minutesAgo(118), is_up: true, status: 200,  latency: 168, attempts: [{timestamp: minutesAgo(180), status: 200, latency: 168, error: null}] },
+  { timestamp: minutesAgo(60),  is_up: true, status: 200,  latency: 155, attempts: [{timestamp: minutesAgo(180), status: 200, latency: 155, error: null}] },
+  { timestamp: minutesAgo(30),  is_up: true, status: 200,  latency: 138, attempts: [{timestamp: minutesAgo(180), status: 200, latency: 138, error: null}] },
+  { timestamp: minutesAgo(5),   is_up: true, status: 200,  latency: 129, attempts: [{timestamp: minutesAgo(180), status: 200, latency: 129, error: null}] },
+  { timestamp: minutesAgo(1),   is_up: true, status: 200,  latency: 134, attempts: [{timestamp: minutesAgo(180), status: 200, latency: 134, error: null}] },
 ];
 
 /**
@@ -195,6 +195,17 @@ async function updateEvents() {
     DEPLOYMENTS = getDeploymentsFromEvents();
   } catch (error) {
     console.log("Event update failed:", error);
+  }
+}
+
+/**
+ * Update the uptime log.
+ */
+async function updateUptimeLog() {
+  try {
+    UPTIME_LOG = await getUptimeLogFromServer();
+  } catch (error) {
+    console.log("Uptime log update failed:", error);
   }
 }
 
