@@ -31,7 +31,7 @@ class AppSidebar extends HTMLElement {
                     <li><a class="sidebar-link" href="./index.html">Overview</a></li>
                     <li><a class="sidebar-link" href="./errors.html">Errors</a></li>
                     <li><a class="sidebar-link">Page Loads</a></li>
-                    <li><a class="sidebar-link">Feedback</a></li>
+                    <li><a class="sidebar-link" href="./feedback.html">Feedback</a></li>
                     <li><a class="sidebar-link">Clicks</a></li>
                     <li><a class="sidebar-link">Activity</a></li>
                 </ul>

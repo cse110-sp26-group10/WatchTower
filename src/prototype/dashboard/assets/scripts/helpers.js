@@ -106,7 +106,7 @@ export function populateDeploymentFilter(onChange) {
     select.appendChild(opt);
   }
   select.addEventListener('change', (e) => {
-    onChange = e.target.value || 'all';
+    onChange(e.target.value || 'all');
   });
 }
 
