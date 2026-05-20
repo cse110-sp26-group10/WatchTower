@@ -1,3 +1,5 @@
+/* global clearCart, getCartCount */
+
 let surveyRating = 0;
 
 function validateEmail(email) {
@@ -61,7 +63,7 @@ function submitSurvey() {
   // Comment goes to console only — not rendered into the DOM
   const comment = document.getElementById('survey-comment').value.trim();
   console.log('WatchTower survey signal:', { rating: surveyRating, comment });
-  document.getElementById('survey-thanks').style.display = 'block';
+  document.getElementById('survey-thanks').hidden = false;
   document.getElementById('survey-submit-btn').disabled = true;
 }
 

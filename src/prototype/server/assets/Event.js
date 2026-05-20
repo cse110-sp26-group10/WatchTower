@@ -24,7 +24,7 @@ const METADATA_FIELDS = {
     "error": new Set(["severity", "message"]),
     "survey": new Set(["rating", "message"]),
     "click": new Set(["element_id", "element_class", "input_delay"])
-}
+};
 const MAX_CLOCK_SKEW_SECONDS = 300;
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
@@ -36,7 +36,7 @@ const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-
 function parseJSON(json) {
     try {
         return JSON.parse(json);
-    } catch (error) {
+    } catch {
         return null;
     }
 }
