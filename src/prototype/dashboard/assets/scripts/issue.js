@@ -7,79 +7,13 @@
  * a list of related signals (same pathname + deployment, within 30 min).
  */
 
-/**
- * Format an ISO timestamp as a short relative string like "3m ago".
- * @param {string} iso
- */
-function relativeTime(iso) {
-  const diffSec = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 1000));
-  if (diffSec < 60) return `${diffSec}s ago`;
-  const min = Math.round(diffSec / 60);
-  if (min < 60) return `${min}m ago`;
-  const hr = Math.round(min / 60);
-  return `${hr}h ago`;
-}
-
-/**
- * Escape user-supplied text before inserting into innerHTML.
- * @param {*} value
- */
-function escapeHtml(value) {
-  return String(value ?? '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
-
-/**
- * Map an event onto a banner level so error severity / low ratings get
- * visually flagged consistently with the dashboard banner.
- * @param {Object} event
- * @returns {'ok'|'degraded'|'down'}
- */
-function bannerLevel(event) {
-  if (event.event_type === 'error') {
-    return event.metadata.severity === 'critical' ? 'down' : 'degraded';
-  }
-  if (event.event_type === 'survey') {
-    const r = Number(event.metadata.rating);
-    if (r > 0 && r <= 2) return 'down';
-    if (r === 3) return 'degraded';
-  }
-  return 'ok';
-}
-
-/**
- * One-line summary of an event, used in the Related Signals feed.
- * @param {Object} e
- */
-function summarizeEvent(e) {
-  switch (e.event_type) {
-    case 'error':
-      return `[${e.metadata.severity}] ${e.metadata.message}`;
-    case 'page_load':
-      return `${e.pathname} loaded`;
-    case 'survey':
-      return `Rating ${e.metadata.rating}/5${e.metadata.comment ? ` — ${e.metadata.comment}` : ''}`;
-    case 'click':
-      return `click on ${e.pathname}`;
-    default:
-      return e.event_type;
-  }
-}
-
-/**
- * Render a key/value row inside a .kv-list.
- * @param {string} key
- * @param {string} value
- * @param {{mono?: boolean}} [opts]
- */
-function kvRow(key, value, opts = {}) {
-  const cls = opts.mono ? 'dep-val mono' : 'dep-val';
-  return `<li class="kv-row"><span class="dep-key">${escapeHtml(key)}</span><span class="${cls}">${escapeHtml(value)}</span></li>`;
-}
+import {
+  bannerLevel,
+  relativeTime,
+  escapeHtml,
+  kvRow,
+  summarizeEvent
+} from './helpers.js'
 
 /**
  * Populate the issue header (banner, type pill, time, path).
@@ -210,9 +144,13 @@ function renderNotFound(id) {
 
 
 let topbar = document.querySelector('.topbar-meta')
-topbar.innerHTML = `<a href="index.html" class="back-link">&larr; back to dashboard</a>`;
+if (topbar && document.getElementById('issue-banner')) {
+  topbar.innerHTML = `<a href="index.html" class="back-link">&larr; back to dashboard</a>`;
+}
 
 document.addEventListener('DOMContentLoaded', async () => {
+  if (!document.getElementById('issue-banner')) return;
+
   await window.WatchTowerData.updateEvents();
   const id = new URLSearchParams(window.location.search).get('id');
   const event = id ? window.WatchTowerData.getEvent(id) : null;
