@@ -4,6 +4,11 @@
   "type": "module",
   "main": "./server.js",
   "scripts": {
-    "start": "node ."
+    "start": "node .",
+    "db:init": "node ./assets/init-db.js"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "pg": "^8.21.0"
   }
 }

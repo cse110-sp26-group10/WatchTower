@@ -1,40 +1,98 @@
 import Event from "./assets/Event.js";
 import {attemptSuccess, UptimeCheckAttempt, UptimeCheck} from "./assets/UptimeCheck.js";
 import http from "http";
+import { pool } from "./assets/db.js";
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-const USERS = [
-    {"website_url": "https://github.com"}
-];
-const EVENTS = [];
-const UPTIME_LOG = [];
 const UPTIME_MONITOR_INTERVAL = 60; // seconds
 const TIMEOUT_THRESHOLD = 5; // seconds
 const MAX_TRIES = 3; // attempts
 const RETRY_INTERVAL = 5; // seconds
 
 function getUserFromRequest(req) {
-    return null; // TODO
+    // TODO
+    return { "id": 2 }; // Mock data
 }
 
-function getEvents(user) {
-    return EVENTS; // TODO
+async function getEvents(user) {
+    try {
+        // Uncomment when user system is implemented. Will query all events for now.
+        /*
+        const userRes = await pool.query("SELECT website_url FROM users WHERE id = $1", [user.id]);
+        if (userRes.rows.length === 0)
+            return [];
+        const hostname = new URL(userRes.rows[0].website_url).hostname;
+        const res = await pool.query( // Query events where the hostname matches the website's hostname
+            "SELECT * FROM events WHERE substring(current_url from '.*://([^/:]*)') = $1 ORDER BY timestamp DESC", 
+            [hostname]
+        );
+        */
+        const res = await pool.query("SELECT * FROM events ORDER BY timestamp DESC"); // Query all events
+        return res.rows;
+    } catch (error) {
+        console.error("Query failed: ", error);
+        return [];
+    }
 }
 
-function getUptimeLog(user) {
-    return UPTIME_LOG; // TODO
+async function getUptimeLog(user) {
+    try {
+        const userRes = await pool.query("SELECT website_url FROM users WHERE id = $1", [user.id]);
+        if (userRes.rows.length === 0)
+            return [];
+        const hostname = new URL(userRes.rows[0].website_url).hostname;
+        const res = await pool.query( // Query uptime checks where the hostname matches the website's hostname
+            "SELECT * FROM uptime_log WHERE substring(url from '.*://([^/:]*)') = $1 ORDER BY timestamp DESC", 
+            [hostname]
+        );
+        return res.rows;
+    } catch (error) {
+        console.error("Query failed: ", error);
+        return [];
+    }
 }
 
-function logEvent(eventObject) {
-    EVENTS.push(eventObject.event);
-    console.log("\nEvent logged");
-    console.log(JSON.stringify(eventObject, null, 2));
+async function logEvent(eventObject) {
+    const event = eventObject.event;
+    const query = `
+        INSERT INTO events (
+            event_type, timestamp, created_at, deployment, ip, 
+            user_id, current_url, host, pathname, referrer, 
+            referring_domain, metadata
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+    `;
+    const values = [
+        event.event_type, event.timestamp, event.created_at, JSON.stringify(event.deployment), event.ip,
+        event.user_id, event.current_url, event.host, event.pathname, event.referrer,
+        event.referring_domain, JSON.stringify(event.metadata)
+    ];
+    console.log("\nLogging event...");
+    try {
+        await pool.query(query, values);
+        console.log("Event logged");
+        console.log(JSON.stringify(eventObject, null, 2));
+    } catch (error) {
+        console.error("Query failed: ", error);
+    }
 }
 
-function logUptime(uptimeCheck) {
-    UPTIME_LOG.push(uptimeCheck);
-    console.log("\nUptime logged");
-    console.log(JSON.stringify(uptimeCheck, null, 2));
+async function logUptime(uptimeCheck) {
+    const query = `
+        INSERT INTO uptime_log (url, timestamp, is_up, status, latency, attempts)
+        VALUES ($1, $2, $3, $4, $5, $6)
+    `;
+    const values = [
+        uptimeCheck.url, uptimeCheck.timestamp, uptimeCheck.is_up, 
+        uptimeCheck.status, uptimeCheck.latency, JSON.stringify(uptimeCheck.attempts)
+    ];
+    console.log("\nLogging uptime...")
+    try {
+        await pool.query(query, values);
+        console.log("Uptime logged");
+        console.log(JSON.stringify(uptimeCheck, null, 2));
+    } catch (error) {
+        console.error("Query failed: ", error);
+    }
 }
 
 async function getWebsiteStatus(url) {
@@ -63,16 +121,31 @@ async function monitorWebsite(url) {
         if (!uptimeCheck.is_up) {
             // Send alert to developer
         }
-        logUptime(uptimeCheck);
+        await logUptime(uptimeCheck);
         await sleep(UPTIME_MONITOR_INTERVAL * 1000);
     }
 }
 
 function initUser(user) {
+    if (new URL(user.website_url).hostname === "localhost") {
+        console.log("Monitoring skipped for localhost");
+        return;
+    }
     monitorWebsite(user.website_url);
 }
 
-const server = http.createServer((req, res) => {
+async function initUsers() {
+    try {
+        const res = await pool.query("SELECT * FROM users");
+        for (const user of res.rows) {
+            initUser(user);
+        }
+    } catch (error) {
+        console.error("Failed to load users: ", error);
+    }
+}
+
+const server = http.createServer(async (req, res) => {
     res.setHeader("Access-Control-Allow-Origin", "*"); // Allow any site
     res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
     res.setHeader("Access-Control-Allow-Headers", "Content-Type");
@@ -83,12 +156,15 @@ const server = http.createServer((req, res) => {
     } else if (req.method === "GET") {
         const user = getUserFromRequest(req);
         if (req.url === "/api/events") {
+            const events = await getEvents(user);
             res.writeHead(200, { "Content-Type": "application/json" });
-            res.end(JSON.stringify(getEvents(user)));
-            console.log("\nEvent log sent");
+            res.end(JSON.stringify(events));
+            console.log("Event log sent");
         } else if (req.url === "/api/uptime") {
+            const uptimeLog = await getUptimeLog(user);
             res.writeHead(200, { "Content-Type": "application/json" });
-            res.end(JSON.stringify(getUptimeLog(user)));
+            res.end(JSON.stringify(uptimeLog));
+            console.log("Uptime log sent");
         }
     } else if (req.method === "POST") {
         let body = "";
@@ -117,8 +193,5 @@ const server = http.createServer((req, res) => {
 
 server.listen(8080, () => {
     console.log("Server running");
+    initUsers();
 });
-
-for (const user of USERS) {
-    initUser(user);
-}
