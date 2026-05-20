@@ -13,21 +13,20 @@
     "test:e2e": "playwright test"
   },
   "devDependencies": {
+    "@babel/helper-validator-identifier": "^7.28.5",
     "@eslint/js": "^9.0.0",
     "@playwright/test": "^1.44.0",
     "eslint": "^10.4.0",
     "eslint-plugin-jsdoc": "^62.9.0",
+    "esutils": "^2.0.3",
     "globals": "^15.0.0",
     "html-validate": "^9.0.0",
+    "js-tokens": "^10.0.0",
     "jsdom": "^25.0.0",
+    "safer-buffer": "^2.1.2",
     "serve": "^14.2.0",
     "stylelint": "^17.11.1",
     "stylelint-config-standard": "^40.0.0",
     "vitest": "^2.0.0"
-  },
-  "dependencies": {
-    "@babel/helper-validator-identifier": "^7.28.5",
-    "esutils": "^2.0.3",
-    "js-tokens": "^10.0.0"
   }
 }
