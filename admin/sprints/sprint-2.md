@@ -7,7 +7,7 @@
 
 ## Sprint Goal
 
-> Connect the backend and frontend into a working end-to-end prototype, finalize wireframes and user research, and establish the ESLint/CI testing strategy so the team is ready for feature development in Sprint 3.
+> Connect the backend and frontend into a working end-to-end prototype, create low-fidelity wireframes with complete user research, and establish the ESLint/CI testing strategy so the team is ready for feature development in Sprint 3.
 
 ---
 
@@ -34,21 +34,21 @@
 
 | ID | Task | Assignee(s) | Status | Notes |
 |----|------|-------------|--------|-------|
-| T01 | Connect backend server to frontend dashboard (wire real/mock data to UI) | Han Yang-Lin, Kevin Wang, Bethany Miyamoto | 🔄 In Progress | Priority: use mock data first, swap to real signals once stable |
-| T02 | Finalize event signal structure and decide on database | Han Yang-Lin | 🔄 In Progress | Outcome of dev team meeting from Sprint 1 |
+| T01 | Connect backend server to frontend dashboard (wire real/mock data to UI) | Han Yang-Lin, Kevin Wang, Bethany Miyamoto | 🔄 In Progress | Backend server, tracker, and dashboard fetch path exist; needs end-to-end demo stabilization in Sprint 3 |
+| T02 | Finalize event signal structure and decide on database | Han Yang-Lin | ✅ Done | Event structure documented; PostgreSQL selected in ADR 004 |
 | T03 | Complete and merge user personas | Prakhar Shah | ✅ Done  | Carried over from Sprint 1 |
 | T04 | Finish remaining user research (build/deployment signal context) | Kaley Chung | ✅ Done  | Unblock Jensen's wireframe work |
-| T05 | Iterate wireframes based on user research and MVP feedback | Jensen Guo | 🔲 Not Started | Incorporate TA Audria's arrow/user-flow notes |
-| T06 | Add wireframes to repo (Figma export or link) | Jensen Guo | 🔄 In Progress | |
-| T07 | Define ESLint configuration and document testing strategy | Aron, Benedict Luis | 🔄 In Progress | Write ADR if ESLint is approved by TA; confirm with Audria first |
-| T08 | Add ESLint + HTML/CSS validation to GitHub Actions CI pipeline | Benedict Luis | 🔄 In Progress | Blocked until TA approves ESLint dependency |
-| T09 | Add JSDoc comments to all existing JS files | All Developers | 🔲 Not Started | Required per process guide; do incrementally |
+| T05 | Iterate wireframes based on user research and MVP feedback | Jensen Guo | 🔄 In Progress | Dashboard wireframes progressed; high-fidelity user flow and branding work carried into Sprint 3 |
+| T06 | Add wireframes to repo (Figma export or link) | Jensen Guo | ✅ Done | Figma link added to design plan; exports/screenshots can still be added in Sprint 3 if needed |
+| T07 | Define ESLint configuration and document testing strategy | Aron, Benedict Luis | ✅ Done | ESLint ADR created; testing strategy exists in docs |
+| T08 | Add ESLint + HTML/CSS validation to GitHub Actions CI pipeline | Benedict Luis | 🔄 In Progress | No GitHub Actions workflow found yet; carry into Sprint 3 |
+| T09 | Add JSDoc comments to all existing JS files | All Developers | 🔄 In Progress | Some prototype JS now has JSDoc; remaining files carry into Sprint 3 |
 | T10 | Write initial unit tests for backend signal validation logic | Benedict, Aron | 🔲 Not Started | Testing must be verifiable early in repo |
-| T11 | Update CHANGELOG.md for all Sprint 2 changes | All Members | 🔄 In Progress | Per process guide — every notable change logged |
-| T12 | Update GENAI.md with any AI tool usage this sprint | All Members | 🔲 Not Started | Mandatory disclosure |
+| T11 | Update CHANGELOG.md for all Sprint 2 changes | All Members | 🔲 Not Started | CHANGELOG still only lists Sprint 1 / v0.1.0 content; carry into Sprint 3 |
+| T12 | Update GENAI.md with any AI tool usage this sprint | All Members | ✅ Done | Test app AI usage recorded |
 | T13 | Hold dev team sync to coordinate frontend/backend merge | Nicole / Evan | ✅ Done  | Prevent code conflicts flagged in Sprint 1 retro |
-| T14 | TA sync with Audria — confirm ESLint approval & alert/notification approach | Ben, Aron | 🔲 Not Started | Blocking ESLint ADR and alert feature direction |
-| T15 | Maintain Sprint 2 documentation in GitHub | Nicole, Benedict | 🔄 In Progress | |
+| T14 | TA sync with Audria — confirm ESLint approval & alert/notification approach | Ben, Aron | ✅ Done | Stand-ups record TA check-in and ESLint direction |
+| T15 | Maintain Sprint 2 documentation in GitHub | Nicole, Benedict | ✅ Done | Sprint 2 stand-ups and planning notes maintained |
 
 > Status options: 🔲 Not Started · 🔄 In Progress · ✅ Done · 🚫 Blocked
 
@@ -107,33 +107,37 @@
 
 | Decision | Rationale | ADR Link |
 |----------|-----------|----------|
-| ESLint adoption (pending TA approval) | Standardizes code quality and enables automated linting in CI; adds a dependency so requires ADR | TBD — `/docs/adr/003-eslint-linting.md` |
-| Database selection for event signals | Needed to move off mock data and support real signal ingestion | TBD after dev sync |
+| ESLint adoption | Standardizes code quality and enables automated linting in CI; adds a dependency so requires ADR | `/docs/adr/005-use-eslint-for-linting-validation.md` |
+| PostgreSQL database selection for event signals | Needed to move off mock data and support real signal ingestion | `/docs/adr/004-use-postgre-sql-for-database.md` |
 
 ---
 
 ## Sprint Review
 
 ### What was completed:
-- Completed user personas and user research
-- Held dev team sync to coordinate frontend/backend work
-- Created backend server and tracking logic for event signals
-- Continued wiring mock/real data into the frontend dashboard
-- Reviewed and worked on ESLint/testing strategy
-- Updated Sprint 2 documentation and stand-up logs
+- Completed user personas and remaining user research.
+- Held dev team sync to coordinate frontend/backend work.
+- Created backend server and browser tracking logic for event signals.
+- Finalized the event signal structure enough to document it in the prototype README.
+- Selected PostgreSQL as the database direction and recorded the decision in ADR 004.
+- Continued wiring mock/real data into the frontend dashboard.
+- Added the Figma wireframe link to the design plan and continued wireframe iteration.
+- Documented ESLint as the linting/validation direction in ADR 005.
 
 ### What was not completed:
-- ESLint and HTML/CSS validation were not fully added to GitHub Actions yet
-- Initial unit tests for backend signal validation were not completed
-- JSDoc comments were not added to all existing JS files yet
-- Database selection was not finalized
-- Some wireframe updates were still in progress
+- The dashboard/backend/test app connection was not yet a fully stable, polished end-to-end demo flow.
+- ESLint and HTML/CSS validation were not fully added to GitHub Actions yet.
+- Initial unit tests for backend signal validation were not completed.
+- JSDoc comments were not added to all existing JS files yet.
+- CHANGELOG.md was not updated with Sprint 2 changes.
+- Wireframe iteration was still in progress and needed to become high-fidelity design work in Sprint 3.
+- Uptime tracking had started, but the dashboard still needed a demo-ready uptime card/graph.
 
 ### Reason(s):
-- ESLint needed TA approval because it adds a new dependency
-- Some backend/frontend decisions depended on the dev team finalizing the data structure and database
-- Team members had other deadlines, midterms and quizzes
-- Some tasks depended on other work being finished first
+- ESLint needed TA approval because it adds a new dependency.
+- Backend/frontend integration depended on the team finalizing the signal structure and database direction.
+- Team members had other deadlines, midterms, and quizzes.
+- Design and implementation work had to move together as the dashboard, test app, and signal structures evolved.
 
 ---
 
@@ -166,11 +170,11 @@
 | Metric | Value |
 |--------|-------|
 | Tasks Planned | 15 |
-| Tasks Completed | |
+| Tasks Completed | 9 |
 | PRs Opened | |
 | PRs Merged | |
 | Lines of Code Added | |
-| Unit Tests Written | |
+| Unit Tests Written | 0 |
 
 ---
 
