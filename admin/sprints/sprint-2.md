@@ -68,7 +68,7 @@
 | Kevin Wang | Dashboard prototype and issue details, asked for feedback from Prof. Powell | Adjust layout based on feedback, add details based on MVP definition | Other deadlines |
 | Han Yang-Lin | Created a backend Node.js server to validate incoming event signals, wrote tracker.js to track page load/errors/clicks and send to server, worked on data.js to retrieve data from server for the dashboard | Finalize event signal structure and decide on database in dev meeting, continue working on MVP with mock data | Project/homework deadlines due this week |
 | Aron Wu | Researched linting and validation options with Ben and reviewed CI plan; considering ESLint as option | Talk to Audria about using ESLint, look into ESLint and JSDoc documentation generation for GitHub Actions pipelines | None |
-| Benedict Luis | Discussed linting/validation with Aron and reviewed CI plan in docs/process; researched ESLint as a possible option (may need ADR due to new dependency); finished loose ends on worksheet | Look into adding ESLint, HTML/CSS validation, and JSDoc documentation generation to GitHub Actions CI pipeline; discuss testing app approach at dev meeting | None |
+| Benedict Luis| Discussed linting/validation with Aron and reviewed CI plan in docs/process; researched ESLint as a possible option (may need ADR due to new dependency); finished loose ends on worksheet | Look into adding ESLint, HTML/CSS validation, and JSDoc documentation generation to GitHub Actions CI pipeline; discuss testing app approach at dev meeting | None |
 | Evan Marriott | Finished portion of the in-class activity and prepared for Sprint 2 | Continue managing project progress and development | None |
 
 ### Stand-up 2 — 05/14/2026
