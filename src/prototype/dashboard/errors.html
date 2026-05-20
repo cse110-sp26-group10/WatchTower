@@ -12,8 +12,14 @@
   <div class="layout">
     <app-sidebar></app-sidebar>
 
-    <main>
-        <!-- PAGE HERE -->
+    <main class="dashboard">
+      <section class="filter-section" id="overview">
+        <label class="filter-label" for="deployment-filter">Deployment</label>
+        <select id="deployment-filter" class="filter-select" aria-label="Filter by deployment">
+          <option value="all">All deployments</option>
+        </select>
+        <div class="deployment-detail" id="deployment-detail" hidden></div>
+      </section>
     </main>
   </div>
 
@@ -21,5 +27,5 @@
 
   <script src="assets/scripts/data.js"></script>
   <script src="assets/scripts/components.js"></script>
-  <script src="assets/scripts/app.js"></script>
+  <script src="assets/scripts/errors.js"></script>
 </body>
