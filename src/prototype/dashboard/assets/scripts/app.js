@@ -1,3 +1,5 @@
+/* global updateEvents */
+
 /**
  * Dashboard rendering logic for the WatchTower prototype.
  *

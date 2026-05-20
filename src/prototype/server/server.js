@@ -35,7 +35,7 @@ const server = http.createServer((req, res) => {
                 res.end(JSON.stringify({ status: "success" }));
                 console.log("\nEvent logged");
                 console.log(JSON.stringify(eventObject, null, 2));
-            } catch (error) {
+            } catch {
                 res.writeHead(400);
                 res.end("Invalid event");
                 console.log("\nInvalid event");

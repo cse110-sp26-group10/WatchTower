@@ -21,6 +21,7 @@ body {
   background: #f4f4f4;
 }
 .brand { font-weight: bold; }
+
 .brand-name { 
   font-size: 18px;
   cursor: pointer;
@@ -44,6 +45,7 @@ body {
   margin-bottom: 16px;
 }
 .filter-label { font-size: 12px; color: #555; }
+
 .filter-select {
   font: inherit;
   padding: 4px 6px;
@@ -51,6 +53,7 @@ body {
   background: #fff;
   min-width: 260px;
 }
+
 .deployment-detail {
   display: flex;
   gap: 12px;
@@ -83,6 +86,7 @@ body {
   grid-template-columns: repeat(4, 1fr);
   gap: 8px;
 }
+
 .summary-tile {
   border: 1px solid #ccc;
   padding: 8px 10px;
@@ -181,6 +185,7 @@ body {
 /* Activity */
 
 .activity-panel { margin-bottom: 16px; }
+
 .activity-row {
   display: grid;
   grid-template-columns: 80px 1fr auto;
@@ -220,6 +225,7 @@ a.brand-name { text-decoration: none; color: inherit; }
 /* Issue detail page */
 
 .issue-header { margin-bottom: 16px; }
+
 .issue-meta-line {
   display: flex;
   gap: 10px;
@@ -229,6 +235,7 @@ a.brand-name { text-decoration: none; color: inherit; }
   color: #555;
 }
 .issue-meta { color: #555; }
+
 .issue-headline {
   font-size: 16px;
   font-weight: bold;
@@ -244,6 +251,7 @@ a.brand-name { text-decoration: none; color: inherit; }
   flex-direction: column;
   gap: 6px;
 }
+
 .kv-row {
   display: grid;
   grid-template-columns: 90px 1fr;
@@ -270,7 +278,7 @@ a.brand-name { text-decoration: none; color: inherit; }
   border-top: 1px solid #ccc;
 }
 
-@media (max-width: 800px) {
+@media (width <= 800px) {
   .summary-grid { grid-template-columns: repeat(2, 1fr); }
   .panel-grid { grid-template-columns: 1fr; }
   .activity-row { grid-template-columns: 70px 1fr; }

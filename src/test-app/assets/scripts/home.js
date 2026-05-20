@@ -1,3 +1,5 @@
+/* global getProducts, getCartCount, escapeHtml */
+
 function renderFeatured() {
   const grid = document.getElementById('featured-grid');
   const featured = getProducts().slice(0, 4);

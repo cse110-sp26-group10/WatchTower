@@ -48,19 +48,19 @@ let loadTimeObserver = new PerformanceObserver((list) => {
         pageLoad.event_type = "page_load";
         pageLoad.metadata = {
             "load_time": entry.loadEventEnd - entry.startTime
-        }
+        };
         logEvent(pageLoad);
     });
 });
 loadTimeObserver.observe({ type: "navigation", buffered: true });
 
-window.onerror = function(message, source, lineno, colno, error) {
+window.onerror = function(message) {
     let errorEvent = eventTemplate();
     errorEvent.event_type = "error";
     errorEvent.metadata = {
         "severity": "critical",
         "message": message
-    }
+    };
     logEvent(errorEvent);
 };
 
@@ -72,9 +72,9 @@ console.warn = function(...args) {
     errorEvent.metadata = {
         "severity": "warning",
         "message": args[0]
-    }
+    };
     logEvent(errorEvent);
-}
+};
 
 window.addEventListener("click", (event) => {
     let click = eventTemplate();
@@ -83,6 +83,6 @@ window.addEventListener("click", (event) => {
         "element_id": event.target.id,
         "element_class": event.target.className.toString(),
         "input_delay": performance.now() - event.timeStamp
-    }
+    };
     logEvent(click);
 });

@@ -1,1 +1,33 @@
+# Process guide (internal only)
 WatchTower_Process_Guide.md
+
+# Dependencies
+node_modules/
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Build output
+dist/
+build/
+
+# Playwright
+playwright-report/
+test-results/
+.playwright/
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+npm-debug.log*
+*.log

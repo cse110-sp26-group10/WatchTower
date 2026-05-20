@@ -10,7 +10,8 @@
 
 const NOW = Date.now();
 const minutesAgo = (m) => new Date(NOW - m * 60 * 1000).toISOString();
-const DATA_UPDATE_INTERVAL = 10;
+// DATA_UPDATE_INTERVAL is reserved for future polling configuration
+const DATA_UPDATE_INTERVAL = 10; // eslint-disable-line no-unused-vars
 
 /**
  * Known deployments. Events reference one of these by id; only id/version/
@@ -122,7 +123,7 @@ function getDeployment(id) {
 async function getDataFromServer() {
   let response = await fetch("http://localhost:8080/api/data");
   if (!response.ok) {
-      throw new Error("Network response failed")
+      throw new Error("Network response failed");
   }
   let data = await response.json();
   console.log("Response:", data);
@@ -140,7 +141,7 @@ function getDeploymentsFromEvents() {
     if (deploymentIds.has(event.deployment.id)) return;
     deploymentIds.add(event.deployment.id);
     deployments.push(event.deployment);
-  })
+  });
   return deployments;
 }
 
