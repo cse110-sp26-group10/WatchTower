@@ -246,4 +246,5 @@ window.WatchTowerData = {
   getRelatedEvents,
   getUptimeLog,
   updateEvents,
+  updateUptimeLog,
 };

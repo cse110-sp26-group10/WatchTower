@@ -1,5 +1,10 @@
+/**
+ * Custom HTML Element to display the App Topbar, displayed on every page
+ */
 class AppTopbar extends HTMLElement {
     connectedCallback() {
+        const variant = this.getAttribute('variant');
+
         this.innerHTML = `
             <header class="topbar">
                 <div class="brand">
@@ -15,21 +20,30 @@ class AppTopbar extends HTMLElement {
     }
 }
 
+/**
+ * Custom HTML Element to display the App Sidebar, displayed on every page
+ */
 class AppSidebar extends HTMLElement {
     connectedCallback() {
         const isDashboard = window.location.pathname.endsWith('/') ||
             window.location.pathname.endsWith('/index.html');
-        const currentView = isDashboard
-            ? new URLSearchParams(window.location.search).get('view') || 'overview'
-            : '';
+        const path = window.location.pathname.split('/').pop() || 'index.html';
+        const queryView = new URLSearchParams(window.location.search).get('view');
+        const currentView = path === 'errors.html'
+            ? 'errors'
+            : path === 'feedback.html'
+                ? 'feedback'
+                : isDashboard
+                    ? queryView || 'overview'
+                    : '';
         const isActive = (view) => view === currentView ? ' is-active' : '';
 
         this.innerHTML = `
             <nav class="sidebar" aria-label="Dashboard sections">
                 <ul class="sidebar-list">
                     <li><a class="sidebar-link${isActive('overview')}" href="index.html">Overview</a></li>
-                    <li><a class="sidebar-link${isActive('errors')}" href="index.html?view=errors">Errors</a></li>
-                    <li><a class="sidebar-link${isActive('feedback')}" href="index.html?view=feedback">Feedback</a></li>
+                    <li><a class="sidebar-link${isActive('errors')}" href="errors.html">Errors</a></li>
+                    <li><a class="sidebar-link${isActive('feedback')}" href="feedback.html">Feedback</a></li>
                     <li><a class="sidebar-link${isActive('activity')}" href="index.html?view=activity">Activity</a></li>
                 </ul>
             </nav>
@@ -37,6 +51,9 @@ class AppSidebar extends HTMLElement {
     }
 }
 
+/**
+ * Custom HTML Element to display the App Footer, displayed on every page
+ */
 class AppFooter extends HTMLElement {
     connectedCallback() {
         this.innerHTML = `
