@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WatchTower — Dashboard Prototype</title>
+  <title>WatchTower &mdash; Error Overview</title>
   <link rel="stylesheet" href="assets/styles/styles.css" />
 </head>
 <body>
@@ -20,12 +20,29 @@
         </select>
         <div class="deployment-detail" id="deployment-detail" hidden></div>
       </section>
+
+      <section class="issue-header">
+        <div id="errors-banner" class="status-banner" data-level="ok">Errors</div>
+        <div class="issue-meta-line">
+          <span class="type-pill type-error" id="errors-count">0 errors</span>
+          <span class="issue-meta" id="errors-updated">Updated &mdash;</span>
+        </div>
+      </section>
+
+      <section aria-labelledby="errors-title">
+        <header class="panel-header">
+          <h2 id="errors-title">Error Overview</h2>
+          <span class="panel-hint">expand an issue for context</span>
+        </header>
+        <div id="errors-list"></div>
+      </section>
     </main>
   </div>
 
   <app-footer></app-footer>
 
   <script src="assets/scripts/data.js"></script>
-  <script src="assets/scripts/components.js"></script>
-  <script src="assets/scripts/errors.js"></script>
+  <script type="module" src="assets/scripts/components.js"></script>
+  <script type="module" src="assets/scripts/errors.js"></script>
 </body>
+</html>
