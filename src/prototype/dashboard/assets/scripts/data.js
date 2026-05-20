@@ -150,8 +150,8 @@ async function getEventsFromServer() {
       throw new Error("Network response failed")
   }
   const data = await response.json();
-  for (let i = 0; i < data.length; i++) {
-    data[i].id = `evt_${String(data[i].id).padStart(3, "0")}`
+  for (const event of data) {
+    event.id = `evt_${String(event.id).padStart(3, "0")}`
   }
   console.log("Response:", data);
   return data;

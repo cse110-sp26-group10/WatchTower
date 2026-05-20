@@ -50,7 +50,7 @@ CREATE TABLE uptime_log (
 `;
 const mockSql = `
 INSERT INTO users (website_url) VALUES ('http://localhost:8080');
-INSERT INTO users (website_url) VALUES ('https://github.com');
+INSERT INTO users (website_url) VALUES ('https://cse110-sp26-group10.github.io/WatchTower/src/test-app/');
 `
 
 async function init() {
