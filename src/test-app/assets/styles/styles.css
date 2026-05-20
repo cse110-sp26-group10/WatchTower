@@ -19,7 +19,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; c
 .btn:hover { opacity: 0.85; }
 .btn-primary { background: #1a1a1a; color: #fff; }
 .btn-outline { background: transparent; border: 2px solid #1a1a1a; color: #1a1a1a; }
-.btn-danger { background: #cc2200; color: #fff; }
+.btn-danger { background: #c20; color: #fff; }
 .btn-full { width: 100%; text-align: center; }
 
 /* Product grid */
@@ -27,7 +27,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; c
 .section-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem; }
 .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1.5rem; }
 .product-card { background: #fff; border-radius: 8px; overflow: hidden; border: 1px solid #e5e5e5; cursor: pointer; transition: box-shadow 0.15s; text-decoration: none; color: inherit; display: block; }
-.product-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+.product-card:hover { box-shadow: 0 4px 16px rgb(0 0 0 / 10%); }
 .product-card img { width: 100%; height: 200px; object-fit: cover; }
 .product-card-body { padding: 1rem; }
 .product-card-name { font-weight: 600; margin-bottom: 0.25rem; }
@@ -64,8 +64,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; c
 .form-group { margin-bottom: 1.25rem; }
 .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; }
 .form-group input { width: 100%; padding: 0.65rem 0.75rem; border: 1px solid #ccc; border-radius: 4px; font-size: 0.95rem; }
-.form-group input.error { border-color: #cc2200; }
-.form-error { font-size: 0.8rem; color: #cc2200; margin-top: 0.25rem; display: none; }
+.form-group input.error { border-color: #c20; }
+.form-error { font-size: 0.8rem; color: #c20; margin-top: 0.25rem; display: none; }
 .form-error.visible { display: block; }
 
 /* Survey */
@@ -75,6 +75,10 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; c
 .star { font-size: 2rem; cursor: pointer; color: #ccc; transition: color 0.1s; }
 .star.selected { color: #f5a623; }
 .survey textarea { width: 100%; padding: 0.65rem; border: 1px solid #ccc; border-radius: 4px; resize: vertical; font-size: 0.95rem; margin-bottom: 1rem; }
+
+/* Survey helpers */
+.survey-subtitle { color: #888; font-size: 0.9rem; margin-bottom: 1rem; }
+.survey-thanks { margin-top: 1rem; color: #555; }
 
 /* Error trigger */
 .error-zone { background: #fff8f6; border: 1px solid #f5c6bc; border-radius: 8px; padding: 1.5rem; margin-top: 2rem; text-align: center; }
@@ -87,7 +91,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; c
 .empty-state { text-align: center; padding: 4rem 2rem; color: #888; }
 .empty-state a { color: #1a1a1a; }
 
-@media (max-width: 600px) {
+@media (width <= 600px) {
   .product-detail { grid-template-columns: 1fr; }
   .hero h1 { font-size: 2rem; }
 }
