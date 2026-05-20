@@ -115,26 +115,49 @@
 ## Sprint Review
 
 ### What was completed:
--
+- Completed user personas and user research
+- Held dev team sync to coordinate frontend/backend work
+- Created backend server and tracking logic for event signals
+- Continued wiring mock/real data into the frontend dashboard
+- Reviewed and worked on ESLint/testing strategy
+- Updated Sprint 2 documentation and stand-up logs
 
 ### What was not completed:
--
+- ESLint and HTML/CSS validation were not fully added to GitHub Actions yet
+- Initial unit tests for backend signal validation were not completed
+- JSDoc comments were not added to all existing JS files yet
+- Database selection was not finalized
+- Some wireframe updates were still in progress
 
 ### Reason(s):
--
+- ESLint needed TA approval because it adds a new dependency
+- Some backend/frontend decisions depended on the dev team finalizing the data structure and database
+- Team members had other deadlines, midterms and quizzes
+- Some tasks depended on other work being finished first
 
 ---
 
 ## Sprint Retrospective
 
 ### What went well:
--
+- The team communicated through dev syncs and standups
+- User research and personas were completed
+- Backend and frontend work started moving toward integration
+- The team began thinking more seriously about linting, testing and CI.
+- Documentation was updated throughout the sprint
 
 ### What didn't go well:
--
+- Some tasks were blocked because decisions still needed TA or team approval
+- ESLint and CI setup took longer than expected
+- Some work was still split across different team members, so coordination was needed before merging
+- Not all testing and documentation tasks were finished
 
 ### What we'll do differently:
--
+- Confirm dependencies and technical decisions earlier in the sprint
+- Break testing and CI work into smaller tasks
+- Keep using GitHub Issues to track progress clearly
+- Update documentation and changelog as changes happen instead of waiting until the end
+- Make sure commit messages follow conventional commits
 
 ---
 
