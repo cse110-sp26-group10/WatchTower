@@ -21,7 +21,7 @@
       <div class="deployment-detail" id="deployment-detail" hidden></div>
     </section>
 
-    <section class="status-section">
+    <section class="view-section status-section" data-dashboard-view="overview">
       <div class="uptime-card" id="uptime-card" data-status="unknown" data-health="ok">
         <div class="uptime-main">
           <span class="uptime-indicator" aria-hidden="true"></span>
@@ -66,8 +66,8 @@
       </div>
     </section>
 
-    <section class="panel-grid">
-      <article class="panel is-emphasized" id="section-errors" aria-labelledby="errors-title">
+    <section class="view-section panel-grid" data-dashboard-view="overview errors feedback">
+      <article class="panel is-emphasized" id="section-errors" data-dashboard-card="errors" aria-labelledby="errors-title">
         <header class="panel-header">
           <h2 id="errors-title">Errors</h2>
           <span class="panel-hint">most recent first</span>
@@ -75,45 +75,53 @@
         <ul class="event-list" id="errors-list"></ul>
       </article>
 
-      <article class="panel" id="section-page-loads" aria-labelledby="page-loads-title">
-        <header class="panel-header">
-          <h2 id="page-loads-title">Page Loads</h2>
-          <span class="panel-hint">grouped by path</span>
-        </header>
-        <ul class="event-list" id="page-loads-list"></ul>
-      </article>
-
-      <article class="panel" id="section-feedback" aria-labelledby="feedback-title">
+      <article class="panel" id="section-feedback" data-dashboard-card="feedback" aria-labelledby="feedback-title">
         <header class="panel-header">
           <h2 id="feedback-title">User Feedback</h2>
           <span class="panel-hint">survey responses</span>
         </header>
         <ul class="event-list" id="feedback-list"></ul>
       </article>
-
-      <article class="panel" id="section-clicks" aria-labelledby="clicks-title">
-        <header class="panel-header">
-          <h2 id="clicks-title">Clicks</h2>
-          <span class="panel-hint">grouped by path</span>
-        </header>
-        <ul class="event-list" id="clicks-list"></ul>
-      </article>
     </section>
 
-    <section class="panel activity-panel" id="section-activity" aria-labelledby="activity-title">
+    <section class="view-section activity-section" id="section-activity" data-dashboard-view="overview activity" aria-labelledby="activity-title">
       <header class="panel-header">
-        <h2 id="activity-title">Recent Activity</h2>
-        <span class="panel-hint">all signal types</span>
+        <h2 id="activity-title">Activity</h2>
+        <span class="panel-hint">clicks, page loads, and recent events</span>
       </header>
-      <ul class="activity-list" id="activity-list"></ul>
+      <div class="activity-grid">
+        <article class="activity-subpanel" id="section-page-loads" aria-labelledby="page-loads-title">
+          <header class="subpanel-header">
+            <h3 id="page-loads-title">Page Loads</h3>
+            <span class="panel-hint">grouped by path</span>
+          </header>
+          <ul class="event-list compact-list" id="page-loads-list"></ul>
+        </article>
+
+        <article class="activity-subpanel" aria-labelledby="clicks-title">
+          <header class="subpanel-header">
+            <h3 id="clicks-title">Clicks</h3>
+            <span class="panel-hint">grouped by path</span>
+          </header>
+          <ul class="event-list compact-list" id="clicks-list"></ul>
+        </article>
+
+        <article class="activity-subpanel is-wide" aria-labelledby="recent-activity-title">
+          <header class="subpanel-header">
+            <h3 id="recent-activity-title">Recent Activity</h3>
+            <span class="panel-hint">all signal types</span>
+          </header>
+          <ul class="activity-list" id="activity-list"></ul>
+        </article>
+      </div>
     </section>
   </main>
   </div>
 
   <app-footer></app-footer>
 
-  <script src="assets/scripts/data.js"></script>
-  <script src="assets/scripts/components.js"></script>
-  <script src="assets/scripts/app.js"></script>
+  <script src="assets/scripts/data.js?v=pages"></script>
+  <script src="assets/scripts/components.js?v=pages"></script>
+  <script src="assets/scripts/app.js?v=pages"></script>
 </body>
 </html>

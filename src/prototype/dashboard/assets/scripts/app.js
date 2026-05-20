@@ -8,9 +8,11 @@
  */
 
 const DASHBOARD_UPDATE_INTERVAL = 5;
+const DASHBOARD_VIEWS = new Set(['overview', 'errors', 'feedback', 'activity']);
 
 /** Currently selected deployment filter; 'all' means no filter. */
 let activeDeploymentId = 'all';
+let activeDashboardView = 'overview';
 
 /**
  * Format an ISO timestamp as a short relative string like "3m ago".
@@ -70,6 +72,38 @@ function averageLoadTime(events) {
     .filter((n) => Number.isFinite(n));
   if (samples.length === 0) return null;
   return Math.round(samples.reduce((s, n) => s + n, 0) / samples.length);
+}
+
+/**
+ * Read and normalize the dashboard page requested by the sidebar.
+ * @returns {string}
+ */
+function getDashboardView() {
+  const requested = new URLSearchParams(window.location.search).get('view') || 'overview';
+  return DASHBOARD_VIEWS.has(requested) ? requested : 'overview';
+}
+
+/**
+ * Show only the card sections that belong to the current dashboard page.
+ */
+function applyDashboardView() {
+  document.querySelectorAll('[data-dashboard-view]').forEach((section) => {
+    const views = (section.dataset.dashboardView || '').split(/\s+/);
+    section.hidden = !views.includes(activeDashboardView);
+  });
+
+  document.querySelectorAll('[data-dashboard-card]').forEach((card) => {
+    const cardView = card.dataset.dashboardCard;
+    card.hidden = activeDashboardView !== 'overview' && cardView !== activeDashboardView;
+  });
+
+  const labels = {
+    overview: 'Dashboard Overview',
+    errors: 'Errors',
+    feedback: 'User Feedback',
+    activity: 'Activity',
+  };
+  document.title = `WatchTower — ${labels[activeDashboardView]}`;
 }
 
 /**
@@ -417,6 +451,9 @@ function renderDeploymentDetail() {
  * Render every section of the dashboard, scoped to the active deployment.
  */
 function render() {
+  activeDashboardView = getDashboardView();
+  applyDashboardView();
+
   const events = window.WatchTowerData.getEvents({ deploymentId: activeDeploymentId });
   renderUptime(events);
   renderHeader(events);
@@ -443,8 +480,11 @@ function render() {
  * Retrieve data from the server and render the dashboard
  */
 async function update() {
-  await updateEvents();
-  await updateUptimeLog();
+  render();
+  await Promise.all([
+    updateEvents(),
+    updateUptimeLog(),
+  ]);
   render();
 }
 

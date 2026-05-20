@@ -17,15 +17,20 @@ class AppTopbar extends HTMLElement {
 
 class AppSidebar extends HTMLElement {
     connectedCallback() {
+        const isDashboard = window.location.pathname.endsWith('/') ||
+            window.location.pathname.endsWith('/index.html');
+        const currentView = isDashboard
+            ? new URLSearchParams(window.location.search).get('view') || 'overview'
+            : '';
+        const isActive = (view) => view === currentView ? ' is-active' : '';
+
         this.innerHTML = `
             <nav class="sidebar" aria-label="Dashboard sections">
                 <ul class="sidebar-list">
-                    <li><a class="sidebar-link">Overview</a></li>
-                    <li><a class="sidebar-link">Errors</a></li>
-                    <li><a class="sidebar-link">Page Loads</a></li>
-                    <li><a class="sidebar-link">Feedback</a></li>
-                    <li><a class="sidebar-link">Clicks</a></li>
-                    <li><a class="sidebar-link">Activity</a></li>
+                    <li><a class="sidebar-link${isActive('overview')}" href="index.html">Overview</a></li>
+                    <li><a class="sidebar-link${isActive('errors')}" href="index.html?view=errors">Errors</a></li>
+                    <li><a class="sidebar-link${isActive('feedback')}" href="index.html?view=feedback">Feedback</a></li>
+                    <li><a class="sidebar-link${isActive('activity')}" href="index.html?view=activity">Activity</a></li>
                 </ul>
             </nav>
         `;
