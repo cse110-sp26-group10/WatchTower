@@ -26,7 +26,6 @@ const feedbackSignals = [];
  * @returns {import('./mockData.js').DeploymentRef}
  */
 function getActiveDeployment() {
-  const deployments = generateDeployments();
   const latest = [...deployments].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))[0];
   return { id: latest.id, version: latest.version, commit_hash: latest.commit_hash };
 }
