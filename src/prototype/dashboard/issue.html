@@ -7,26 +7,10 @@
   <link rel="stylesheet" href="assets/styles/styles.css" />
 </head>
 <body>
-  <header class="topbar">
-    <div class="brand">
-      <a class="brand-name" href="index.html">WatchTower</a>
-    </div>
-    <div class="topbar-meta">
-      <a href="index.html" class="back-link">&larr; back to dashboard</a>
-    </div>
-  </header>
+  <app-topbar></app-topbar>
 
   <div class="layout">
-    <nav class="sidebar" aria-label="Dashboard sections">
-      <ul class="sidebar-list">
-        <li><a class="sidebar-link">Overview</a></li>
-        <li><a class="sidebar-link">Errors</a></li>
-        <li><a class="sidebar-link">Page Loads</a></li>
-        <li><a class="sidebar-link">Feedback</a></li>
-        <li><a class="sidebar-link">Clicks</a></li>
-        <li><a class="sidebar-link">Activity</a></li>
-      </ul>
-    </nav>
+    <app-sidebar></app-sidebar>
 
   <main class="dashboard">
     <section class="issue-header">
@@ -74,11 +58,10 @@
   </main>
   </div>
 
-  <footer class="footer">
-    <span>WatchTower prototype • mock data • frontend-only</span>
-  </footer>
+  <app-footer></app-footer>
 
   <script src="assets/scripts/data.js"></script>
+  <script src="assets/scripts/components.js"></script>
   <script src="assets/scripts/issue.js"></script>
 </body>
 </html>

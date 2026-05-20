@@ -1,5 +1,10 @@
+/**
+ * Custom HTML Element to display the App Topbar, displayed on every page
+ */
 class AppTopbar extends HTMLElement {
     connectedCallback() {
+        const variant = this.getAttribute('variant');
+        
         this.innerHTML = `
             <header class="topbar">
                 <div class="brand">
@@ -15,13 +20,16 @@ class AppTopbar extends HTMLElement {
     }
 }
 
+/**
+ * Custom HTML Element to display the App Sidebar, displayed on every page
+ */
 class AppSidebar extends HTMLElement {
     connectedCallback() {
         this.innerHTML = `
             <nav class="sidebar" aria-label="Dashboard sections">
                 <ul class="sidebar-list">
-                    <li><a class="sidebar-link">Overview</a></li>
-                    <li><a class="sidebar-link">Errors</a></li>
+                    <li><a class="sidebar-link" href="./index.html">Overview</a></li>
+                    <li><a class="sidebar-link" href="./errors.html">Errors</a></li>
                     <li><a class="sidebar-link">Page Loads</a></li>
                     <li><a class="sidebar-link">Feedback</a></li>
                     <li><a class="sidebar-link">Clicks</a></li>
@@ -32,6 +40,9 @@ class AppSidebar extends HTMLElement {
     }
 }
 
+/**
+ * Custom HTML Element to display the App Footer, displayed on every page
+ */
 class AppFooter extends HTMLElement {
     connectedCallback() {
         this.innerHTML = `
