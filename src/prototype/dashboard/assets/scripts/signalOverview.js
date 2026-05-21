@@ -60,6 +60,7 @@ function saveResolvedGroups(map) {
 
 let resolvedIds = loadResolvedIds();
 let resolvedGroups = loadResolvedGroups();
+let lastRenderKey = null;
 
 function isResolved(event) {
   if (resolvedIds.has(event.id)) return true;
@@ -361,11 +362,12 @@ function attachResolveHandlers() {
     } else {
       resolveId(btn.dataset.resolveId);
     }
+    lastRenderKey = null;
     renderSignals();
   }, { once: true });
 }
 
-function renderSignals() {
+function renderSignals({ force = false } = {}) {
   const list = document.getElementById('errors-list');
   syncPanelState();
 
@@ -376,6 +378,10 @@ function renderSignals() {
   );
 
   const signals = MODE === 'error' ? allSignals.filter((e) => !isResolved(e)) : allSignals;
+
+  const renderKey = signals.map((e) => e.id + e.timestamp).join(',') + activeDeploymentId;
+  if (!force && renderKey === lastRenderKey) return;
+  lastRenderKey = renderKey;
 
   renderHeader(signals);
   renderDeploymentDetail();

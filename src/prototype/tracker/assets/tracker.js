@@ -76,7 +76,9 @@ function logClick(element_id, element_class, input_delay) {
 
 const loadTimeObserver = new PerformanceObserver((list) => {
     list.getEntries().forEach((entry) => {
-        logPageLoad(entry.loadEventEnd - entry.startTime);
+        if (entry.loadEventEnd > 0) {
+            logPageLoad(entry.loadEventEnd - entry.startTime);
+        }
     });
 });
 loadTimeObserver.observe({ type: "navigation", buffered: true });
