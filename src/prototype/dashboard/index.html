@@ -1,25 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8" >
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" >
   <title>WatchTower — Dashboard Prototype</title>
-  <link rel="stylesheet" href="assets/styles/styles.css" />
+  <link rel="stylesheet" href="assets/styles/styles.css" >
 </head>
 <body>
-  <header class="topbar">
-    <div class="brand">
-      <a class="brand-name" href="./">WatchTower</a>
-    </div>
-    <div class="topbar-meta">
-      <span id="deployment-info">deployment —</span>
-      <span class="dot">•</span>
-      <span id="updated-at">Updated —</span>
-    </div>
-  </header>
+  <app-topbar></app-topbar>
+
+  <div class="layout">
+    <app-sidebar></app-sidebar>
 
   <main class="dashboard">
-    <section class="filter-section">
+    <section class="filter-section" id="overview">
       <label class="filter-label" for="deployment-filter">Deployment</label>
       <select id="deployment-filter" class="filter-select" aria-label="Filter by deployment">
         <option value="all">All deployments</option>
@@ -27,16 +21,39 @@
       <div class="deployment-detail" id="deployment-detail" hidden></div>
     </section>
 
-    <section class="status-section">
-      <div id="status-banner" class="status-banner" data-level="ok">System Operational</div>
+    <section class="view-section status-section" data-dashboard-view="overview">
+      <div class="uptime-card" id="uptime-card" data-status="unknown" data-health="ok">
+        <div class="uptime-main">
+          <span class="uptime-indicator" aria-hidden="true"></span>
+          <div class="uptime-text">
+            <span class="uptime-status" id="uptime-status">—</span>
+            <span class="uptime-sub" id="uptime-sub">checking…</span>
+          </div>
+        </div>
+        <div class="uptime-meta">
+          <div class="uptime-meta-row">
+            <span class="uptime-meta-key">Response</span>
+            <span class="uptime-meta-val" id="uptime-response">—</span>
+          </div>
+          <div class="uptime-meta-row">
+            <span class="uptime-meta-key">Uptime</span>
+            <span class="uptime-meta-val" id="uptime-percent">—</span>
+          </div>
+          <div class="uptime-meta-row">
+            <span class="uptime-meta-key">Last check</span>
+            <span class="uptime-meta-val" id="uptime-last">—</span>
+          </div>
+        </div>
+      </div>
+
       <div class="summary-grid">
-        <div class="summary-tile">
+        <div class="summary-tile is-emphasized">
           <span class="summary-label">Errors</span>
           <span class="summary-value" id="summary-errors">0</span>
         </div>
         <div class="summary-tile">
-          <span class="summary-label">Page loads</span>
-          <span class="summary-value" id="summary-page-loads">0</span>
+          <span class="summary-label">Avg load time</span>
+          <span class="summary-value" id="summary-page-loads">—</span>
         </div>
         <div class="summary-tile">
           <span class="summary-label">Avg rating</span>
@@ -49,8 +66,8 @@
       </div>
     </section>
 
-    <section class="panel-grid">
-      <article class="panel" aria-labelledby="errors-title">
+    <section class="view-section panel-grid" data-dashboard-view="overview errors feedback">
+      <article class="panel is-emphasized" id="section-errors" data-dashboard-card="errors" aria-labelledby="errors-title">
         <header class="panel-header">
           <h2 id="errors-title">Errors</h2>
           <span class="panel-hint">most recent first</span>
@@ -58,45 +75,53 @@
         <ul class="event-list" id="errors-list"></ul>
       </article>
 
-      <article class="panel" aria-labelledby="page-loads-title">
-        <header class="panel-header">
-          <h2 id="page-loads-title">Page Loads</h2>
-          <span class="panel-hint">grouped by path</span>
-        </header>
-        <ul class="event-list" id="page-loads-list"></ul>
-      </article>
-
-      <article class="panel" aria-labelledby="feedback-title">
+      <article class="panel" id="section-feedback" data-dashboard-card="feedback" aria-labelledby="feedback-title">
         <header class="panel-header">
           <h2 id="feedback-title">User Feedback</h2>
           <span class="panel-hint">survey responses</span>
         </header>
         <ul class="event-list" id="feedback-list"></ul>
       </article>
-
-      <article class="panel" aria-labelledby="clicks-title">
-        <header class="panel-header">
-          <h2 id="clicks-title">Clicks</h2>
-          <span class="panel-hint">grouped by path</span>
-        </header>
-        <ul class="event-list" id="clicks-list"></ul>
-      </article>
     </section>
 
-    <section class="panel activity-panel" aria-labelledby="activity-title">
+    <section class="view-section activity-section" id="section-activity" data-dashboard-view="overview activity" aria-labelledby="activity-title">
       <header class="panel-header">
-        <h2 id="activity-title">Recent Activity</h2>
-        <span class="panel-hint">all signal types</span>
+        <h2 id="activity-title">Activity</h2>
+        <span class="panel-hint">clicks, page loads, and recent events</span>
       </header>
-      <ul class="activity-list" id="activity-list"></ul>
+      <div class="activity-grid">
+        <article class="activity-subpanel" id="section-page-loads" aria-labelledby="page-loads-title">
+          <header class="subpanel-header">
+            <h3 id="page-loads-title">Page Loads</h3>
+            <span class="panel-hint">grouped by path</span>
+          </header>
+          <ul class="event-list compact-list" id="page-loads-list"></ul>
+        </article>
+
+        <article class="activity-subpanel" aria-labelledby="clicks-title">
+          <header class="subpanel-header">
+            <h3 id="clicks-title">Clicks</h3>
+            <span class="panel-hint">grouped by path</span>
+          </header>
+          <ul class="event-list compact-list" id="clicks-list"></ul>
+        </article>
+
+        <article class="activity-subpanel is-wide" aria-labelledby="recent-activity-title">
+          <header class="subpanel-header">
+            <h3 id="recent-activity-title">Recent Activity</h3>
+            <span class="panel-hint">all signal types</span>
+          </header>
+          <ul class="activity-list" id="activity-list"></ul>
+        </article>
+      </div>
     </section>
   </main>
+  </div>
 
-  <footer class="footer">
-    <span>WatchTower prototype • mock data • frontend-only</span>
-  </footer>
+  <app-footer></app-footer>
 
   <script src="assets/scripts/data.js"></script>
-  <script src="assets/scripts/app.js"></script>
+  <script type="module" src="assets/scripts/components.js"></script>
+  <script type="module" src="assets/scripts/app.js"></script>
 </body>
 </html>

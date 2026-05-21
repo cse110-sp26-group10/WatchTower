@@ -1,3 +1,5 @@
+/* global getCart, getCartCount, getProductById, escapeHtml, removeFromCart */
+
 function renderCart() {
   const items = getCart();
   const itemsEl = document.getElementById('cart-items');

@@ -1,3 +1,5 @@
+/* global getProductById, getCartCount, addToCart, escapeHtml */
+
 let selectedSize = null;
 let currentProductId = null;
 

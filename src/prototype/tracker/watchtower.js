@@ -1,4 +1,4 @@
-const repo = "https://raw.githubusercontent.com/cse110-sp26-group10/WatchTower/main/";
+const repo = "https://cdn.jsdelivr.net/gh/cse110-sp26-group10/WatchTower@main/";
 const scripts = [
     "src/prototype/tracker/assets/tracker.js"
 ];

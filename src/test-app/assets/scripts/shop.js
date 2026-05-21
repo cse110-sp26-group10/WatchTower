@@ -1,3 +1,5 @@
+/* global getCategories, getProductsByCategory, getCartCount, escapeHtml */
+
 let activeCategory = 'all';
 
 function renderFilters() {
