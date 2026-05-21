@@ -38,32 +38,44 @@ const SEVERITY_RANK_MAP = { critical: 0, warning: 1, info: 2 };
 let activeDeploymentId = 'all';
 const openPanelIds = new Set();
 
-// Resolved state — persisted across refreshes
+// Resolved state — persisted across refreshes.
+// resolvedIds: Set of event IDs resolved individually (permanent).
+// resolvedGroups: Map of message → ISO timestamp resolved at; events older
+//   than that timestamp are hidden, newer ones reappear automatically.
 const RESOLVED_IDS_KEY = 'wt_resolved_ids';
 const RESOLVED_GROUPS_KEY = 'wt_resolved_groups';
 
-function loadSet(key) {
-  try { return new Set(JSON.parse(localStorage.getItem(key) || '[]')); } catch { return new Set(); }
+function loadResolvedIds() {
+  try { return new Set(JSON.parse(localStorage.getItem(RESOLVED_IDS_KEY) || '[]')); } catch { return new Set(); }
 }
-function saveSet(key, set) {
-  localStorage.setItem(key, JSON.stringify([...set]));
+function loadResolvedGroups() {
+  try { return new Map(Object.entries(JSON.parse(localStorage.getItem(RESOLVED_GROUPS_KEY) || '{}'))); } catch { return new Map(); }
+}
+function saveResolvedIds(set) {
+  localStorage.setItem(RESOLVED_IDS_KEY, JSON.stringify([...set]));
+}
+function saveResolvedGroups(map) {
+  localStorage.setItem(RESOLVED_GROUPS_KEY, JSON.stringify(Object.fromEntries(map)));
 }
 
-let resolvedIds = loadSet(RESOLVED_IDS_KEY);
-let resolvedGroups = loadSet(RESOLVED_GROUPS_KEY);
+let resolvedIds = loadResolvedIds();
+let resolvedGroups = loadResolvedGroups();
 
 function isResolved(event) {
-  return resolvedIds.has(event.id) || resolvedGroups.has(event.metadata.message || '');
+  if (resolvedIds.has(event.id)) return true;
+  const resolvedAt = resolvedGroups.get(event.metadata.message || '');
+  // Only hidden if it occurred before the resolve action
+  return resolvedAt != null && new Date(event.timestamp) <= new Date(resolvedAt);
 }
 
 function resolveId(id) {
   resolvedIds.add(id);
-  saveSet(RESOLVED_IDS_KEY, resolvedIds);
+  saveResolvedIds(resolvedIds);
 }
 
 function resolveGroup(message) {
-  resolvedGroups.add(message);
-  saveSet(RESOLVED_GROUPS_KEY, resolvedGroups);
+  resolvedGroups.set(message, new Date().toISOString());
+  saveResolvedGroups(resolvedGroups);
 }
 
 function syncPanelState() {

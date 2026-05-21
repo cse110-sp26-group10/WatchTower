@@ -20,13 +20,14 @@ import {
 const DASHBOARD_UPDATE_INTERVAL = 5;
 const DASHBOARD_VIEWS = new Set(['overview', 'errors', 'feedback', 'activity']);
 
-function loadResolvedSet(key) {
-  try { return new Set(JSON.parse(localStorage.getItem(key) || '[]')); } catch { return new Set(); }
-}
 function isResolved(event) {
-  const ids = loadResolvedSet('wt_resolved_ids');
-  const groups = loadResolvedSet('wt_resolved_groups');
-  return ids.has(event.id) || groups.has(event.metadata.message || '');
+  try {
+    const ids = new Set(JSON.parse(localStorage.getItem('wt_resolved_ids') || '[]'));
+    if (ids.has(event.id)) return true;
+    const groups = new Map(Object.entries(JSON.parse(localStorage.getItem('wt_resolved_groups') || '{}')));
+    const resolvedAt = groups.get(event.metadata.message || '');
+    return resolvedAt != null && new Date(event.timestamp) <= new Date(resolvedAt);
+  } catch { return false; }
 }
 
 /** Currently selected deployment filter; 'all' means no filter. */
