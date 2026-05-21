@@ -10,7 +10,7 @@ import {
     relativeTime,
     escapeHtml,
     populateDeploymentFilter
-} from './helpers.js'
+} from './helpers.js';
 
 const OVERVIEW_UPDATE_INTERVAL = 5;
 const MODE = window.location.pathname.endsWith('feedback.html') ? 'feedback' : 'error';

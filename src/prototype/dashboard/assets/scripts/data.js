@@ -152,7 +152,7 @@ async function getEventsFromServer() {
   }
   const data = await response.json();
   for (const event of data) {
-    event.id = `evt_${String(event.id).padStart(3, "0")}`
+    event.id = `evt_${String(event.id).padStart(3, "0")}`;
   }
   console.log("Response:", data);
   return data;
@@ -165,7 +165,7 @@ async function getEventsFromServer() {
 async function getUptimeLogFromServer() {
   const response = await fetch("http://localhost:8080/api/uptime");
   if (!response.ok) {
-      throw new Error("Network response failed")
+      throw new Error("Network response failed");
   }
   const data = await response.json();
   console.log("Response:", data);

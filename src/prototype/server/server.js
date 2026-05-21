@@ -9,12 +9,12 @@ const TIMEOUT_THRESHOLD = 5; // seconds
 const MAX_TRIES = 3; // attempts
 const RETRY_INTERVAL = 5; // seconds
 
-function getUserFromRequest(req) {
+function getUserFromRequest() {
     // TODO
     return { "id": 2 }; // Mock data
 }
 
-async function getEvents(user) {
+async function getEvents() {
     try {
         // Uncomment when user system is implemented. Will query all events for now.
         /*
@@ -85,7 +85,7 @@ async function logUptime(uptimeCheck) {
         uptimeCheck.url, uptimeCheck.timestamp, uptimeCheck.is_up, 
         uptimeCheck.status, uptimeCheck.latency, JSON.stringify(uptimeCheck.attempts)
     ];
-    console.log("\nLogging uptime...")
+    console.log("\nLogging uptime...");
     try {
         await pool.query(query, values);
         console.log("Uptime logged");
@@ -182,7 +182,7 @@ const server = http.createServer(async (req, res) => {
                 logEvent(eventObject);
                 res.writeHead(200, { "Content-Type": "application/json" });
                 res.end(JSON.stringify({ status: "success" }));
-            } catch (error) {
+            } catch {
                 res.writeHead(400);
                 res.end("Invalid event");
                 console.log("\nInvalid event");

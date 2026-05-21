@@ -1,3 +1,8 @@
+/**
+ * Returns true if the attempt's HTTP status indicates success.
+ * @param {object} attempt
+ * @returns {boolean}
+ */
 export function attemptSuccess(attempt) {
     return typeof attempt.status === "number" && attempt.status >= 200 && attempt.status < 300;
 }

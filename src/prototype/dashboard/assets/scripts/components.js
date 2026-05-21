@@ -3,8 +3,6 @@
  */
 class AppTopbar extends HTMLElement {
     connectedCallback() {
-        const variant = this.getAttribute('variant');
-
         this.innerHTML = `
             <header class="topbar">
                 <div class="brand">

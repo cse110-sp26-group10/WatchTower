@@ -1,5 +1,3 @@
-/* global updateEvents */
-
 /**
  * Dashboard rendering logic for the WatchTower prototype.
  *
@@ -17,7 +15,7 @@ import {
   averageRating,
   escapeHtml,
   summarizeEvent
- } from './helpers.js'
+ } from './helpers.js';
 
 const DASHBOARD_UPDATE_INTERVAL = 5;
 const DASHBOARD_VIEWS = new Set(['overview', 'errors', 'feedback', 'activity']);

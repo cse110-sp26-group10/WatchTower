@@ -65,6 +65,7 @@ function logSurvey(rating, message) {
     surveyEvent.metadata = {rating, message};
     logEvent(surveyEvent);
 }
+window.logSurvey = logSurvey;
 
 function logClick(element_id, element_class, input_delay) {
     const clickEvent = eventTemplate();
@@ -82,29 +83,25 @@ loadTimeObserver.observe({ type: "navigation", buffered: true });
 
 window.addEventListener("error", (event) => {
     logError("critical", event.message);
-})
+});
 
 console.warn = function(...args) {
     originalWarn.apply(console, args);
     logError("warning", args[0]);
-}
+};
 
 window.addEventListener("unhandledrejection", (event) => {
     logError("critical", event.reason.message);
 });
 
 window.fetch = async function(...args) {
-    try {
-        const response = await originalFetch(...args);
-        if (!response.ok) {
-            const method = args[1]?.method ?? "GET";
-            logError("critical", `${method} ${response.url} ${response.status}`);
-        }
-        return response;
-    } catch (error) {
-        throw error; // Will be caught by unhandledrejection
+    const response = await originalFetch(...args);
+    if (!response.ok) {
+        const method = args[1]?.method ?? "GET";
+        logError("critical", `${method} ${response.url} ${response.status}`);
     }
-}
+    return response;
+};
 
 window.addEventListener("click", (event) => {
     logClick(event.target.id, event.target.className.toString(), performance.now() - event.timeStamp);

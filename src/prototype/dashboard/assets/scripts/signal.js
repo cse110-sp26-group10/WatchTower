@@ -13,7 +13,7 @@ import {
   escapeHtml,
   kvRow,
   summarizeEvent
-} from './helpers.js'
+} from './helpers.js';
 
 /**
  * Populate the issue header (banner, type pill, time, path).
@@ -143,7 +143,7 @@ function renderNotFound(id) {
 }
 
 
-let topbar = document.querySelector('.topbar-meta')
+let topbar = document.querySelector('.topbar-meta');
 if (topbar && document.getElementById('issue-banner')) {
   topbar.innerHTML = `<a href="index.html" class="back-link">&larr; back to dashboard</a>`;
 }
