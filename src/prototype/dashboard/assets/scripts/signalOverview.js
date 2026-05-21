@@ -316,7 +316,6 @@ function renderGroupedErrorPanel(group) {
                 <div class="event-meta">${escapeHtml(occ.pathname || '-')} • ${relativeTime(occ.timestamp)} • ${escapeHtml(occ.id)}</div>
               </div>
             </a>
-            <button class="resolve-btn" data-resolve-id="${escapeHtml(occ.id)}" title="Resolve this occurrence">Resolve</button>
           </li>`).join('')}
         </ul>
       </section>`
@@ -329,7 +328,7 @@ function renderGroupedErrorPanel(group) {
         <div class="event-message">${escapeHtml(message)}${countBadge}</div>
         <div class="event-meta">${escapeHtml(s.pathname || '-')} • last ${relativeTime(s.timestamp)}${firstSeen}</div>
       </div>
-      <button class="resolve-btn resolve-btn--group" data-resolve-group="${escapeHtml(message)}" title="Resolve entire group">Resolve all</button>
+      <button class="resolve-btn resolve-btn--group" data-resolve-group="${escapeHtml(message)}" title="Resolve this error">Resolve</button>
     </summary>
     <section class="issue-primary">
       <div class="issue-headline">${escapeHtml(message)}</div>
