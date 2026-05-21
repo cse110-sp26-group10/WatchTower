@@ -318,6 +318,34 @@ body {
 .rating-mid  { color: #f57c00; }
 .rating-high { color: #2e7d32; }
 
+/* Resolve buttons */
+
+.resolve-btn {
+  font: inherit;
+  font-size: 11px;
+  padding: 2px 8px;
+  border: 1px solid #bbb;
+  background: #f4f4f4;
+  color: #444;
+  cursor: pointer;
+  border-radius: 3px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.resolve-btn:hover {
+  background: #e8f5e9;
+  border-color: #2e7d32;
+  color: #1b5e20;
+}
+
+.resolve-btn--group {
+  margin-left: auto;
+  font-size: 11px;
+  padding: 3px 10px;
+}
+
 /* Error count badge (grouped/deduped errors) */
 
 .error-count {

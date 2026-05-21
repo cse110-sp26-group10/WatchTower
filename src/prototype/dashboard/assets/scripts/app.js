@@ -20,6 +20,15 @@ import {
 const DASHBOARD_UPDATE_INTERVAL = 5;
 const DASHBOARD_VIEWS = new Set(['overview', 'errors', 'feedback', 'activity']);
 
+function loadResolvedSet(key) {
+  try { return new Set(JSON.parse(localStorage.getItem(key) || '[]')); } catch { return new Set(); }
+}
+function isResolved(event) {
+  const ids = loadResolvedSet('wt_resolved_ids');
+  const groups = loadResolvedSet('wt_resolved_groups');
+  return ids.has(event.id) || groups.has(event.metadata.message || '');
+}
+
 /** Currently selected deployment filter; 'all' means no filter. */
 let activeDeploymentId = 'all';
 let activeDashboardView = 'overview';
@@ -72,7 +81,8 @@ function renderUptime(events) {
   const pctEl = document.getElementById('uptime-percent');
   const lastEl = document.getElementById('uptime-last');
 
-  const health = deriveStatus(events || []);
+  const activeEvents = (events || []).filter((e) => e.event_type !== 'error' || !isResolved(e));
+  const health = deriveStatus(activeEvents);
 
   if (log.length === 0) {
     card.dataset.status = 'unknown';
@@ -94,8 +104,8 @@ function renderUptime(events) {
   if (!isUp) {
     subEl.textContent = 'Service unreachable';
   } else {
-    const crit = (events || []).filter((e) => e.event_type === 'error' && e.metadata.severity === 'critical').length;
-    const warn = (events || []).filter((e) => e.event_type === 'error' && e.metadata.severity === 'warning').length;
+    const crit = activeEvents.filter((e) => e.event_type === 'error' && e.metadata.severity === 'critical').length;
+    const warn = activeEvents.filter((e) => e.event_type === 'error' && e.metadata.severity === 'warning').length;
     if (health.level === 'ok') {
       subEl.textContent = 'All systems operational';
     } else {
@@ -121,7 +131,7 @@ function renderUptime(events) {
  */
 function renderHeader(events) {
   const counts = {
-    error: events.filter((e) => e.event_type === 'error').length,
+    error: events.filter((e) => e.event_type === 'error' && !isResolved(e)).length,
     page_load: events.filter((e) => e.event_type === 'page_load').length,
     survey: events.filter((e) => e.event_type === 'survey').length,
     click: events.filter((e) => e.event_type === 'click').length,
@@ -146,7 +156,7 @@ const SEVERITY_RANK = { critical: 0, warning: 1, info: 2 };
  */
 function renderErrors(events) {
   const list = document.getElementById('errors-list');
-  const errors = events.filter((e) => e.event_type === 'error');
+  const errors = events.filter((e) => e.event_type === 'error' && !isResolved(e));
 
   if (errors.length === 0) {
     list.innerHTML = '<li class="empty">No errors recorded.</li>';

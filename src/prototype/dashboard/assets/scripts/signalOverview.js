@@ -1,9 +1,8 @@
 /**
  * Signal overview page rendering.
  *
- * Mirrors the dashboard Errors / User Feedback panels, but expands each signal
- * into a detailed issue summary. Feedback mode follows issue.js' survey branch.
- * Error mode groups repeated errors by message to reduce noise.
+ * Error mode groups repeated errors by message to reduce noise and supports
+ * resolving individual occurrences or entire groups.
  */
 
 import {
@@ -38,6 +37,34 @@ const SEVERITY_RANK_MAP = { critical: 0, warning: 1, info: 2 };
 
 let activeDeploymentId = 'all';
 const openPanelIds = new Set();
+
+// Resolved state — persisted across refreshes
+const RESOLVED_IDS_KEY = 'wt_resolved_ids';
+const RESOLVED_GROUPS_KEY = 'wt_resolved_groups';
+
+function loadSet(key) {
+  try { return new Set(JSON.parse(localStorage.getItem(key) || '[]')); } catch { return new Set(); }
+}
+function saveSet(key, set) {
+  localStorage.setItem(key, JSON.stringify([...set]));
+}
+
+let resolvedIds = loadSet(RESOLVED_IDS_KEY);
+let resolvedGroups = loadSet(RESOLVED_GROUPS_KEY);
+
+function isResolved(event) {
+  return resolvedIds.has(event.id) || resolvedGroups.has(event.metadata.message || '');
+}
+
+function resolveId(id) {
+  resolvedIds.add(id);
+  saveSet(RESOLVED_IDS_KEY, resolvedIds);
+}
+
+function resolveGroup(message) {
+  resolvedGroups.add(message);
+  saveSet(RESOLVED_GROUPS_KEY, resolvedGroups);
+}
 
 function syncPanelState() {
   document.querySelectorAll('#errors-list details[data-signal-id]').forEach((panel) => {
@@ -81,13 +108,8 @@ function renderDeploymentDetail() {
     box.innerHTML = '';
     return;
   }
-
   const d = window.WatchTowerData.getDeployment(activeDeploymentId);
-  if (!d) {
-    box.hidden = true;
-    return;
-  }
-
+  if (!d) { box.hidden = true; return; }
   box.hidden = false;
   box.innerHTML = `
     <div class="dep-field"><span class="dep-key">id</span><span class="dep-val">${escapeHtml(d.id)}</span></div>
@@ -128,8 +150,7 @@ function renderHeader(signals) {
   document.getElementById('errors-count').textContent = MODE === 'error'
     ? `${criticalCount} critical / ${warningCount} warning`
     : `${lowRatingCount} low rating / ${midRatingCount} neutral`;
-  document.getElementById('errors-updated').textContent =
-    `Updated ${new Date().toLocaleTimeString()}`;
+  document.getElementById('errors-updated').textContent = `Updated ${new Date().toLocaleTimeString()}`;
 
   const topbarInfo = document.getElementById('deployment-info');
   if (activeDeploymentId === 'all') {
@@ -150,9 +171,7 @@ function renderSignalBadge(signal) {
 }
 
 function renderSignalMessage(signal) {
-  if (signal.event_type === 'survey') {
-    return signal.metadata.comment || '(no comment)';
-  }
+  if (signal.event_type === 'survey') return signal.metadata.comment || '(no comment)';
   return signal.metadata.message || '(no message)';
 }
 
@@ -202,26 +221,17 @@ function renderSignalPanel(signal) {
           <div class="event-meta">${escapeHtml(signal.pathname || '-')} &bull; ${relativeTime(signal.timestamp)} &bull; ${escapeHtml(signal.id)}</div>
         </div>
       </summary>
-
       <section class="issue-primary">
         ${renderPrimaryDetail(signal)}
         <p><a class="back-link" href="issue.html?id=${encodeURIComponent(signal.id)}">Open issue detail</a></p>
       </section>
-
       <section class="panel-grid">
         <article>
-          <header class="panel-header">
-            <h2>Context</h2>
-            <span class="panel-hint">where it happened</span>
-          </header>
+          <header class="panel-header"><h2>Context</h2><span class="panel-hint">where it happened</span></header>
           <ul class="kv-list">${detailRows.join('')}</ul>
         </article>
-
         <article>
-          <header class="panel-header">
-            <h2>Deployment</h2>
-            <span class="panel-hint">build attached to error</span>
-          </header>
+          <header class="panel-header"><h2>Deployment</h2><span class="panel-hint">build attached to error</span></header>
           <ul class="kv-list">${deploymentRows}</ul>
         </article>
       </section>
@@ -233,24 +243,16 @@ function groupErrors(signals) {
   for (const s of signals) {
     const key = s.metadata.message || '(unknown error)';
     const g = groups.get(key) || {
-      message: key,
-      count: 0,
-      severity: s.metadata.severity,
-      latestSignal: s,
-      firstTs: s.timestamp,
-      signals: [],
+      message: key, count: 0, severity: s.metadata.severity,
+      latestSignal: s, firstTs: s.timestamp, signals: [],
     };
     g.count += 1;
     g.signals.push(s);
     if ((SEVERITY_RANK_MAP[s.metadata.severity] ?? 99) < (SEVERITY_RANK_MAP[g.severity] ?? 99)) {
       g.severity = s.metadata.severity;
     }
-    if (new Date(s.timestamp) > new Date(g.latestSignal.timestamp)) {
-      g.latestSignal = s;
-    }
-    if (new Date(s.timestamp) < new Date(g.firstTs)) {
-      g.firstTs = s.timestamp;
-    }
+    if (new Date(s.timestamp) > new Date(g.latestSignal.timestamp)) g.latestSignal = s;
+    if (new Date(s.timestamp) < new Date(g.firstTs)) g.firstTs = s.timestamp;
     groups.set(key, g);
   }
   return Array.from(groups.values()).sort((a, b) => {
@@ -294,7 +296,17 @@ function renderGroupedErrorPanel(group) {
           <h2>All Occurrences</h2>
           <span class="panel-hint">${count} total, most recent first</span>
         </header>
-        <ul class="event-list">${signals.map((occ) => `<li class="event-row"><a class="event-link" href="issue.html?id=${encodeURIComponent(occ.id)}"><span class="severity-badge sev-${escapeHtml(occ.metadata.severity)}">${escapeHtml(occ.metadata.severity)}</span><div class="event-body"><div class="event-meta">${escapeHtml(occ.pathname || '-')} • ${relativeTime(occ.timestamp)} • ${escapeHtml(occ.id)}</div></div></a></li>`).join('')}</ul>
+        <ul class="event-list">${signals.map((occ) => `
+          <li class="event-row">
+            <a class="event-link" href="issue.html?id=${encodeURIComponent(occ.id)}">
+              <span class="severity-badge sev-${escapeHtml(occ.metadata.severity)}">${escapeHtml(occ.metadata.severity)}</span>
+              <div class="event-body">
+                <div class="event-meta">${escapeHtml(occ.pathname || '-')} • ${relativeTime(occ.timestamp)} • ${escapeHtml(occ.id)}</div>
+              </div>
+            </a>
+            <button class="resolve-btn" data-resolve-id="${escapeHtml(occ.id)}" title="Resolve this occurrence">Resolve</button>
+          </li>`).join('')}
+        </ul>
       </section>`
     : '';
 
@@ -305,6 +317,7 @@ function renderGroupedErrorPanel(group) {
         <div class="event-message">${escapeHtml(message)}${countBadge}</div>
         <div class="event-meta">${escapeHtml(s.pathname || '-')} • last ${relativeTime(s.timestamp)}${firstSeen}</div>
       </div>
+      <button class="resolve-btn resolve-btn--group" data-resolve-group="${escapeHtml(message)}" title="Resolve entire group">Resolve all</button>
     </summary>
     <section class="issue-primary">
       <div class="issue-headline">${escapeHtml(message)}</div>
@@ -325,26 +338,45 @@ function renderGroupedErrorPanel(group) {
   </details>`;
 }
 
+function attachResolveHandlers() {
+  document.getElementById('errors-list').addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-resolve-id], [data-resolve-group]');
+    if (!btn) return;
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (btn.dataset.resolveGroup !== undefined) {
+      resolveGroup(btn.dataset.resolveGroup);
+    } else {
+      resolveId(btn.dataset.resolveId);
+    }
+    renderSignals();
+  }, { once: true });
+}
+
 function renderSignals() {
   const list = document.getElementById('errors-list');
   syncPanelState();
 
-  const signals = getSignals().sort(
+  const allSignals = getSignals().sort(
     (a, b) =>
       severityRank(b.metadata.severity) - severityRank(a.metadata.severity) ||
       new Date(b.timestamp) - new Date(a.timestamp)
   );
 
+  const signals = MODE === 'error' ? allSignals.filter((e) => !isResolved(e)) : allSignals;
+
   renderHeader(signals);
   renderDeploymentDetail();
 
   if (signals.length === 0) {
-    list.innerHTML = `<div class="empty">${pageConfig.emptyLabel}</div>`;
+    list.innerHTML = `<div class="empty">${signals.length < allSignals.length ? 'All errors resolved. ✓' : pageConfig.emptyLabel}</div>`;
     return;
   }
 
   if (MODE === 'error') {
     list.innerHTML = groupErrors(signals).map(renderGroupedErrorPanel).join('');
+    attachResolveHandlers();
   } else {
     list.innerHTML = signals.map(renderSignalPanel).join('');
   }
