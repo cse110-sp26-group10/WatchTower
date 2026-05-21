@@ -216,13 +216,13 @@ body {
 .summary-value { font-size: 18px; font-weight: bold; }
 
 .summary-tile.is-emphasized {
-  border: 2px solid #c62828;
-  background: #fff5f5;
+  border: 2px solid #333;
+  background: #f7f7f7;
   padding: 10px 12px;
 }
 
 .summary-tile.is-emphasized .summary-label {
-  color: #c62828;
+  color: #333;
   font-weight: bold;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -230,7 +230,7 @@ body {
 
 .summary-tile.is-emphasized .summary-value {
   font-size: 24px;
-  color: #b71c1c;
+  color: #111;
 }
 
 /* Panels */
@@ -250,11 +250,11 @@ body {
 
 .panel.is-emphasized {
   grid-column: 1 / -1;
-  border: 2px solid #c62828;
-  border-top-width: 6px;
-  background: #fffafa;
+  border: 1px solid #bbb;
+  border-top: 4px solid #333;
+  background: #f7f7f7;
   padding: 14px 16px;
-  box-shadow: 0 1px 4px rgb(198 40 40 / 15%);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 8%);
 }
 
 .panel-header {
@@ -270,7 +270,7 @@ body {
 
 .panel.is-emphasized .panel-header h2 {
   font-size: 16px;
-  color: #c62828;
+  color: #111;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -317,6 +317,22 @@ body {
 .rating-low  { color: #c62828; }
 .rating-mid  { color: #f57c00; }
 .rating-high { color: #2e7d32; }
+
+/* Error count badge (grouped/deduped errors) */
+
+.error-count {
+  font-size: 11px;
+  font-family: ui-monospace, Menlo, monospace;
+  background: #e0e0e0;
+  color: #333;
+  padding: 1px 6px;
+  border-radius: 10px;
+  margin-left: 6px;
+  font-weight: bold;
+  vertical-align: middle;
+}
+
+.event-meta-extra { color: #999; }
 
 /* Performance bars */
 

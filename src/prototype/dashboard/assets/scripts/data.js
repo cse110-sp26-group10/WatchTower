@@ -153,8 +153,11 @@ async function getEventsFromServer() {
   const data = await response.json();
   for (const event of data) {
     event.id = `evt_${String(event.id).padStart(3, "0")}`;
+    // Server schema uses 'message' for surveys; dashboard expects 'comment'
+    if (event.event_type === 'survey' && event.metadata) {
+      event.metadata.comment = event.metadata.comment ?? event.metadata.message ?? '';
+    }
   }
-  console.log("Response:", data);
   return data;
 }
 
