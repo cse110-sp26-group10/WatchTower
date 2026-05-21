@@ -3,7 +3,10 @@
 A centralized observability system for tracking errors, performance degradation,
 and upset user signals. Built for CSE 110 Spring 2026 at UC San Diego.
 
-## Team
+## Team Status Video Link
+https://youtu.be/1RdMwzMQqv8
+
+## Team Roster
 
 | Name | GitHub |
 |------|--------|
