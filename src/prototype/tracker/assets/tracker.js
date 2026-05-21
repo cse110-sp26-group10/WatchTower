@@ -1,6 +1,9 @@
+const originalWarn = console.warn;
+const originalFetch = window.fetch;
+
 async function logEvent(event) {
     try {
-        let response = await fetch("http://localhost:8080", {
+        const response = await originalFetch("http://localhost:8080", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -10,7 +13,7 @@ async function logEvent(event) {
         if (!response.ok) {
             throw new Error("Network response failed");
         }
-        let data = await response.json();
+        const data = await response.json();
         console.log("Response:", data);
     } catch (error) {
         console.log("Logging failed:", error);
@@ -27,9 +30,9 @@ function getUserId() {
 }
 
 function eventTemplate() {
-    let event = {};
+    const event = {};
     event.timestamp = new Date().toISOString();
-    event.deployment = {
+    event.deployment = (window.WatchTower = {}).deployment = { // Mock data
         "id": "dep_abcd",
         "version": "0.0.0",
         "commit_hash": "a1b2c3d",
@@ -42,47 +45,64 @@ function eventTemplate() {
     return event;
 }
 
-let loadTimeObserver = new PerformanceObserver((list) => {
+function logPageLoad(load_time) {
+    const pageLoad = eventTemplate();
+    pageLoad.event_type = "page_load";
+    pageLoad.metadata = {load_time};
+    logEvent(pageLoad);
+}
+
+function logError(severity, message) {
+    const errorEvent = eventTemplate();
+    errorEvent.event_type = "error";
+    errorEvent.metadata = {severity, message};
+    logEvent(errorEvent);
+}
+
+function logSurvey(rating, message) {
+    const surveyEvent = eventTemplate();
+    surveyEvent.event_type = "survey";
+    surveyEvent.metadata = {rating, message};
+    logEvent(surveyEvent);
+}
+window.logSurvey = logSurvey;
+
+function logClick(element_id, element_class, input_delay) {
+    const clickEvent = eventTemplate();
+    clickEvent.event_type = "click";
+    clickEvent.metadata = {element_id, element_class, input_delay};
+    logEvent(clickEvent);
+}
+
+const loadTimeObserver = new PerformanceObserver((list) => {
     list.getEntries().forEach((entry) => {
-        let pageLoad = eventTemplate();
-        pageLoad.event_type = "page_load";
-        pageLoad.metadata = {
-            "load_time": entry.loadEventEnd - entry.startTime
-        };
-        logEvent(pageLoad);
+        logPageLoad(entry.loadEventEnd - entry.startTime);
     });
 });
 loadTimeObserver.observe({ type: "navigation", buffered: true });
 
-window.onerror = function(message) {
-    let errorEvent = eventTemplate();
-    errorEvent.event_type = "error";
-    errorEvent.metadata = {
-        "severity": "critical",
-        "message": message
-    };
-    logEvent(errorEvent);
-};
+window.addEventListener("error", (event) => {
+    logError("critical", event.message);
+});
 
-let originalWarn = console.warn;
 console.warn = function(...args) {
     originalWarn.apply(console, args);
-    let errorEvent = eventTemplate();
-    errorEvent.event_type = "error";
-    errorEvent.metadata = {
-        "severity": "warning",
-        "message": args[0]
-    };
-    logEvent(errorEvent);
+    logError("warning", args[0]);
+};
+
+window.addEventListener("unhandledrejection", (event) => {
+    logError("critical", event.reason.message);
+});
+
+window.fetch = async function(...args) {
+    const response = await originalFetch(...args);
+    if (!response.ok) {
+        const method = args[1]?.method ?? "GET";
+        logError("critical", `${method} ${response.url} ${response.status}`);
+    }
+    return response;
 };
 
 window.addEventListener("click", (event) => {
-    let click = eventTemplate();
-    click.event_type = "click";
-    click.metadata = {
-        "element_id": event.target.id,
-        "element_class": event.target.className.toString(),
-        "input_delay": performance.now() - event.timeStamp
-    };
-    logEvent(click);
+    logClick(event.target.id, event.target.className.toString(), performance.now() - event.timeStamp);
 });

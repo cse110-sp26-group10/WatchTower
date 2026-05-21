@@ -1,5 +1,3 @@
-/* global updateEvents */
-
 /**
  * Dashboard rendering logic for the WatchTower prototype.
  *
@@ -9,55 +7,112 @@
  * trimmed schema; we read only fields that schema guarantees.
  */
 
+import {
+  relativeTime,
+  populateDeploymentFilter,
+  deriveStatus,
+  averageLoadTime,
+  averageRating,
+  escapeHtml,
+  summarizeEvent
+ } from './helpers.js';
+
 const DASHBOARD_UPDATE_INTERVAL = 5;
+const DASHBOARD_VIEWS = new Set(['overview', 'errors', 'feedback', 'activity']);
 
 /** Currently selected deployment filter; 'all' means no filter. */
 let activeDeploymentId = 'all';
+let activeDashboardView = 'overview';
 
 /**
- * Format an ISO timestamp as a short relative string like "3m ago".
- * @param {string} iso
+ * Read and normalize the dashboard page requested by the sidebar.
  * @returns {string}
  */
-function relativeTime(iso) {
-  const diffSec = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 1000));
-  if (diffSec < 60) return `${diffSec}s ago`;
-  const min = Math.round(diffSec / 60);
-  if (min < 60) return `${min}m ago`;
-  const hr = Math.round(min / 60);
-  return `${hr}h ago`;
+function getDashboardView() {
+  const requested = new URLSearchParams(window.location.search).get('view') || 'overview';
+  return DASHBOARD_VIEWS.has(requested) ? requested : 'overview';
 }
 
 /**
- * Derive an overall system status from the event list.
- * @param {Array<Object>} events
- * @returns {{label: string, level: 'ok'|'degraded'|'down'}}
+ * Show only the card sections that belong to the current dashboard page.
  */
-function deriveStatus(events) {
-  const criticalErrors = events.filter(
-    (e) => e.event_type === 'error' && e.metadata.severity === 'critical'
-  );
-  const warnings = events.filter(
-    (e) => e.event_type === 'error' && e.metadata.severity === 'warning'
-  );
+function applyDashboardView() {
+  document.querySelectorAll('[data-dashboard-view]').forEach((section) => {
+    const views = (section.dataset.dashboardView || '').split(/\s+/);
+    section.hidden = !views.includes(activeDashboardView);
+  });
 
-  if (criticalErrors.length >= 2) return { label: 'Service Disruption', level: 'down' };
-  if (criticalErrors.length >= 1 || warnings.length >= 2) {
-    return { label: 'Degraded Performance', level: 'degraded' };
+  document.querySelectorAll('[data-dashboard-card]').forEach((card) => {
+    const cardView = card.dataset.dashboardCard;
+    card.hidden = activeDashboardView !== 'overview' && cardView !== activeDashboardView;
+  });
+
+  const labels = {
+    overview: 'Dashboard Overview',
+    errors: 'Errors',
+    feedback: 'User Feedback',
+    activity: 'Activity',
+  };
+  document.title = `WatchTower — ${labels[activeDashboardView]}`;
+}
+
+/**
+ * Render the unified status card: uptime probe is the headline, the
+ * error-derived health label appears as the sub-line, with probe stats on
+ * the right. Uptime is global (not deployment-scoped); the health sub IS
+ * deployment-scoped via the events arg.
+ * @param {Array<Object>} events deployment-filtered event list
+ */
+function renderUptime(events) {
+  const log = (window.WatchTowerData.getUptimeLog && window.WatchTowerData.getUptimeLog()) || [];
+  const card = document.getElementById('uptime-card');
+  const statusEl = document.getElementById('uptime-status');
+  const subEl = document.getElementById('uptime-sub');
+  const respEl = document.getElementById('uptime-response');
+  const pctEl = document.getElementById('uptime-percent');
+  const lastEl = document.getElementById('uptime-last');
+
+  const health = deriveStatus(events || []);
+
+  if (log.length === 0) {
+    card.dataset.status = 'unknown';
+    card.dataset.health = health.level;
+    statusEl.textContent = 'Unknown';
+    subEl.textContent = 'no probes yet';
+    respEl.textContent = '—';
+    pctEl.textContent = '—';
+    lastEl.textContent = '—';
+    return;
   }
-  return { label: 'System Operational', level: 'ok' };
-}
 
-/**
- * Average rating across survey events, on a 1-5 scale.
- * @param {Array<Object>} events
- * @returns {number}
- */
-function averageRating(events) {
-  const surveys = events.filter((e) => e.event_type === 'survey' && e.metadata.rating != null);
-  if (surveys.length === 0) return 0;
-  const total = surveys.reduce((sum, e) => sum + Number(e.metadata.rating || 0), 0);
-  return Math.round((total / surveys.length) * 10) / 10;
+  const latest = log[0];
+  const isUp = latest.is_up;
+  card.dataset.status = isUp ? 'up' : 'down';
+  card.dataset.health = isUp ? health.level : 'down';
+  statusEl.textContent = isUp ? 'Online' : 'Offline';
+
+  if (!isUp) {
+    subEl.textContent = 'Service unreachable';
+  } else {
+    const crit = (events || []).filter((e) => e.event_type === 'error' && e.metadata.severity === 'critical').length;
+    const warn = (events || []).filter((e) => e.event_type === 'error' && e.metadata.severity === 'warning').length;
+    if (health.level === 'ok') {
+      subEl.textContent = 'All systems operational';
+    } else {
+      const parts = [];
+      if (crit > 0) parts.push(`${crit} critical error${crit === 1 ? '' : 's'}`);
+      if (warn > 0) parts.push(`${warn} warning${warn === 1 ? '' : 's'}`);
+      subEl.textContent = `${health.label} — ${parts.join(', ')}`;
+    }
+  }
+
+  const recent = log.slice(0, 20);
+  const upCount = recent.filter((p) => p.is_up).length;
+  const pct = Math.round((upCount / recent.length) * 100);
+
+  respEl.textContent = isUp ? `${latest.latency} ms` : '—';
+  pctEl.textContent = `${pct}% (${recent.length} checks)`;
+  lastEl.textContent = relativeTime(latest.timestamp);
 }
 
 /**
@@ -65,11 +120,6 @@ function averageRating(events) {
  * @param {Array<Object>} events
  */
 function renderHeader(events) {
-  const status = deriveStatus(events);
-  const banner = document.getElementById('status-banner');
-  banner.textContent = status.label;
-  banner.dataset.level = status.level;
-
   const counts = {
     error: events.filter((e) => e.event_type === 'error').length,
     page_load: events.filter((e) => e.event_type === 'page_load').length,
@@ -78,7 +128,9 @@ function renderHeader(events) {
   };
 
   document.getElementById('summary-errors').textContent = counts.error;
-  document.getElementById('summary-page-loads').textContent = counts.page_load;
+  const avgLoad = averageLoadTime(events);
+  document.getElementById('summary-page-loads').textContent =
+    avgLoad != null ? `${avgLoad} ms` : '—';
   document.getElementById('summary-avg-rating').textContent =
     averageRating(events) > 0 ? `${averageRating(events)} / 5` : '—';
   document.getElementById('summary-clicks').textContent = counts.click;
@@ -115,8 +167,11 @@ function renderErrors(events) {
     .join('');
 }
 
+const SLOW_LOAD_MS = 1500;
+const PERF_BAR_MAX_MS = 3000;
+
 /**
- * Populate the Page Loads panel — a recent list grouped by pathname.
+ * Populate the Page Loads panel — grouped by pathname with avg load time.
  * @param {Array<Object>} events
  */
 function renderPageLoads(events) {
@@ -131,25 +186,39 @@ function renderPageLoads(events) {
   const groups = new Map();
   for (const e of loads) {
     const key = e.pathname || '(unknown)';
-    const g = groups.get(key) || { pathname: key, count: 0, last: e.timestamp };
+    const g = groups.get(key) || { pathname: key, count: 0, totalMs: 0, samples: 0, last: e.timestamp };
     g.count += 1;
+    const t = Number(e.metadata && e.metadata.load_time);
+    if (Number.isFinite(t)) {
+      g.totalMs += t;
+      g.samples += 1;
+    }
     if (new Date(e.timestamp) > new Date(g.last)) g.last = e.timestamp;
     groups.set(key, g);
   }
 
-  const rows = Array.from(groups.values()).sort((a, b) => b.count - a.count);
+  const rows = Array.from(groups.values())
+    .map((g) => ({ ...g, avgMs: g.samples > 0 ? Math.round(g.totalMs / g.samples) : null }))
+    .sort((a, b) => (b.avgMs ?? -1) - (a.avgMs ?? -1));
 
   list.innerHTML = rows
-    .map(
-      (g) => `
-        <li class="event-row click-row">
-          <div class="click-head">
-            <span class="click-id">${escapeHtml(g.pathname)}</span>
-            <span class="click-count">${g.count}×</span>
+    .map((g) => {
+      const hasTime = g.avgMs != null;
+      const slow = hasTime && g.avgMs >= SLOW_LOAD_MS;
+      const pct = hasTime ? Math.min(100, Math.round((g.avgMs / PERF_BAR_MAX_MS) * 100)) : 0;
+      const timeLabel = hasTime ? `${g.avgMs} ms` : '—';
+      return `
+        <li class="event-row perf-row">
+          <div class="perf-head">
+            <span class="perf-path">${escapeHtml(g.pathname)}</span>
+            <span class="perf-time ${slow ? 'is-slow' : ''}">${timeLabel}</span>
           </div>
-          <div class="event-meta">last ${relativeTime(g.last)}</div>
-        </li>`
-    )
+          <div class="perf-bar">
+            <div class="perf-bar-fill ${slow ? 'is-slow' : ''}" style="width: ${pct}%"></div>
+          </div>
+          <div class="event-meta">${g.count}× • last ${relativeTime(g.last)}</div>
+        </li>`;
+    })
     .join('');
 }
 
@@ -250,58 +319,6 @@ function renderActivity(events) {
 }
 
 /**
- * Produce a one-line summary for a single event, depending on its type.
- * @param {Object} e
- * @returns {string}
- */
-function summarizeEvent(e) {
-  switch (e.event_type) {
-    case 'error':
-      return `[${e.metadata.severity}] ${e.metadata.message} (${e.pathname})`;
-    case 'page_load':
-      return `${e.pathname} loaded`;
-    case 'survey':
-      return `Rating ${e.metadata.rating}/5${e.metadata.comment ? ` — ${e.metadata.comment}` : ''}`;
-    case 'click':
-      return `click on ${e.pathname}`;
-    default:
-      return e.event_type;
-  }
-}
-
-/**
- * Escape user-supplied text before inserting into innerHTML.
- * @param {*} value
- * @returns {string}
- */
-function escapeHtml(value) {
-  return String(value ?? '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
-
-/**
- * Populate the deployment filter <select> from the known deployments.
- */
-function populateDeploymentFilter() {
-  const select = document.getElementById('deployment-filter');
-  const deployments = window.WatchTowerData.getDeployments();
-  for (const d of deployments) {
-    const opt = document.createElement('option');
-    opt.value = d.id;
-    opt.textContent = `${d.version} — ${d.id} (${d.commit_hash})`;
-    select.appendChild(opt);
-  }
-  select.addEventListener('change', (e) => {
-    activeDeploymentId = e.target.value || 'all';
-    render();
-  });
-}
-
-/**
  * Render the deployment-detail panel when a specific deployment is selected.
  */
 function renderDeploymentDetail() {
@@ -330,7 +347,11 @@ function renderDeploymentDetail() {
  * Render every section of the dashboard, scoped to the active deployment.
  */
 function render() {
+  activeDashboardView = getDashboardView();
+  applyDashboardView();
+
   const events = window.WatchTowerData.getEvents({ deploymentId: activeDeploymentId });
+  renderUptime(events);
   renderHeader(events);
   renderErrors(events);
   renderPageLoads(events);
@@ -351,12 +372,23 @@ function render() {
     `Updated ${new Date().toLocaleTimeString()}`;
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  populateDeploymentFilter();
+/**
+ * Retrieve data from the server and render the dashboard
+ */
+async function update() {
   render();
-});
+  await Promise.all([
+    window.WatchTowerData.updateEvents(),
+    window.WatchTowerData.updateUptimeLog(),
+  ]);
+  render();
+}
 
-setInterval(async function() {
-  await updateEvents();
+document.addEventListener('DOMContentLoaded', () => {
+  populateDeploymentFilter((deploymentId) => {
+  activeDeploymentId = deploymentId;
   render();
-}, DASHBOARD_UPDATE_INTERVAL * 1000);
+  });
+  update();
+  setInterval(update, DASHBOARD_UPDATE_INTERVAL * 1000);
+});

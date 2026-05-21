@@ -3,10 +3,10 @@ import { test, expect } from '@playwright/test';
 test.describe('Dashboard', () => {
   test('loads and shows the status banner', async ({ page }) => {
     await page.goto('/');
-    const banner = page.locator('#status-banner');
-    await expect(banner).toBeVisible();
-    const text = await banner.textContent();
-    expect(['System Operational', 'Degraded Performance', 'Service Disruption']).toContain(text.trim());
+    const card = page.locator('#uptime-card');
+    await expect(card).toBeVisible();
+    const text = await page.locator('#uptime-status').textContent();
+    expect(['Online', 'Offline', 'Unknown']).toContain(text.trim());
   });
 
   test('all four signal panels render with list items', async ({ page }) => {

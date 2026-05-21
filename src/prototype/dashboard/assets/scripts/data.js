@@ -67,12 +67,12 @@ let EVENTS = [
   makeEvent({ deployment_id: 'dep_7e1b', event_type: 'error', minsAgo: 34, pathname: '/profile',    meta: { severity: 'warning',  message: 'Image asset failed to load: avatar.png' } }),
 
   // ---- Page loads ----
-  makeEvent({ deployment_id: 'dep_8f2c', event_type: 'page_load', minsAgo: 1,  pathname: '/' }),
-  makeEvent({ deployment_id: 'dep_8f2c', event_type: 'page_load', minsAgo: 3,  pathname: '/checkout' }),
-  makeEvent({ deployment_id: 'dep_8f2c', event_type: 'page_load', minsAgo: 6,  pathname: '/cart' }),
-  makeEvent({ deployment_id: 'dep_7e1b', event_type: 'page_load', minsAgo: 9,  pathname: '/' }),
-  makeEvent({ deployment_id: 'dep_7e1b', event_type: 'page_load', minsAgo: 15, pathname: '/profile' }),
-  makeEvent({ deployment_id: 'dep_6c0a', event_type: 'page_load', minsAgo: 22, pathname: '/checkout' }),
+  makeEvent({ deployment_id: 'dep_8f2c', event_type: 'page_load', minsAgo: 1,  pathname: '/',         meta: { load_time: 420 } }),
+  makeEvent({ deployment_id: 'dep_8f2c', event_type: 'page_load', minsAgo: 3,  pathname: '/checkout', meta: { load_time: 2180 } }),
+  makeEvent({ deployment_id: 'dep_8f2c', event_type: 'page_load', minsAgo: 6,  pathname: '/cart',     meta: { load_time: 760 } }),
+  makeEvent({ deployment_id: 'dep_7e1b', event_type: 'page_load', minsAgo: 9,  pathname: '/',         meta: { load_time: 380 } }),
+  makeEvent({ deployment_id: 'dep_7e1b', event_type: 'page_load', minsAgo: 15, pathname: '/profile',  meta: { load_time: 1450 } }),
+  makeEvent({ deployment_id: 'dep_6c0a', event_type: 'page_load', minsAgo: 22, pathname: '/checkout', meta: { load_time: 2640 } }),
 
   // ---- Surveys ----
   makeEvent({ deployment_id: 'dep_8f2c', event_type: 'survey', minsAgo: 4,  pathname: '/checkout', meta: { rating: 2, comment: 'Checkout button felt unresponsive.' } }),
@@ -87,6 +87,31 @@ let EVENTS = [
   makeEvent({ deployment_id: 'dep_7e1b', event_type: 'click', minsAgo: 12, pathname: '/' }),
   makeEvent({ deployment_id: 'dep_6c0a', event_type: 'click', minsAgo: 25, pathname: '/profile' }),
 ];
+
+/**
+ * Mock uptime probe results. Schema per prototype README:
+ *   { timestamp, status: "up"|"down", response_time (ms) }
+ * Newest entry represents current state.
+ */
+let UPTIME_LOG = [
+  { timestamp: minutesAgo(180), is_up: true, status: 200,  latency: 142, attempts: [{timestamp: minutesAgo(180), status: 200, latency: 142, error: null}] },
+  { timestamp: minutesAgo(120), is_up: false, status: 404, latency: 0,   attempts: [{timestamp: minutesAgo(180), status: 404, latency: 0, error: null}]   },
+  { timestamp: minutesAgo(118), is_up: true, status: 200,  latency: 168, attempts: [{timestamp: minutesAgo(180), status: 200, latency: 168, error: null}] },
+  { timestamp: minutesAgo(60),  is_up: true, status: 200,  latency: 155, attempts: [{timestamp: minutesAgo(180), status: 200, latency: 155, error: null}] },
+  { timestamp: minutesAgo(30),  is_up: true, status: 200,  latency: 138, attempts: [{timestamp: minutesAgo(180), status: 200, latency: 138, error: null}] },
+  { timestamp: minutesAgo(5),   is_up: true, status: 200,  latency: 129, attempts: [{timestamp: minutesAgo(180), status: 200, latency: 129, error: null}] },
+  { timestamp: minutesAgo(1),   is_up: true, status: 200,  latency: 134, attempts: [{timestamp: minutesAgo(180), status: 200, latency: 134, error: null}] },
+];
+
+/**
+ * Returns the uptime probe log, newest first.
+ * @returns {Array<{timestamp:string,status:string,response_time:number}>}
+ */
+function getUptimeLog() {
+  return UPTIME_LOG
+    .slice()
+    .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+}
 
 /**
  * Returns the current set of mock events, optionally filtered by deployment.
@@ -120,12 +145,29 @@ function getDeployment(id) {
  * Get the event log from the server.
  * @returns {Array}
  */
-async function getDataFromServer() {
-  let response = await fetch("http://localhost:8080/api/data");
+async function getEventsFromServer() {
+  const response = await fetch("http://localhost:8080/api/events");
   if (!response.ok) {
       throw new Error("Network response failed");
   }
-  let data = await response.json();
+  const data = await response.json();
+  for (const event of data) {
+    event.id = `evt_${String(event.id).padStart(3, "0")}`;
+  }
+  console.log("Response:", data);
+  return data;
+}
+
+/**
+ * Get the event log from the server.
+ * @returns {Array}
+ */
+async function getUptimeLogFromServer() {
+  const response = await fetch("http://localhost:8080/api/uptime");
+  if (!response.ok) {
+      throw new Error("Network response failed");
+  }
+  const data = await response.json();
   console.log("Response:", data);
   return data;
 }
@@ -135,8 +177,8 @@ async function getDataFromServer() {
  * @returns {Array}
  */
 function getDeploymentsFromEvents() {
-  let deploymentIds = new Set();
-  let deployments = [];
+  const deploymentIds = new Set();
+  const deployments = [];
   EVENTS.forEach((event) => {
     if (deploymentIds.has(event.deployment.id)) return;
     deploymentIds.add(event.deployment.id);
@@ -150,10 +192,21 @@ function getDeploymentsFromEvents() {
  */
 async function updateEvents() {
   try {
-    EVENTS = await getDataFromServer();
+    EVENTS = await getEventsFromServer();
     DEPLOYMENTS = getDeploymentsFromEvents();
   } catch (error) {
     console.log("Event update failed:", error);
+  }
+}
+
+/**
+ * Update the uptime log.
+ */
+async function updateUptimeLog() {
+  try {
+    UPTIME_LOG = await getUptimeLogFromServer();
+  } catch (error) {
+    console.log("Uptime log update failed:", error);
   }
 }
 
@@ -192,5 +245,7 @@ window.WatchTowerData = {
   getDeployment,
   getEvent,
   getRelatedEvents,
+  getUptimeLog,
   updateEvents,
+  updateUptimeLog,
 };

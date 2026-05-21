@@ -183,15 +183,15 @@ describe('Event — metadata validation', () => {
   });
 });
 
-describe('Event — set_field', () => {
+describe('Event — setField', () => {
   it('updates a recognised field', () => {
     const e = new Event(JSON.stringify(validBase()));
-    expect(e.set_field('ip', '1.2.3.4')).toBe(true);
+    expect(e.setField('ip', '1.2.3.4')).toBe(true);
     expect(e.event.ip).toBe('1.2.3.4');
   });
 
   it('rejects an unrecognised field', () => {
     const e = new Event(JSON.stringify(validBase()));
-    expect(e.set_field('notAField', 'value')).toBe(false);
+    expect(e.setField('notAField', 'value')).toBe(false);
   });
 });

@@ -82,13 +82,29 @@ Metadata – survey:
 }
 ```
 
-## Website Status Signal Structure
+## Website Uptime Signal Structure
+
+Uptime Check:
+
+```
+{
+    "url": string,
+    "timestamp": string (ISO 8601),
+    "is_up": boolean,
+    "status": number (HTTP status code),
+    "latency": number (ms),
+    "attempts": array (Uptime Check Attempts)
+}
+```
+
+Uptime Check Attempt:
 
 ```
 {
     "timestamp": string (ISO 8601),
-    "status": string ("up" or "down"),
-    "response_time": number (ms)
+    "status": number (HTTP status code),
+    "latency": number (ms),
+    "error": string
 }
 ```
 

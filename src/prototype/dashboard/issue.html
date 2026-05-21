@@ -7,14 +7,10 @@
   <link rel="stylesheet" href="assets/styles/styles.css" >
 </head>
 <body>
-  <header class="topbar">
-    <div class="brand">
-      <a class="brand-name" href="index.html">WatchTower</a>
-    </div>
-    <div class="topbar-meta">
-      <a href="index.html" class="back-link">&larr; back to dashboard</a>
-    </div>
-  </header>
+  <app-topbar></app-topbar>
+
+  <div class="layout">
+    <app-sidebar></app-sidebar>
 
   <main class="dashboard">
     <section class="issue-header">
@@ -60,12 +56,12 @@
       <ul class="activity-list" id="related-list"></ul>
     </section>
   </main>
+  </div>
 
-  <footer class="footer">
-    <span>WatchTower prototype • mock data • frontend-only</span>
-  </footer>
+  <app-footer></app-footer>
 
   <script src="assets/scripts/data.js"></script>
-  <script src="assets/scripts/issue.js"></script>
+  <script type="module" src="assets/scripts/components.js"></script>
+  <script type="module" src="assets/scripts/signal.js"></script>
 </body>
 </html>
