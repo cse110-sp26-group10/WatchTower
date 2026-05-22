@@ -4,7 +4,7 @@
  * Events conform to the trimmed log shape:
  *   { event_type, timestamp, created_at,
  *     deployment: { id, version, commit_hash },
- *     ip, pathname,
+ *     ip, pathname, browser: { name, version },
  *     metadata: { severity, message, rating, comment, pageUrl } }
  */
 
