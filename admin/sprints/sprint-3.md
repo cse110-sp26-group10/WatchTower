@@ -65,12 +65,12 @@
 | Kaley Chung | | | |
 | Jensen Guo | A lot of code refactoring and modularizing, as well as create the feedback page, errors page, and signalOverview script | Activity page, and continue reviewing code to make sure everything is consistent | None |
 | Prakhar Shah | | | |
-| Bethany Miyamoto | | | |
+| Bethany Miyamoto | frontend feedback and tested test app/dashboard connection | demo video for development | Club responsibilities |
 | Kevin Wang | add uptime card, add a sidebar, talk with teammates about page logic | adjust the page layout based on the Figma design | midterms |
 | Han Yang-Lin | Connected uptime display in the dashboard to the backend and implemented a PostgreSQL database with node-postgres | Modify the backend as needed to work with the updated dashboard | Quizzes and midterms |
-| Aron Wu | | | |
+| Aron Wu | Review current tests and pipeline | Implement more tests | None |
 | Benedict Luis | started working on the GitHub action for the linting test, complete stand up log for sprint 2 | finish setting up the GitHub action and help Aron with the linting test and validation to work | Quizzes |
-| Evan Marriott | | | |
+| Evan Marriott | finished unit tests, e2e tests, and linting CI pipeline | improve UI with functional changes as recommended from prof powell | None |
 
 ### Stand-up 2 — 05/22/2026
 
