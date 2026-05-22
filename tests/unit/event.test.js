@@ -31,6 +31,7 @@ function validBase(eventType = 'page_load', metadata = { load_time: 100 }) {
     user_id: VALID_UUID,
     current_url: 'https://example.com/page',
     referrer: '',
+    browser: { name: 'Chrome', version: '124' },
     metadata,
   };
 }
@@ -180,6 +181,42 @@ describe('Event — metadata validation', () => {
 
   it('rejects click with missing element_id', () => {
     expect(new Event(JSON.stringify(validBase('click', { element_class: 'btn', input_delay: 5 }))).valid).toBe(false);
+  });
+});
+
+describe('Event — browser validation', () => {
+  it('accepts a valid browser field', () => {
+    const e = new Event(JSON.stringify(validBase()));
+    expect(e.valid).toBe(true);
+    expect(e.event.browser).toEqual({ name: 'Chrome', version: '124' });
+  });
+
+  it('rejects a missing browser field', () => {
+    const data = validBase();
+    delete data.browser;
+    expect(new Event(JSON.stringify(data)).valid).toBe(false);
+  });
+
+  it('rejects browser where name is not a string', () => {
+    const data = { ...validBase(), browser: { name: 42, version: '124' } };
+    expect(new Event(JSON.stringify(data)).valid).toBe(false);
+  });
+
+  it('rejects browser where version is not a string', () => {
+    const data = { ...validBase(), browser: { name: 'Chrome', version: 124 } };
+    expect(new Event(JSON.stringify(data)).valid).toBe(false);
+  });
+
+  it('rejects browser that is not an object', () => {
+    const data = { ...validBase(), browser: 'Chrome' };
+    expect(new Event(JSON.stringify(data)).valid).toBe(false);
+  });
+
+  it('strips extra fields inside browser', () => {
+    const data = { ...validBase(), browser: { name: 'Chrome', version: '124', extra: 'remove' } };
+    const e = new Event(JSON.stringify(data));
+    expect(e.valid).toBe(true);
+    expect(e.event.browser.extra).toBeUndefined();
   });
 });
 

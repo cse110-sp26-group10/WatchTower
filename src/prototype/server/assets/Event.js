@@ -10,6 +10,7 @@ const EVENT_FIELDS = new Set([
     "pathname",
     "referrer",
     "referring_domain",
+    "browser",
     "metadata"
 ]);
 const DEPLOYMENT_FIELDS = new Set([
@@ -19,6 +20,7 @@ const DEPLOYMENT_FIELDS = new Set([
     "deployed_at",
     "author"
 ]);
+const BROWSER_FIELDS = new Set(["name", "version"]);
 const METADATA_FIELDS = {
     "page_load": new Set(["load_time"]),
     "error": new Set(["severity", "message"]),
@@ -99,6 +101,14 @@ function validateReferrer(event) {
     return true;
 }
 
+function validateBrowser(event) {
+    let browser = event.browser;
+    if (typeof browser !== "object" || browser === null) return false;
+    if (typeof browser.name !== "string") return false;
+    if (typeof browser.version !== "string") return false;
+    return true;
+}
+
 function validateMetadata(event) {
     let metadata = event.metadata;
     if (typeof metadata !== "object") return false;
@@ -143,6 +153,7 @@ export default class Event {
         if (!validateUser(event)) return null;
         if (!validateURL(event)) return null;
         if (!validateReferrer(event)) return null;
+        if (!validateBrowser(event)) return null;
         if (!validateMetadata(event)) return null;
         event.created_at = new Date().toISOString();
         let urlObject = new URL(event.current_url);
@@ -153,6 +164,7 @@ export default class Event {
         } else {
             event.referring_domain = "";
         }
+        cleanupExtraFields(event.browser, BROWSER_FIELDS);
         cleanupExtraFields(event.deployment, DEPLOYMENT_FIELDS);
         cleanupExtraFields(event.metadata, METADATA_FIELDS[event.event_type]);
         cleanupExtraFields(event, EVENT_FIELDS);
