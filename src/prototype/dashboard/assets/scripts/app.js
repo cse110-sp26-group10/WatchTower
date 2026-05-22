@@ -12,7 +12,6 @@ import {
   populateDeploymentFilter,
   deriveStatus,
   averageLoadTime,
-  averageRating,
   escapeHtml,
   summarizeEvent
  } from './helpers.js';
