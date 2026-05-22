@@ -19,6 +19,15 @@ describe('parseBrowser — userAgentData path', () => {
     expect(parseBrowser(CHROME_UA, uaData)).toEqual({ name: 'Google Chrome', version: '124' });
   });
 
+  it('picks the most-specific brand from a three-brand array', () => {
+    const uaData = { brands: [
+      { brand: 'Not A Brand', version: '99' },
+      { brand: 'Chromium', version: '124' },
+      { brand: 'Google Chrome', version: '124' },
+    ]};
+    expect(parseBrowser(CHROME_UA, uaData)).toEqual({ name: 'Google Chrome', version: '124' });
+  });
+
   it('falls through to regex when all brands contain "Not"', () => {
     const uaData = { brands: [{ brand: 'Not A Brand', version: '99' }] };
     expect(parseBrowser(CHROME_UA, uaData)).toEqual({ name: 'Chrome', version: '124' });

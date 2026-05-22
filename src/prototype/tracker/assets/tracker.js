@@ -4,6 +4,8 @@ const originalFetch = typeof window !== 'undefined' ? window.fetch : undefined;
 export function parseBrowser(ua, uaData) {
   // Tier 1: userAgentData (Chromium-based browsers)
   if (uaData?.brands?.length) {
+    // findLast picks the most-specific real name (e.g. "Google Chrome" not "Chromium")
+    // Chrome's brands array orders generic names first, specific names last.
     const real = uaData.brands.findLast(b => !b.brand.includes('Not'));
     if (real) return { name: real.brand, version: real.version };
   }
@@ -24,6 +26,7 @@ export function parseBrowser(ua, uaData) {
 }
 
 async function logEvent(event) {
+    if (!originalFetch) return;
     try {
         const response = await originalFetch("http://localhost:8080", {
             method: "POST",
