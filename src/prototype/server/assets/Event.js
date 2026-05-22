@@ -103,7 +103,7 @@ function validateReferrer(event) {
 
 function validateBrowser(event) {
     let browser = event.browser;
-    if (typeof browser !== "object" || browser === null) return false;
+    if (typeof browser !== "object" || browser === null || Array.isArray(browser)) return false;
     if (typeof browser.name !== "string") return false;
     if (typeof browser.version !== "string") return false;
     return true;

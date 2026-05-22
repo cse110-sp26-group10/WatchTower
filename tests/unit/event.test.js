@@ -218,6 +218,16 @@ describe('Event — browser validation', () => {
     expect(e.valid).toBe(true);
     expect(e.event.browser.extra).toBeUndefined();
   });
+
+  it('rejects browser that is null', () => {
+    const data = { ...validBase(), browser: null };
+    expect(new Event(JSON.stringify(data)).valid).toBe(false);
+  });
+
+  it('rejects browser that is an array', () => {
+    const data = { ...validBase(), browser: [] };
+    expect(new Event(JSON.stringify(data)).valid).toBe(false);
+  });
 });
 
 describe('Event — setField', () => {
