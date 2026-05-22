@@ -67,13 +67,13 @@ function renderPrimary(event) {
 }
 
 /**
- * Render the Context kv-list (path, full url, ip, created_at).
+ * Render the Context kv-list (path, full url, ip, browser, observed, received).
  * @param {Object} event
  */
 function renderContext(event) {
   const list = document.getElementById('context-list');
   const browserLabel = event.browser
-    ? `${event.browser.name}${event.browser.version ? ' ' + event.browser.version : ''}`
+    ? `${event.browser.name || 'Unknown'}${event.browser.version ? ' ' + event.browser.version : ''}`
     : '—';
   list.innerHTML = [
     kvRow('pathname', event.pathname || '—', { mono: true }),
