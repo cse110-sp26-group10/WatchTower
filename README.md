@@ -70,3 +70,30 @@ watchtower/
 - [Technical Specs](specs/TECHNICAL_SPEC.md)
 - [Changelog](CHANGELOG.md)
 - [AI Disclosure](GENAI.md)
+
+## How to Run (in the feat/dashboard–prototype branch)
+
+1. Download PostgreSQL at <https://www.postgresql.org/download/>  
+2. Go to the /src/prototype/server directory  
+3. Run `npm install`  
+3. Add the `.env`  file in the /src/prototype/server directory with the contents (replace `your_password` with the password you used in the PostgreSQL install):  
+`# Database Configuration  
+DB_USER=postgres  
+DB_PASSWORD=your_password  
+DB_HOST=localhost  
+DB_PORT=5432  
+DB_NAME=watchtower_db`  
+4. Run `npm run db:init` to create the database (only needs to be run once, or when you want to reset the database)
+5. Run `npm start` to start the server
+6. Start live server with "Go Live" in VSCode (need the LiveServer extension)
+7. Open the test app in src/test-app/index.html
+8. Start interacting with the test app (for some reason it seems like if the live server has not been opened recently, it can take about 20 seconds for tracker.js to be loaded)
+9. Open the dashboard (Can switch the LiveServer by starting and stopping one at a time. Alternatively, keep the tabs open while opening/closing the port to switch sites in order to have both sites up simulaneously). Find the dashboard in src/prototype/dashboard/index.html
+
+## Issues Running?
+- If your shell is still using its old `libpq` client tools rather than the full PostgreSQL, run:
+`echo 'export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"' >> ~/.zshrc  
+source ~/.zshrc`
+Verify with `which initdb` and ideally start with '/opt/homebrew/opt/postgresql@15/bin/initdb'
+Then restart with `brew services restart postgresql@15`
+Make sure PostgreSQL is accepting connections by running `pg_isready`
