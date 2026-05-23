@@ -62,29 +62,29 @@
 | Name | Did | Doing | Blockers |
 |------|-----|-------|----------|
 | Nicole Sutedja | helped with making wireframes and branding material | write script & organize product demo video for tomorrow | None |
-| Kaley Chung | | | |
+| Kaley Chung | Check over past research pages and added to Github | Start upset user signals | Quizzes |
 | Jensen Guo | A lot of code refactoring and modularizing, as well as create the feedback page, errors page, and signalOverview script | Activity page, and continue reviewing code to make sure everything is consistent | None |
 | Prakhar Shah | | | |
-| Bethany Miyamoto | | | |
+| Bethany Miyamoto | frontend feedback and tested test app/dashboard connection | demo video for development | Club responsibilities |
 | Kevin Wang | add uptime card, add a sidebar, talk with teammates about page logic | adjust the page layout based on the Figma design | midterms |
 | Han Yang-Lin | Connected uptime display in the dashboard to the backend and implemented a PostgreSQL database with node-postgres | Modify the backend as needed to work with the updated dashboard | Quizzes and midterms |
-| Aron Wu | | | |
+| Aron Wu | Review current tests and pipeline | Implement more tests | None |
 | Benedict Luis | started working on the GitHub action for the linting test, complete stand up log for sprint 2 | finish setting up the GitHub action and help Aron with the linting test and validation to work | Quizzes |
-| Evan Marriott | | | |
+| Evan Marriott | finished unit tests, e2e tests, and linting CI pipeline | improve UI with functional changes as recommended from prof powell | None |
 
 ### Stand-up 2 — 05/22/2026
 
 | Name | Did | Doing | Blockers |
 |------|-----|-------|----------|
-| Nicole Sutedja | | | |
-| Kaley Chung | | | |
-| Jensen Guo | | | |
+| Nicole Sutedja | worked on logo, branding, wireframes, editing video, some pages on the app | continue working with Jensen on frontend development, and design docs | None |
+| Kaley Chung | Started research on upset user signals | Finish upset user signals | Quizzes |
+| Jensen Guo | demo video, code refactoring for modularity, dashboard sub pages | more code cleanup on the front end, implement hi fi wireframe | None |
 | Prakhar Shah | | | |
-| Bethany Miyamoto | | | |
-| Kevin Wang | | | |
-| Han Yang-Lin | | | |
-| Aron Wu | | | |
-| Benedict Luis | | | |
+| Bethany Miyamoto | demo video for development, showed backend and frontend running on my device | README.md for code review | club senior banquets |
+| Kevin Wang | Asked for feedback from the prof, discuss with the team about database | migrate current raw postgreSQL to supabase | None |
+| Han Yang-Lin | Communicated with the team on upcoming tasks | Complete database migration from local to Supabase | Midterm |
+| Aron Wu | Started writing unit tests for UptimeCheck and researching into other CI pipeline checkpoints | Finish writing UptimeCheck unit tests, add new CI pipeline checkpoints | None |
+| Benedict Luis | Update standup log, started helping Aron to research on other CI pipeline checkpoints | Fix the changelog issues and CI pipeline research | Quizzes |
 | Evan Marriott | | | |
 
 ### Stand-up 3 — 05/24/2026
