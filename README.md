@@ -77,12 +77,14 @@ watchtower/
 2. Go to the /src/prototype/server directory  
 3. Run `npm install`  
 3. Add the `.env`  file in the /src/prototype/server directory with the contents (replace `your_password` with the password you used in the PostgreSQL install):  
-`# Database Configuration  
+```env
+# Database Configuration  
 DB_USER=postgres  
 DB_PASSWORD=your_password  
 DB_HOST=localhost  
 DB_PORT=5432  
-DB_NAME=watchtower_db`  
+DB_NAME=watchtower_db
+```  
 4. Run `npm run db:init` to create the database (only needs to be run once, or when you want to reset the database)
 5. Run `npm start` to start the server
 6. Start live server with "Go Live" in VSCode (need the LiveServer extension)
