@@ -85,7 +85,7 @@
 | Han Yang-Lin | Communicated with the team on upcoming tasks | Complete database migration from local to Supabase | Midterm |
 | Aron Wu | Started writing unit tests for UptimeCheck and researching into other CI pipeline checkpoints | Finish writing UptimeCheck unit tests, add new CI pipeline checkpoints | None |
 | Benedict Luis | Update standup log, started helping Aron to research on other CI pipeline checkpoints | Fix the changelog issues and CI pipeline research | Quizzes |
-| Evan Marriott | | | |
+| Evan Marriott | worked on UI changes and error collapsing in front end | implement browser tracking for errors | None |
 
 ### Stand-up 3 — 05/24/2026
 
