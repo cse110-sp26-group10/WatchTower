@@ -46,7 +46,7 @@ SUPABASE_URL=http://127.0.0.1:54321
 SUPABASE_SERVICE_ROLE_KEY=<the "Secret" sb_secret_… key>
 
 # Remote (Supabase dashboard → Settings → API)
-# SUPABASE_URL=https://<project-ref>.supabase.co
+# SUPABASE_URL=https://ghlddzvbhbztilheeuai.supabase.co
 # SUPABASE_SERVICE_ROLE_KEY=<service_role key, starts with eyJ…>
 ```
 
