@@ -21,6 +21,7 @@ All team members must document any notable changes to the WatchTower project in 
 - Added Vitest unit test setup
 - Added Playwright E2E test setup
 - Added ESLint, HTML validation, and Stylelint configuration
+- Added error event monitoring for Promise rejections and failed fetch requests.
 
 ### Changed
 - Updated frontend event handling to attach server/database event IDs
@@ -37,7 +38,6 @@ All team members must document any notable changes to the WatchTower project in 
 - Fixed class name parsing
 - Fixed script source/reference issues
 - Fixed event update flow
-- Fixed tracker handling for Promise rejections and failed fetch requests
 - Fixed uptime check behavior
 - Fixed validation issues related to signal structure
 - Fixed mock data naming mismatch
