@@ -64,7 +64,10 @@
 | Nicole Sutedja | helped with making wireframes and branding material | write script & organize product demo video for tomorrow | None |
 | Kaley Chung | Check over past research pages and added to Github | Start upset user signals | Quizzes |
 | Jensen Guo | A lot of code refactoring and modularizing, as well as create the feedback page, errors page, and signalOverview script | Activity page, and continue reviewing code to make sure everything is consistent | None |
-| Prakhar Shah | | | |
+| Prakhar Shah | starter creating additional user personas and user stories
+Will do: add the user personas and start working on solidifying the wireframes
+Blockers: have been sick for the past week | looked at the wireframes and started brainstorming about ideas to put on the figma
+Will do: still have to add the user personals and  add everything to the the figma | have been sick for the past week |
 | Bethany Miyamoto | frontend feedback and tested test app/dashboard connection | demo video for development | Club responsibilities |
 | Kevin Wang | add uptime card, add a sidebar, talk with teammates about page logic | adjust the page layout based on the Figma design | midterms |
 | Han Yang-Lin | Connected uptime display in the dashboard to the backend and implemented a PostgreSQL database with node-postgres | Modify the backend as needed to work with the updated dashboard | Quizzes and midterms |
@@ -79,7 +82,7 @@
 | Nicole Sutedja | worked on logo, branding, wireframes, editing video, some pages on the app | continue working with Jensen on frontend development, and design docs | None |
 | Kaley Chung | Started research on upset user signals | Finish upset user signals | Quizzes |
 | Jensen Guo | demo video, code refactoring for modularity, dashboard sub pages | more code cleanup on the front end, implement hi fi wireframe | None |
-| Prakhar Shah | | | |
+| Prakhar Shah | looked at the wireframes and started brainstorming about ideas to put on the figma | still have to add the user personals and  add everything to the the figma | Still sick |
 | Bethany Miyamoto | demo video for development, showed backend and frontend running on my device | README.md for code review | club senior banquets |
 | Kevin Wang | Asked for feedback from the prof, discuss with the team about database | migrate current raw postgreSQL to supabase | None |
 | Han Yang-Lin | Communicated with the team on upcoming tasks | Complete database migration from local to Supabase | Midterm |
