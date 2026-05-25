@@ -1,6 +1,6 @@
 # User Feedback Signals — WatchTower MVP Research
 
- A *build signal* marks a point in time where software changed. User feedback signals are the human side of that equation - they mark points in time where *users reacted* to what changed. Together, they let WatchTower answer: "Did this deploy upset people?"
+A *build signal* marks a point in time where software changed. User feedback signals are the human side of that equation - they mark points in time where *users reacted* to what changed. Together, they let WatchTower answer: "Did this deploy upset people?"
 
 ## What Are User Feedback Signals?
 
