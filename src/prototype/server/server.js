@@ -90,7 +90,9 @@ async function sendAlert(user, uptimeCheck) {
                 console.log("Alert sent");
                 return true;
             }
-        } catch (error) { }
+        } catch (error) {
+            console.error("Alert error: ", error);
+        }
         await sleep(RETRY_INTERVAL * 1000);
     }
     console.error("Alert failed");
