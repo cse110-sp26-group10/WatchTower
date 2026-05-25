@@ -4,8 +4,7 @@
   "type": "module",
   "main": "./server.js",
   "scripts": {
-    "start": "node .",
-    "db:init": "node ./assets/init-db.js"
+    "start": "node ."
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.106.1",
