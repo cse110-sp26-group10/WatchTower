@@ -10,7 +10,7 @@ For WatchTower's MVP, the goal is to correlate these signals with build events t
 
 ## Signal Types
 
-### 1. ★ Star / Thumbs Rating Widgets
+### 1. Star (★) / Thumbs Rating Widgets
 
 **What it is:** An inline micro-survey embedded in the UI - typically 1–5 stars, thumbs up/down, or an emoji scale - shown after a key user action (e.g. completing a purchase, finishing onboarding, submitting a form).
 
@@ -59,7 +59,7 @@ Timeline view:
 - Volume spike after a build triggers an alert with a linked build event
 - Severity weighting: a "data loss" complaint counts more than a "cosmetic glitch"
 
-### 4. 📊 CSAT - Customer Satisfaction Score
+### 4. CSAT - Customer Satisfaction Score
 
 **What it is:** A post-interaction survey asking "How satisfied were you with [feature/session/support]?" scored 1–5 or 1–10.
 
