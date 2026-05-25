@@ -9,7 +9,9 @@ import {
     kvRow,
     relativeTime,
     escapeHtml,
-    populateDeploymentFilter
+    populateDeploymentFilter,
+    visualizeStars,
+    ratingTone
 } from './helpers.js';
 
 const OVERVIEW_UPDATE_INTERVAL = 5;
@@ -133,17 +135,6 @@ function renderDeploymentDetail() {
   `;
 }
 
-function ratingTone(rating) {
-  if (rating <= 2) return 'rating-low';
-  if (rating >= 4) return 'rating-high';
-  return 'rating-mid';
-}
-
-function starsForRating(rating) {
-  const filled = Math.max(0, Math.min(5, Number(rating || 0)));
-  return '★★★★★'.slice(0, filled) + '☆☆☆☆☆'.slice(0, 5 - filled);
-}
-
 function renderHeader(signals) {
   const banner = document.getElementById('errors-banner');
   const criticalCount = signals.filter((e) => e.metadata.severity === 'critical').length;
@@ -178,7 +169,7 @@ function renderHeader(signals) {
 function renderSignalBadge(signal) {
   if (signal.event_type === 'survey') {
     const rating = Number(signal.metadata.rating || 0);
-    return `<span class="rating-badge ${ratingTone(rating)}" title="${rating}/5">${starsForRating(rating)}</span>`;
+    return `<span class="rating-badge ${ratingTone(rating)}" title="${rating}/5">${visualizeStars(rating)}</span>`;
   }
   return `<span class="severity-badge sev-${escapeHtml(signal.metadata.severity)}">${escapeHtml(signal.metadata.severity)}</span>`;
 }
@@ -192,7 +183,7 @@ function renderPrimaryDetail(signal) {
   if (signal.event_type === 'survey') {
     const rating = Number(signal.metadata.rating || 0);
     return `
-      <div class="issue-headline">${starsForRating(rating)} <span class="event-meta">(${rating}/5)</span></div>
+      <div class="issue-headline">${visualizeStars(rating)} <span class="event-meta">(${rating}/5)</span></div>
       <div class="event-message">${escapeHtml(signal.metadata.comment || '(no comment)')}</div>
     `;
   }
