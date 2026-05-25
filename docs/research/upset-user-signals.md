@@ -31,7 +31,7 @@ Timeline view:
             v2.4.1       🚨 Signal: Possible UX regression
 ```
 
-### 2. 📋 Feedback Forms (Open Text)
+### 2. Feedback Forms (Open Text)
 
 **What it is:** A short-form text input - often triggered by a "Give feedback" button, a NPS follow-up, or an exit intent prompt - where users describe a problem in their own words.
 
@@ -45,7 +45,7 @@ Timeline view:
 - Spike in negative keywords (e.g. "broken", "can't", "error", "slow") after a build = flag
 - Build-correlated feedback feed: "14 users mentioned 'broken' within 90 min of deploy `v2.4.1`"
 
-### 3. 😤 Complaint / Bug Report Events
+### 3. Complaint / Bug Report Events
 
 **What it is:** Explicit signals that something is wrong - in-app bug report buttons, support ticket submissions, or structured "report a problem" flows.
 
@@ -72,7 +72,7 @@ Timeline view:
 - WatchTower aggregates rolling CSAT per feature area
 - Drops in CSAT for a specific feature after a deploy pinpoint *which part* of the release caused the regression
 
-### 5. 🔢 NPS - Net Promoter Score
+### 5. NPS - Net Promoter Score
 
 **What it is:** "How likely are you to recommend us to a friend?" scored 0–10. Responses bucket into Detractors (0–6), Passives (7–8), Promoters (9–10). Score = % Promoters − % Detractors.
 
