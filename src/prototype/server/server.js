@@ -2,7 +2,9 @@ import Event from "./assets/Event.js";
 import {attemptSuccess, UptimeCheckAttempt, UptimeCheck} from "./assets/UptimeCheck.js";
 import http from "http";
 import { supabase } from "./assets/db.js";   // was: import { pool }
+import twilio from "twilio";
 
+const twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 const UPTIME_MONITOR_INTERVAL = 60; // seconds
 const TIMEOUT_THRESHOLD = 5; // seconds
@@ -76,11 +78,33 @@ async function getWebsiteStatus(url) {
     return new UptimeCheck(url, attempts);
 }
 
-async function monitorWebsite(url) {
+async function sendAlert(user, uptimeCheck) {
+    for (let tries = 1; tries <= MAX_TRIES; tries++) {
+        try {
+            const message = await twilioClient.messages.create({
+                body: `WatchTower Alert - Website ${user.website_url} is down with error code ${uptimeCheck.status}. Detected at ${uptimeCheck.timestamp}. Please check dashboard immediately.`,
+                to: process.env.TARGET_PHONE_NUMBER, // Mock data
+                from: process.env.SOURCE_PHONE_NUMBER
+            });
+            if (message.status === "queued" || message.status === "sent") {
+                console.log("Alert sent");
+                return true;
+            }
+        } catch (error) { }
+        await sleep(RETRY_INTERVAL * 1000);
+    }
+    console.error("Alert failed");
+    return false;
+}
+
+async function monitorWebsite(user) {
     while (true) {
-        const uptimeCheck = await getWebsiteStatus(url);
+        const uptimeCheck = await getWebsiteStatus(user.website_url);
         if (!uptimeCheck.is_up) {
-            // Send alert to developer
+            const uptimeLog = await getUptimeLog(user);
+            if (uptimeLog.length == 0 || uptimeLog.at(-1).is_up) { // Only sends alert once each time the website goes down
+                sendAlert(user, uptimeCheck); // Runs asynchronously
+            }
         }
         await logUptime(uptimeCheck);
         await sleep(UPTIME_MONITOR_INTERVAL * 1000);
@@ -89,10 +113,10 @@ async function monitorWebsite(url) {
 
 function initUser(user) {
     if (new URL(user.website_url).hostname === "localhost") {
-        console.log("Monitoring skipped for localhost");
+        console.warn("Monitoring skipped for localhost");
         return;
     }
-    monitorWebsite(user.website_url);
+    monitorWebsite(user);
 }
 
 async function initUsers() {
@@ -141,7 +165,7 @@ const server = http.createServer(async (req, res) => {
             } catch {
                 res.writeHead(400);
                 res.end("Invalid event");
-                console.log("\nInvalid event");
+                console.error("\nInvalid event");
             }
         });
     }

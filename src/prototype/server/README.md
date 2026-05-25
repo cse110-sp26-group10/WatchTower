@@ -120,3 +120,68 @@ then watch events appear in Studio → `events`, or via `curl http://localhost:8
 - **`Node.js 20 detected without native WebSocket`** → run `npm install` in the server folder (`ws` is a dependency).
 - **Queries return empty / permission errors** → you used the anon/publishable key; use the secret/service_role key.
 - **Changed `.env` but nothing happened** → restart the server.
+
+# WatchTower Server — Twilio Setup
+
+How to set up the WatchTower's SMS feature with Twilio.
+
+## 1. Setup
+
+### 1.1 Prerequisites
+
+- A trial Twilio account. Register [here](https://www.twilio.com/try-twilio).
+
+### 1.2 Install dependencies
+
+```bash
+cd src/prototype/server && npm install   # server — twilio
+```
+
+### 1.3 Buy phone number
+
+1. Go to https://console.twilio.com/ → Develop → Phone Numbers → Manage → Buy a number.
+2. Find a phone number.
+3. Click Buy → Buy <phone_number, starts with +1>.
+4. Go to https://console.twilio.com/ → Develop → Phone Numbers → Manage → Active numbers.
+5. Verify that the number has been purchased.
+
+### 1.4 Configure `.env`
+
+Copy `.env.example` to `.env` in `src/prototype/server/`. Follow the instructions to fill out the fields.
+
+```
+# Twilio Authentication (https://console.twilio.com/ → scroll down → Account Info)
+TWILIO_ACCOUNT_SID=
+TWILIO_AUTH_TOKEN=
+# Target Phone Number (https://console.twilio.com/ → Develop → Message → Virtual Phone → Copy Virtual Phone's Number)
+TARGET_PHONE_NUMBER=
+# Source Phone Number (https://console.twilio.com/ → Develop → Phone Numbers → Manage → Active numbers)
+SOURCE_PHONE_NUMBER=
+```
+
+### 1.5 Monitoring messages
+
+As of the current setup, regardless of the phone number used when registering for WatchTower, the server will only send alerts to the virtual phone number provided by Twilio. To check messages sent to your virtual phone number:
+1. Go to https://console.twilio.com/ → Develop → Message → Virtual Phone.
+2. Select "Phone number" as the **Sender type**.
+3. Select the source phone number as the **Phone number**.
+4. Messages will be shown on a mock phone display.
+
+Alternatively, to see the full message log to your virtual phone number:
+1. Go to https://console.twilio.com/ → Develop → Message → Virtual Phone.
+2. Click on "Messaging Logs".
+3. Select "Phone number" as the **Sender type**.
+4. Select the source phone number as the **Phone number**.
+5. Messages will be shown as a log with the fields "Timestamp", "From", and "Status".
+
+And to see the complete message log associated with your Twilio account, go to https://console.twilio.com/ → Monitor → Logs → Messaging.
+
+### 1.6 Additional notes
+
+Due to being on a trial account, there are these following limits:
+- The trial account will expire after 30 days (not a problem since the project ends before this).
+- SMS messages can only be sent to the given virtual phone number. Even though the phone number you use when registering is automatically verified by Twilio (https://console.twilio.com/ → Develop → Phone Numbers → Manage → Verified Caller IDs), Toll Free verification is still required for US phone numbers.
+- A maximum of 50 messages can be sent per day, in addition to a limit on the number of message segments per message.
+- Messages sent will be prepended with "Sent from a Twilio Trial account".
+
+For more information, check out this [article] (https://help.twilio.com/articles/360036052753-Twilio-Free-Trial-Limitations).
