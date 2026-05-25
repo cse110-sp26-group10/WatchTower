@@ -8,8 +8,6 @@ User feedback signals are measurable expressions of user sentiment collected dir
 
 For WatchTower's MVP, the goal is to correlate these signals with build events to surface regressions in user experience automatically.
 
----
-
 ## Signal Types
 
 ### 1. ★ Star / Thumbs Rating Widgets
@@ -31,9 +29,6 @@ Timeline view:
   ──────────●────────────▼──────────────────────
             Build        Rating avg drops: 4.2 → 2.8
             v2.4.1       🚨 Signal: Possible UX regression
-```
-
----
 
 ### 2. 📋 Feedback Forms (Open Text)
 
@@ -49,8 +44,6 @@ Timeline view:
 - Spike in negative keywords (e.g. "broken", "can't", "error", "slow") after a build = flag
 - Build-correlated feedback feed: "14 users mentioned 'broken' within 90 min of deploy `v2.4.1`"
 
----
-
 ### 3. Complaint / Bug Report Events
 
 **What it is:** Explicit signals that something is wrong — in-app bug report buttons, support ticket submissions, or structured "report a problem" flows.
@@ -65,8 +58,6 @@ Timeline view:
 - Volume spike after a build triggers an alert with a linked build event
 - Severity weighting: a "data loss" complaint counts more than a "cosmetic glitch"
 
----
-
 ### 4. CSAT — Customer Satisfaction Score
 
 **What it is:** A post-interaction survey asking "How satisfied were you with [feature/session/support]?" scored 1–5 or 1–10.
@@ -79,8 +70,6 @@ Timeline view:
 - CSAT scores streamed as events with `timestamp`, `score`, `feature_context`
 - WatchTower aggregates rolling CSAT per feature area
 - Drops in CSAT for a specific feature after a deploy pinpoint *which part* of the release caused the regression
-
----
 
 ### 5. NPS — Net Promoter Score
 
