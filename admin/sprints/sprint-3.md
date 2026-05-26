@@ -94,16 +94,17 @@ Will do: still have to add the user personals and  add everything to the the fi
 
 | Name | Did | Doing | Blockers |
 |------|-----|-------|----------|
-| Nicole Sutedja | | | |
-| Kaley Chung | | | |
-| Jensen Guo | | | |
-| Prakhar Shah | | | |
-| Bethany Miyamoto | | | |
-| Kevin Wang | | | |
-| Han Yang-Lin | | | |
-| Aron Wu | | | |
-| Benedict Luis | | | |
-| Evan Marriott | | | |
+| Nicole Sutedja | Assigned tasks to people in preparation for sprint 3, communicated goals | Continue to finalize Figma wireframes for implementation | Family events |
+| Kaley Chung | Added research on Figma and http://upset-user-signals.md/on Github | Make more user persona | Quizzes |
+| Jensen Guo | Rewriting some functions for the frontend, and planning for full frontend rewrite. i will share at the meeting on tuesday | full frontend rewrite, then implement hi fi figma wireframe | traveling during memorial day |
+| Prakhar Shah | On user personnas page for figma, added 3 cards for Alex(Developer), Sam(Team Lead), and Taylor(Customer Specilalist)
+Added research page with all newly written 25 user stories | design and add all the hi-fi wireframes (dashboard, errors, page loads, feedback, clicks, activity and deployment) | Midterms |
+| Bethany Miyamoto | implemented readme and cleaned up repo, looking over code review | research authentication with supabase and code review | None |
+| Kevin Wang | migrate database to supabase | rewrite the frontend based on new ui design | None |
+| Han Yang-Lin | Implemented SMS messaging with Twilio to notify users when their website goes down | Start researching how to authenticate users with Supabase | None |
+| Aron Wu | Finish unit tests for uptimeCheck, researched additional CI pipeline checks | Add additional CI pipeline checks | None |
+| Benedict Luis | Updated/fixed changelog.md, researched more CI testing we can use later on with Aron and finished standup log for sprint 3 | Continue to update changelog if needed, implement more CI testing if needed and finalize sprint 3 | Will be out of town during memorial day and busy preparing for midterms |
+| Evan Marriott | browser tracking for watchtower | more errors in test app | None |
 
 ---
 
