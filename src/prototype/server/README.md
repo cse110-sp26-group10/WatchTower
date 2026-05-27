@@ -180,7 +180,7 @@ And to see the complete message log associated with your Twilio account, go to h
 
 Due to being on a trial account, there are these following limits:
 - The trial account will expire after 30 days (not a problem since the project ends before this).
-- SMS messages can only be sent to the given virtual phone number. Even though the phone number you use when registering is automatically verified by Twilio (https://console.twilio.com/ → Develop → Phone Numbers → Manage → Verified Caller IDs), Toll Free verification is still required for US phone numbers.
+- SMS messages can only be sent to the given virtual phone number. To send SMS messages to US phone numbers, it's required to register for A2P 10DLC.
 - A maximum of 50 messages can be sent per day, in addition to a limit on the number of message segments per message.
 - Messages sent will be prepended with "Sent from a Twilio Trial account".
 
