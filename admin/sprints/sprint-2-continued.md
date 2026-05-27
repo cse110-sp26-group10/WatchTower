@@ -121,26 +121,49 @@ Added research page with all newly written 25 user stories | design and add all 
 ## Sprint Review
 
 ### What was completed:
--
+- Database migration from PostgreSQL to Supabase
+- CI pipeline and automated test suite set up and running
+- Backend work largely finished
+- Test app functional with initial errors
+- Figma wireframes completed
+- Frontend pages added (built on top of existing dashboard)
 
 ### What was not completed:
--
+- SMS/notification feature (carried into Sprint 3)
+- Full frontend UI implementation from new Figma wireframes
+- User login / authentication
+- Changelog documentation not consistently maintained
 
 ### Reason(s):
--
+- Work was concentrated near the end of the sprint rather than distributed evenly throughout the week — multiple team members cited pacing as the primary issue
+- Some blockers arose mid-sprint that weren't communicated to leads in time for reassignment
+- Miscommunication between sub-teams (particularly around testing coordination) caused delays
+- Frontend accumulated technical debt (duplicate code, repeated logic across pages) that slowed progress
 
 ---
 
 ## Sprint Retrospective
 
 ### What went well:
--
+- Database migration to Supabase was completed successfully
+- CI pipeline and test suite are now in place
+- Communication improved noticeably compared to the previous sprint — team leads felt more in the loop
+- Most assigned tasks were ultimately finished
+- Teams are starting to collaborate more across sub-groups (frontend ↔ backend)
 
 ### What didn't go well:
--
+- Work was back-loaded — most progress happened right before the deadline instead of being spread across the week
+- Miscommunication between sub-teams, especially around testing, led to coordination issues
+- Blockers weren't always surfaced early enough for leads to reassign or help
+- Changelog was not kept up to date (Jensen flagged this)
+- Frontend code quality degraded over time due to incremental additions without refactoring
 
 ### What we'll do differently:
--
+- Nicole will introduce suggested mid-sprint internal deadlines to help the team self-pace
+- Members should proactively communicate if blocked or unable to finish a task — notify leads so someone can step in before the deadline
+- Close GitHub Issues as tasks are completed; keep the board current throughout the sprint (not just at the end)
+- Frontend sub-team (Jensen, Bethany, Xuanye) will coordinate closely and split work clearly to avoid merge conflicts
+- Improve cross-team communication, especially between testing and development
 
 ---
 
