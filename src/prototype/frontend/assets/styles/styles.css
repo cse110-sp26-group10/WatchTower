@@ -1,0 +1,222 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #fff;
+  color: #111;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+  border-bottom: 1px solid #ccc;
+  background: #f4f4f4;
+}
+
+.brand-name {
+  color: inherit;
+  font-size: 18px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.topbar-meta {
+  display: flex;
+  gap: 6px;
+  color: #555;
+  font-size: 12px;
+}
+
+.layout {
+  display: flex;
+  align-items: flex-start;
+}
+
+.sidebar {
+  position: sticky;
+  top: 0;
+  flex: 0 0 180px;
+  min-height: calc(100vh - 41px);
+  padding: 16px 8px 16px 16px;
+  border-right: 1px solid #ccc;
+  background: #fafafa;
+}
+
+.sidebar-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sidebar-link {
+  display: block;
+  padding: 8px 10px;
+  border-left: 3px solid transparent;
+  border-radius: 2px;
+  color: #333;
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.sidebar-link.is-active,
+.sidebar-link:hover {
+  background: #e8f0fe;
+  border-left-color: #1565c0;
+  color: #0d47a1;
+}
+
+.dashboard {
+  flex: 1;
+  min-width: 0;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.page-stack {
+  display: grid;
+  gap: 16px;
+}
+
+.filter-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filter-label,
+.event-meta,
+.panel-hint {
+  color: #555;
+  font-size: 12px;
+}
+
+.filter-select {
+  min-width: 260px;
+  padding: 4px 6px;
+  border: 1px solid #999;
+  background: #fff;
+  font: inherit;
+}
+
+deployment-detail-box {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  background: #fafafa;
+  font-size: 12px;
+}
+
+.dep-field {
+  display: flex;
+  gap: 4px;
+}
+
+.dep-key {
+  color: #666;
+}
+
+.mono,
+.dep-val.mono {
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+}
+
+.panel,
+.status-banner {
+  padding: 12px;
+  border: 1px solid #ccc;
+  background: #fff;
+}
+
+.status-banner {
+  border-left-width: 8px;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.status-banner[data-level="ok"] {
+  border-color: #2e7d32;
+  background: #e8f5e9;
+}
+
+.status-banner[data-level="degraded"] {
+  border-color: #f57c00;
+  background: #fff3cd;
+}
+
+.status-banner[data-level="down"] {
+  border-color: #c62828;
+  background: #ffebee;
+}
+
+.panel-header {
+  font-weight: 700;
+}
+
+.event-row {
+  display: block;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.event-link {
+  display: flex;
+  gap: 10px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.event-body {
+  min-width: 0;
+}
+
+.event-message {
+  font-weight: 600;
+}
+
+.severity-badge,
+.rating-badge {
+  flex: 0 0 auto;
+  align-self: flex-start;
+  padding: 2px 6px;
+  border: 1px solid #999;
+  font-size: 12px;
+}
+
+.sev-critical,
+.rating-low {
+  border-color: #c62828;
+  color: #b71c1c;
+}
+
+.sev-warning,
+.rating-mid {
+  border-color: #f57c00;
+  color: #8a5a00;
+}
+
+.sev-info,
+.rating-high {
+  border-color: #2e7d32;
+  color: #1b5e20;
+}
+
+.footer {
+  padding: 12px 16px;
+  border-top: 1px solid #ccc;
+  color: #555;
+  font-size: 12px;
+}

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WatchTower</title>
+  <link rel="stylesheet" href="assets/styles/styles.css">
+</head>
+<body>
+  <app-topbar></app-topbar>
+
+  <div class="layout">
+    <app-sidebar></app-sidebar>
+
+    <main class="dashboard" id="app-outlet"></main>
+  </div>
+
+  <app-footer></app-footer>
+
+  <!-- Temporary reference data while the frontend rewrite is scaffolded. -->
+  <script src="../../../archive/prototype/dashboard/assets/scripts/data.js"></script>
+  <script type="module" src="assets/scripts/main.js"></script>
+</body>
+</html>
