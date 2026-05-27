@@ -47,7 +47,7 @@
 
 ---
 ## Stand-ups
-### Stand-up 1 — 05/26/2026
+### Stand-up 1 — 05/27/2026
 | Name | Did | Doing | Blockers |
 |------|-----|-------|----------|
 | Nicole Sutedja | | | |
@@ -61,7 +61,7 @@
 | Benedict Luis | | | |
 | Evan Marriott | | | |
 
-### Stand-up 2 — 05/28/2026
+### Stand-up 2 — 05/29/2026
 | Name | Did | Doing | Blockers |
 |------|-----|-------|----------|
 | Nicole Sutedja | | | |
@@ -75,7 +75,7 @@
 | Benedict Luis | | | |
 | Evan Marriott | | | |
 
-### Stand-up 3 — 05/30/2026
+### Stand-up 3 — 05/31/2026
 | Name | Did | Doing | Blockers |
 |------|-----|-------|----------|
 | Nicole Sutedja | | | |
