@@ -1,4 +1,3 @@
-import './components/app-shell.js';
 import './components/app-topbar.js';
 import './components/app-sidebar.js';
 import './components/app-footer.js';
