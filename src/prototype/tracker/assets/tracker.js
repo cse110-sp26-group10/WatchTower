@@ -1,6 +1,14 @@
 const originalWarn = console.warn;
 const originalFetch = typeof window !== 'undefined' ? window.fetch : undefined;
 
+/**
+ * Detects the browser name and major version from the user agent.
+ * Prefers the structured `userAgentData.brands` API (Chromium), then falls
+ * back to UA string regex, then returns a truncated raw UA as a last resort.
+ * @param {string} ua - The `navigator.userAgent` string.
+ * @param {object} [uaData] - The `navigator.userAgentData` object, if available.
+ * @returns {{ name: string, version: string }} Detected browser name and major version.
+ */
 export function parseBrowser(ua, uaData) {
   // Tier 1: userAgentData (Chromium-based browsers)
   if (uaData?.brands?.length) {
