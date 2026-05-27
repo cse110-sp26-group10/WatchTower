@@ -1,4 +1,4 @@
-# Sprint 3 — Cohesive Demo App, Uptime Visualization, and High-Fidelity Design
+# Sprint 2 Continuation — Cohesive Demo App, Uptime Visualization, and High-Fidelity Design
 
 **Project:** WatchTower <br>
 **Dates:** 05/19/2026 – 05/24/2026 <br>
@@ -64,10 +64,7 @@
 | Nicole Sutedja | helped with making wireframes and branding material | write script & organize product demo video for tomorrow | None |
 | Kaley Chung | Check over past research pages and added to Github | Start upset user signals | Quizzes |
 | Jensen Guo | A lot of code refactoring and modularizing, as well as create the feedback page, errors page, and signalOverview script | Activity page, and continue reviewing code to make sure everything is consistent | None |
-| Prakhar Shah | starter creating additional user personas and user stories
-Will do: add the user personas and start working on solidifying the wireframes
-Blockers: have been sick for the past week | looked at the wireframes and started brainstorming about ideas to put on the figma
-Will do: still have to add the user personals and  add everything to the the figma | have been sick for the past week |
+| Prakhar Shah | starter creating additional user personas and user stories | Add the user personas and start working on solidifying the wireframes | have been sick for the past week |
 | Bethany Miyamoto | frontend feedback and tested test app/dashboard connection | demo video for development | Club responsibilities |
 | Kevin Wang | add uptime card, add a sidebar, talk with teammates about page logic | adjust the page layout based on the Figma design | midterms |
 | Han Yang-Lin | Connected uptime display in the dashboard to the backend and implemented a PostgreSQL database with node-postgres | Modify the backend as needed to work with the updated dashboard | Quizzes and midterms |
@@ -97,8 +94,7 @@ Will do: still have to add the user personals and  add everything to the the fi
 | Nicole Sutedja | Assigned tasks to people in preparation for sprint 3, communicated goals | Continue to finalize Figma wireframes for implementation | Family events |
 | Kaley Chung | Added research on Figma and http://upset-user-signals.md/on Github | Make more user persona | Quizzes |
 | Jensen Guo | Rewriting some functions for the frontend, and planning for full frontend rewrite. i will share at the meeting on tuesday | full frontend rewrite, then implement hi fi figma wireframe | traveling during memorial day |
-| Prakhar Shah | On user personnas page for figma, added 3 cards for Alex(Developer), Sam(Team Lead), and Taylor(Customer Specilalist)
-Added research page with all newly written 25 user stories | design and add all the hi-fi wireframes (dashboard, errors, page loads, feedback, clicks, activity and deployment) | Midterms |
+| Prakhar Shah | On user personnas page for figma, added 3 cards for Alex(Developer), Sam(Team Lead), and Taylor(Customer Specilalist) and added research page with all newly written 25 user stories | design and add all the hi-fi wireframes (dashboard, errors, page loads, feedback, clicks, activity and deployment) | Midterms |
 | Bethany Miyamoto | implemented readme and cleaned up repo, looking over code review | research authentication with supabase and code review | None |
 | Kevin Wang | migrate database to supabase | rewrite the frontend based on new ui design | None |
 | Han Yang-Lin | Implemented SMS messaging with Twilio to notify users when their website goes down | Start researching how to authenticate users with Supabase | None |
