@@ -56,15 +56,15 @@ async function logEvent(eventObject) {
     const event = eventObject.event;
     const query = `
         INSERT INTO events (
-            event_type, timestamp, created_at, deployment, ip, 
-            user_id, current_url, host, pathname, referrer, 
-            referring_domain, metadata
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+            event_type, timestamp, created_at, deployment, ip,
+            user_id, current_url, host, pathname, referrer,
+            referring_domain, metadata, browser
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
     `;
     const values = [
         event.event_type, event.timestamp, event.created_at, JSON.stringify(event.deployment), event.ip,
         event.user_id, event.current_url, event.host, event.pathname, event.referrer,
-        event.referring_domain, JSON.stringify(event.metadata)
+        event.referring_domain, JSON.stringify(event.metadata), JSON.stringify(event.browser)
     ];
     console.log("\nLogging event...");
     try {

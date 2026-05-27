@@ -60,9 +60,10 @@ function highlightStars(upTo) {
 
 function submitSurvey() {
   if (surveyRating === 0) return;
-  // Comment goes to console only — not rendered into the DOM
   const comment = document.getElementById('survey-comment').value.trim();
-  console.log('WatchTower survey signal:', { rating: surveyRating, comment });
+  if (typeof window.logSurvey === 'function') {
+    window.logSurvey(surveyRating, comment);
+  }
   document.getElementById('survey-thanks').hidden = false;
   document.getElementById('survey-submit-btn').disabled = true;
 }

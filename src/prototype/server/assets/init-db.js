@@ -35,7 +35,8 @@ CREATE TABLE events (
     pathname TEXT NOT NULL,
     referrer TEXT,
     referring_domain TEXT,
-    metadata JSONB NOT NULL
+    metadata JSONB NOT NULL,
+    browser JSONB NOT NULL
 );
 
 CREATE TABLE uptime_log (

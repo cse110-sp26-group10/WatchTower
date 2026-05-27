@@ -12,13 +12,22 @@ import {
   populateDeploymentFilter,
   deriveStatus,
   averageLoadTime,
-  averageRating,
   escapeHtml,
   summarizeEvent
  } from './helpers.js';
 
 const DASHBOARD_UPDATE_INTERVAL = 5;
 const DASHBOARD_VIEWS = new Set(['overview', 'errors', 'feedback', 'activity']);
+
+function isResolved(event) {
+  try {
+    const ids = new Set(JSON.parse(localStorage.getItem('wt_resolved_ids') || '[]'));
+    if (ids.has(event.id)) return true;
+    const groups = new Map(Object.entries(JSON.parse(localStorage.getItem('wt_resolved_groups') || '{}')));
+    const resolvedAt = groups.get(event.metadata.message || '');
+    return resolvedAt != null && new Date(event.timestamp) <= new Date(resolvedAt);
+  } catch { return false; }
+}
 
 /** Currently selected deployment filter; 'all' means no filter. */
 let activeDeploymentId = 'all';
@@ -72,7 +81,8 @@ function renderUptime(events) {
   const pctEl = document.getElementById('uptime-percent');
   const lastEl = document.getElementById('uptime-last');
 
-  const health = deriveStatus(events || []);
+  const activeEvents = (events || []).filter((e) => e.event_type !== 'error' || !isResolved(e));
+  const health = deriveStatus(activeEvents);
 
   if (log.length === 0) {
     card.dataset.status = 'unknown';
@@ -94,8 +104,8 @@ function renderUptime(events) {
   if (!isUp) {
     subEl.textContent = 'Service unreachable';
   } else {
-    const crit = (events || []).filter((e) => e.event_type === 'error' && e.metadata.severity === 'critical').length;
-    const warn = (events || []).filter((e) => e.event_type === 'error' && e.metadata.severity === 'warning').length;
+    const crit = activeEvents.filter((e) => e.event_type === 'error' && e.metadata.severity === 'critical').length;
+    const warn = activeEvents.filter((e) => e.event_type === 'error' && e.metadata.severity === 'warning').length;
     if (health.level === 'ok') {
       subEl.textContent = 'All systems operational';
     } else {
@@ -121,7 +131,7 @@ function renderUptime(events) {
  */
 function renderHeader(events) {
   const counts = {
-    error: events.filter((e) => e.event_type === 'error').length,
+    error: events.filter((e) => e.event_type === 'error' && !isResolved(e)).length,
     page_load: events.filter((e) => e.event_type === 'page_load').length,
     survey: events.filter((e) => e.event_type === 'survey').length,
     click: events.filter((e) => e.event_type === 'click').length,
@@ -131,40 +141,69 @@ function renderHeader(events) {
   const avgLoad = averageLoadTime(events);
   document.getElementById('summary-page-loads').textContent =
     avgLoad != null ? `${avgLoad} ms` : '—';
-  document.getElementById('summary-avg-rating').textContent =
-    averageRating(events) > 0 ? `${averageRating(events)} / 5` : '—';
+  document.getElementById('summary-load-count').textContent = counts.page_load;
   document.getElementById('summary-clicks').textContent = counts.click;
 }
 
+const SEVERITY_RANK = { critical: 0, warning: 1, info: 2 };
+
 /**
- * Populate the Errors panel with recent error events.
+ * Populate the Errors panel, grouping repeated errors by message so a
+ * single recurring error doesn't flood the list. Each group shows a ×N
+ * count, the worst severity seen, and first-seen time for recurring issues.
+ * Sorted: critical first, then by occurrence count descending.
  * @param {Array<Object>} events
  */
 function renderErrors(events) {
   const list = document.getElementById('errors-list');
-  const errors = events
-    .filter((e) => e.event_type === 'error')
-    .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+  const errors = events.filter((e) => e.event_type === 'error' && !isResolved(e));
 
   if (errors.length === 0) {
     list.innerHTML = '<li class="empty">No errors recorded.</li>';
     return;
   }
 
-  list.innerHTML = errors
-    .map(
-      (e) => `
-        <li class="event-row">
-          <a class="event-link" href="issue.html?id=${encodeURIComponent(e.id)}">
-            <span class="severity-badge sev-${escapeHtml(e.metadata.severity)}">${escapeHtml(e.metadata.severity)}</span>
-            <div class="event-body">
-              <div class="event-message">${escapeHtml(e.metadata.message)}</div>
-              <div class="event-meta">${escapeHtml(e.pathname)} • ${relativeTime(e.timestamp)}</div>
-            </div>
-          </a>
-        </li>`
-    )
-    .join('');
+  const groups = new Map();
+  for (const e of errors) {
+    const key = e.metadata.message || '(unknown error)';
+    const g = groups.get(key) || {
+      message: key,
+      count: 0,
+      severity: e.metadata.severity,
+      latestId: e.id,
+      latestTs: e.timestamp,
+      firstTs: e.timestamp,
+      pathname: e.pathname,
+    };
+    g.count += 1;
+    if ((SEVERITY_RANK[e.metadata.severity] ?? 99) < (SEVERITY_RANK[g.severity] ?? 99)) {
+      g.severity = e.metadata.severity;
+    }
+    if (new Date(e.timestamp) > new Date(g.latestTs)) {
+      g.latestTs = e.timestamp;
+      g.latestId = e.id;
+      g.pathname = e.pathname;
+    }
+    if (new Date(e.timestamp) < new Date(g.firstTs)) {
+      g.firstTs = e.timestamp;
+    }
+    groups.set(key, g);
+  }
+
+  const sorted = Array.from(groups.values()).sort((a, b) => {
+    const sevDiff = (SEVERITY_RANK[a.severity] ?? 99) - (SEVERITY_RANK[b.severity] ?? 99);
+    return sevDiff !== 0 ? sevDiff : b.count - a.count;
+  });
+
+  const rows = sorted.map((g) => {
+    const countBadge = g.count > 1 ? `<span class="error-count">\xd7${g.count}</span>` : '';
+    const firstSeen = g.count > 1
+      ? ` • <span class="event-meta-extra">first ${relativeTime(g.firstTs)}</span>`
+      : '';
+    return `<li class="event-row"><a class="event-link" href="issue.html?id=${encodeURIComponent(g.latestId)}"><span class="severity-badge sev-${escapeHtml(g.severity)}">${escapeHtml(g.severity)}</span><div class="event-body"><div class="event-message">${escapeHtml(g.message)}${countBadge}</div><div class="event-meta">${escapeHtml(g.pathname)} • last ${relativeTime(g.latestTs)}${firstSeen}</div></div></a></li>`;
+  });
+
+  list.innerHTML = rows.join('');
 }
 
 const SLOW_LOAD_MS = 1500;
@@ -216,7 +255,7 @@ function renderPageLoads(events) {
           <div class="perf-bar">
             <div class="perf-bar-fill ${slow ? 'is-slow' : ''}" style="width: ${pct}%"></div>
           </div>
-          <div class="event-meta">${g.count}× • last ${relativeTime(g.last)}</div>
+          <div class="event-meta">${g.count}\xd7 • last ${relativeTime(g.last)}</div>
         </li>`;
     })
     .join('');
@@ -228,6 +267,7 @@ function renderPageLoads(events) {
  */
 function renderFeedback(events) {
   const list = document.getElementById('feedback-list');
+  if (!list) return;
   const surveys = events
     .filter((e) => e.event_type === 'survey')
     .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
@@ -286,7 +326,7 @@ function renderClicks(events) {
         <li class="event-row click-row">
           <div class="click-head">
             <span class="click-id">${escapeHtml(g.pathname)}</span>
-            <span class="click-count">${g.count}×</span>
+            <span class="click-count">${g.count}\xd7</span>
           </div>
           <div class="event-meta">last ${relativeTime(g.last)}</div>
         </li>`
