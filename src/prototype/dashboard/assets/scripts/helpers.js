@@ -3,7 +3,10 @@
  * @param {string} iso
  */
 export function relativeTime(iso) {
-  const diffSec = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 1000));
+  const diffSec = Math.max(
+    0,
+    Math.round((Date.now() - new Date(iso).getTime()) / 1000),
+  );
   if (diffSec < 60) return `${diffSec}s ago`;
   const min = Math.round(diffSec / 60);
   if (min < 60) return `${min}m ago`;
@@ -18,17 +21,18 @@ export function relativeTime(iso) {
  */
 export function deriveStatus(events) {
   const criticalErrors = events.filter(
-    (e) => e.event_type === 'error' && e.metadata.severity === 'critical'
+    (e) => e.event_type === "error" && e.metadata.severity === "critical",
   );
   const warnings = events.filter(
-    (e) => e.event_type === 'error' && e.metadata.severity === 'warning'
+    (e) => e.event_type === "error" && e.metadata.severity === "warning",
   );
 
-  if (criticalErrors.length >= 2) return { label: 'Service Disruption', level: 'down' };
+  if (criticalErrors.length >= 2)
+    return { label: "Service Disruption", level: "down" };
   if (criticalErrors.length >= 1 || warnings.length >= 2) {
-    return { label: 'Degraded Performance', level: 'degraded' };
+    return { label: "Degraded Performance", level: "degraded" };
   }
-  return { label: 'System Operational', level: 'ok' };
+  return { label: "System Operational", level: "ok" };
 }
 
 /**
@@ -37,9 +41,14 @@ export function deriveStatus(events) {
  * @returns {number}
  */
 export function averageRating(events) {
-  const surveys = events.filter((e) => e.event_type === 'survey' && e.metadata.rating != null);
+  const surveys = events.filter(
+    (e) => e.event_type === "survey" && e.metadata.rating != null,
+  );
   if (surveys.length === 0) return 0;
-  const total = surveys.reduce((sum, e) => sum + Number(e.metadata.rating || 0), 0);
+  const total = surveys.reduce(
+    (sum, e) => sum + Number(e.metadata.rating || 0),
+    0,
+  );
   return Math.round((total / surveys.length) * 10) / 10;
 }
 
@@ -50,7 +59,7 @@ export function averageRating(events) {
  */
 export function averageLoadTime(events) {
   const samples = events
-    .filter((e) => e.event_type === 'page_load')
+    .filter((e) => e.event_type === "page_load")
     .map((e) => Number(e.metadata && e.metadata.load_time))
     .filter((n) => Number.isFinite(n));
   if (samples.length === 0) return null;
@@ -64,15 +73,17 @@ export function averageLoadTime(events) {
  */
 export function summarizeEvent(e) {
   switch (e.event_type) {
-    case 'error':
+    case "error":
       return `[${e.metadata.severity}] ${e.metadata.message} (${e.pathname})`;
-    case 'page_load': {
+    case "page_load": {
       const t = Number(e.metadata && e.metadata.load_time);
-      return Number.isFinite(t) ? `${e.pathname} loaded in ${t} ms` : `${e.pathname} loaded`;
+      return Number.isFinite(t)
+        ? `${e.pathname} loaded in ${t} ms`
+        : `${e.pathname} loaded`;
     }
-    case 'survey':
-      return `Rating ${e.metadata.rating}/5${e.metadata.comment ? ` — ${e.metadata.comment}` : ''}`;
-    case 'click':
+    case "survey":
+      return `Rating ${e.metadata.rating}/5${e.metadata.comment ? ` — ${e.metadata.comment}` : ""}`;
+    case "click":
       return `click on ${e.pathname}`;
     default:
       return e.event_type;
@@ -85,28 +96,28 @@ export function summarizeEvent(e) {
  * @returns {string}
  */
 export function escapeHtml(value) {
-  return String(value ?? '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }
 
 /**
  * Populate the deployment filter <select> from the known deployments.
  */
 export function populateDeploymentFilter(onChange) {
-  const select = document.getElementById('deployment-filter');
+  const select = document.getElementById("deployment-filter");
   const deployments = window.WatchTowerData.getDeployments();
   for (const d of deployments) {
-    const opt = document.createElement('option');
+    const opt = document.createElement("option");
     opt.value = d.id;
     opt.textContent = `${d.version} — ${d.id} (${d.commit_hash})`;
     select.appendChild(opt);
   }
-  select.addEventListener('change', (e) => {
-    onChange(e.target.value || 'all');
+  select.addEventListener("change", (e) => {
+    onChange(e.target.value || "all");
   });
 }
 
@@ -117,15 +128,15 @@ export function populateDeploymentFilter(onChange) {
  * @returns {'ok'|'degraded'|'down'}
  */
 export function bannerLevel(event) {
-  if (event.event_type === 'error') {
-    return event.metadata.severity === 'critical' ? 'down' : 'degraded';
+  if (event.event_type === "error") {
+    return event.metadata.severity === "critical" ? "down" : "degraded";
   }
-  if (event.event_type === 'survey') {
+  if (event.event_type === "survey") {
     const r = Number(event.metadata.rating);
-    if (r > 0 && r <= 2) return 'down';
-    if (r === 3) return 'degraded';
+    if (r > 0 && r <= 2) return "down";
+    if (r === 3) return "degraded";
   }
-  return 'ok';
+  return "ok";
 }
 
 /**
@@ -135,18 +146,17 @@ export function bannerLevel(event) {
  * @param {{mono?: boolean}} [opts]
  */
 export function kvRow(key, value, opts = {}) {
-  const cls = opts.mono ? 'dep-val mono' : 'dep-val';
+  const cls = opts.mono ? "dep-val mono" : "dep-val";
   return `<li class="kv-row"><span class="dep-key">${escapeHtml(key)}</span><span class="${cls}">${escapeHtml(value)}</span></li>`;
 }
-
 
 /**
  *
  */
 export function ratingTone(rating) {
-  if (rating <= 2) return 'rating-low';
-  if (rating >= 4) return 'rating-high';
-  return 'rating-mid';
+  if (rating <= 2) return "rating-low";
+  if (rating >= 4) return "rating-high";
+  return "rating-mid";
 }
 
 /**
@@ -154,5 +164,5 @@ export function ratingTone(rating) {
  */
 export function visualizeStars(rating) {
   const filled = Math.max(0, Math.min(5, Number(rating || 0)));
-  return '★★★★★'.slice(0, filled) + '☆☆☆☆☆'.slice(0, 5 - filled);
+  return "★★★★★".slice(0, filled) + "☆☆☆☆☆".slice(0, 5 - filled);
 }

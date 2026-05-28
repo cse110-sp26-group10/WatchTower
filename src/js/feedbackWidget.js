@@ -10,7 +10,7 @@
  * @version 1.0.0
  */
 
-import { deployments } from './mockData.js';
+import { deployments } from "./mockData.js";
 
 /**
  * In-memory store of submitted feedback events.
@@ -26,8 +26,14 @@ const feedbackSignals = [];
  * @returns {import('./mockData.js').DeploymentRef}
  */
 function getActiveDeployment() {
-  const latest = [...deployments].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))[0];
-  return { id: latest.id, version: latest.version, commit_hash: latest.commit_hash };
+  const latest = [...deployments].sort(
+    (a, b) => new Date(b.timestamp) - new Date(a.timestamp),
+  )[0];
+  return {
+    id: latest.id,
+    version: latest.version,
+    commit_hash: latest.commit_hash,
+  };
 }
 
 /**
@@ -39,7 +45,11 @@ function getActiveDeployment() {
  * @param {string}    [pathname] - Current page path; defaults to window.location.pathname
  * @returns {import('./mockData.js').SessionEvent} The event that was stored
  */
-export function submitFeedback(rating, comment = null, pathname = window.location.pathname) {
+export function submitFeedback(
+  rating,
+  comment = null,
+  pathname = window.location.pathname,
+) {
   const now = new Date().toISOString();
 
   /** @type {import('./mockData.js').SessionEvent} */
