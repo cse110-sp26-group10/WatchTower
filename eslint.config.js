@@ -23,7 +23,7 @@ export default [
     'jsdoc/check-tag-names': 'error',
     'jsdoc/check-types': 'error',
     'jsdoc/valid-types': 'error',
-    },
+    }, 
 },
 
   // Browser globals — dashboard, tracker, shared JS utilities, and test-app
