@@ -50,7 +50,7 @@
 ### Stand-up 1 — 05/27/2026
 | Name | Did | Doing | Blockers |
 |------|-----|-------|----------|
-| Nicole Sutedja | | | |
+| Nicole Sutedja | added sprint 3 md and organized docs, researched sms & decided on ntfy, finished Wireframes details | implement frontend design into app | waiting on code to be ready in new dashboard branch |
 | Kaley Chung | | | |
 | Jensen Guo | | | |
 | Prakhar Shah | | | |
@@ -59,7 +59,7 @@
 | Han Yang-Lin | | | |
 | Aron Wu | | | |
 | Benedict Luis | | | |
-| Evan Marriott | | | |
+| Evan Marriott | office hours with Powell and organized tasks for sprint 3 | more errors in test app and screen size tracking | None |
 
 ### Stand-up 2 — 05/29/2026
 | Name | Did | Doing | Blockers |
