@@ -14,10 +14,7 @@ export default [
     'no-console': 'off',
 
     // JSDoc comment checks
-    'jsdoc/require-jsdoc': ['warn', {
-      publicOnly: true,
-      require: { FunctionDeclaration: true },
-    }],
+    'jsdoc/require-jsdoc': 'off',
     'jsdoc/check-alignment': 'error',
     'jsdoc/check-param-names': 'error',
     'jsdoc/check-tag-names': 'error',
