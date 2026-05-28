@@ -2,9 +2,7 @@ import Event from "./assets/Event.js";
 import {attemptSuccess, UptimeCheckAttempt, UptimeCheck} from "./assets/UptimeCheck.js";
 import http from "http";
 import { supabase } from "./assets/db.js";   // was: import { pool }
-import twilio from "twilio";
 
-const twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 const UPTIME_MONITOR_INTERVAL = 60; // seconds
 const TIMEOUT_THRESHOLD = 5; // seconds
@@ -81,15 +79,8 @@ async function getWebsiteStatus(url) {
 async function sendAlert(user, uptimeCheck) {
     for (let tries = 1; tries <= MAX_TRIES; tries++) {
         try {
-            const message = await twilioClient.messages.create({
-                body: `WatchTower Alert - Website ${user.website_url} is down with error code ${uptimeCheck.status}. Detected at ${uptimeCheck.timestamp}. Please check dashboard immediately.`,
-                to: process.env.TARGET_PHONE_NUMBER, // Mock data
-                from: process.env.SOURCE_PHONE_NUMBER
-            });
-            if (message.status === "queued" || message.status === "sent") {
-                console.log("Alert sent");
-                return true;
-            }
+            console.log("Placeholder", user, uptimeCheck);
+            return true;
         } catch (error) {
             console.error("Alert error: ", error);
         }
