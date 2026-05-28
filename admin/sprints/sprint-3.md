@@ -63,6 +63,7 @@
 |------|-----|-------|----------|
 | Nicole Sutedja | helped with making wireframes and branding material | write script & organize product demo video for tomorrow | None |
 | Kaley Chung | Check over past research pages and added to Github | Start upset user signals | Quizzes |
+| Kaley Chung | Check over past research pages and added to Github | Start upset user signals | Quizzes |
 | Jensen Guo | A lot of code refactoring and modularizing, as well as create the feedback page, errors page, and signalOverview script | Activity page, and continue reviewing code to make sure everything is consistent | None |
 | Prakhar Shah | starter creating additional user personas and user stories
 Will do: add the user personas and start working on solidifying the wireframes
@@ -72,7 +73,9 @@ Will do: still have to add the user personals and  add everything to the the fi
 | Kevin Wang | add uptime card, add a sidebar, talk with teammates about page logic | adjust the page layout based on the Figma design | midterms |
 | Han Yang-Lin | Connected uptime display in the dashboard to the backend and implemented a PostgreSQL database with node-postgres | Modify the backend as needed to work with the updated dashboard | Quizzes and midterms |
 | Aron Wu | Review current tests and pipeline | Implement more tests | None |
+| Aron Wu | Review current tests and pipeline | Implement more tests | None |
 | Benedict Luis | started working on the GitHub action for the linting test, complete stand up log for sprint 2 | finish setting up the GitHub action and help Aron with the linting test and validation to work | Quizzes |
+| Evan Marriott | finished unit tests, e2e tests, and linting CI pipeline | improve UI with functional changes as recommended from prof powell | None |
 | Evan Marriott | finished unit tests, e2e tests, and linting CI pipeline | improve UI with functional changes as recommended from prof powell | None |
 
 ### Stand-up 2 — 05/22/2026

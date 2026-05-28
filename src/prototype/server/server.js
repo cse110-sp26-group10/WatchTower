@@ -1,7 +1,7 @@
 import Event from "./assets/Event.js";
 import {attemptSuccess, UptimeCheckAttempt, UptimeCheck} from "./assets/UptimeCheck.js";
 import http from "http";
-import { pool } from "./assets/db.js";
+import { supabase } from "./assets/db.js";   // was: import { pool }
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 const UPTIME_MONITOR_INTERVAL = 60; // seconds
@@ -15,84 +15,45 @@ function getUserFromRequest() {
 }
 
 async function getEvents() {
-    try {
-        // Uncomment when user system is implemented. Will query all events for now.
-        /*
-        const userRes = await pool.query("SELECT website_url FROM users WHERE id = $1", [user.id]);
-        if (userRes.rows.length === 0)
-            return [];
-        const hostname = new URL(userRes.rows[0].website_url).hostname;
-        const res = await pool.query( // Query events where the hostname matches the website's hostname
-            "SELECT * FROM events WHERE substring(current_url from '.*://([^/:]*)') = $1 ORDER BY timestamp DESC", 
-            [hostname]
-        );
-        */
-        const res = await pool.query("SELECT * FROM events ORDER BY timestamp DESC"); // Query all events
-        return res.rows;
-    } catch (error) {
-        console.error("Query failed: ", error);
-        return [];
-    }
+    const { data, error } = await supabase
+        .from("events").select("*")
+        .order("timestamp", { ascending: false });
+    if (error) { console.error("Query failed: ", error); return []; }
+    return data;
 }
 
 async function getUptimeLog(user) {
-    try {
-        const userRes = await pool.query("SELECT website_url FROM users WHERE id = $1", [user.id]);
-        if (userRes.rows.length === 0)
-            return [];
-        const hostname = new URL(userRes.rows[0].website_url).hostname;
-        const res = await pool.query( // Query uptime checks where the hostname matches the website's hostname
-            "SELECT * FROM uptime_log WHERE substring(url from '.*://([^/:]*)') = $1 ORDER BY timestamp DESC", 
-            [hostname]
-        );
-        return res.rows;
-    } catch (error) {
-        console.error("Query failed: ", error);
-        return [];
-    }
+    const { data: u, error: uErr } = await supabase
+        .from("users").select("website_url").eq("id", user.id).single();
+    if (uErr || !u) { console.error("Query failed: ", uErr); return []; }
+    const hostname = new URL(u.website_url).hostname;
+    const { data, error } = await supabase
+        .from("uptime_log").select("*")
+        .order("timestamp", { ascending: false });
+    if (error) { console.error("Query failed: ", error); return []; }
+    return data.filter((row) => new URL(row.url).hostname === hostname);  // see gotcha #3
 }
 
 async function logEvent(eventObject) {
-    const event = eventObject.event;
-    const query = `
-        INSERT INTO events (
-            event_type, timestamp, created_at, deployment, ip, 
-            user_id, current_url, host, pathname, referrer, 
-            referring_domain, metadata
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
-    `;
-    const values = [
-        event.event_type, event.timestamp, event.created_at, JSON.stringify(event.deployment), event.ip,
-        event.user_id, event.current_url, event.host, event.pathname, event.referrer,
-        event.referring_domain, JSON.stringify(event.metadata)
-    ];
-    console.log("\nLogging event...");
-    try {
-        await pool.query(query, values);
-        console.log("Event logged");
-        console.log(JSON.stringify(eventObject, null, 2));
-    } catch (error) {
-        console.error("Query failed: ", error);
-    }
+    const e = eventObject.event;
+    const { error } = await supabase.from("events").insert({
+        event_type: e.event_type, timestamp: e.timestamp, created_at: e.created_at,
+        deployment: e.deployment, ip: e.ip, user_id: e.user_id,
+        current_url: e.current_url, host: e.host, pathname: e.pathname,
+        referrer: e.referrer, referring_domain: e.referring_domain,
+        metadata: e.metadata,
+    });
+    if (error) { console.error("Query failed: ", error); return; }
+    console.log("Event logged");
 }
 
-async function logUptime(uptimeCheck) {
-    const query = `
-        INSERT INTO uptime_log (url, timestamp, is_up, status, latency, attempts)
-        VALUES ($1, $2, $3, $4, $5, $6)
-    `;
-    const values = [
-        uptimeCheck.url, uptimeCheck.timestamp, uptimeCheck.is_up, 
-        uptimeCheck.status, uptimeCheck.latency, JSON.stringify(uptimeCheck.attempts)
-    ];
-    console.log("\nLogging uptime...");
-    try {
-        await pool.query(query, values);
-        console.log("Uptime logged");
-        console.log(JSON.stringify(uptimeCheck, null, 2));
-    } catch (error) {
-        console.error("Query failed: ", error);
-    }
+async function logUptime(c) {
+    const { error } = await supabase.from("uptime_log").insert({
+        url: c.url, timestamp: c.timestamp, is_up: c.is_up,
+        status: c.status, latency: c.latency, attempts: c.attempts,
+    });
+    if (error) { console.error("Query failed: ", error); return; }
+    console.log("Uptime logged");
 }
 
 async function getWebsiteStatus(url) {
@@ -115,11 +76,28 @@ async function getWebsiteStatus(url) {
     return new UptimeCheck(url, attempts);
 }
 
-async function monitorWebsite(url) {
+async function sendAlert(user, uptimeCheck) {
+    for (let tries = 1; tries <= MAX_TRIES; tries++) {
+        try {
+            console.log("Placeholder", user, uptimeCheck);
+            return true;
+        } catch (error) {
+            console.error("Alert error: ", error);
+        }
+        await sleep(RETRY_INTERVAL * 1000);
+    }
+    console.error("Alert failed");
+    return false;
+}
+
+async function monitorWebsite(user) {
     while (true) {
-        const uptimeCheck = await getWebsiteStatus(url);
+        const uptimeCheck = await getWebsiteStatus(user.website_url);
         if (!uptimeCheck.is_up) {
-            // Send alert to developer
+            const uptimeLog = await getUptimeLog(user);
+            if (uptimeLog.length == 0 || uptimeLog.at(-1).is_up) { // Only sends alert once each time the website goes down
+                sendAlert(user, uptimeCheck); // Runs asynchronously
+            }
         }
         await logUptime(uptimeCheck);
         await sleep(UPTIME_MONITOR_INTERVAL * 1000);
@@ -128,21 +106,16 @@ async function monitorWebsite(url) {
 
 function initUser(user) {
     if (new URL(user.website_url).hostname === "localhost") {
-        console.log("Monitoring skipped for localhost");
+        console.warn("Monitoring skipped for localhost");
         return;
     }
-    monitorWebsite(user.website_url);
+    monitorWebsite(user);
 }
 
 async function initUsers() {
-    try {
-        const res = await pool.query("SELECT * FROM users");
-        for (const user of res.rows) {
-            initUser(user);
-        }
-    } catch (error) {
-        console.error("Failed to load users: ", error);
-    }
+    const { data, error } = await supabase.from("users").select("*");
+    if (error) { console.error("Failed to load users: ", error); return; }
+    for (const user of data) initUser(user);
 }
 
 const server = http.createServer(async (req, res) => {
@@ -185,7 +158,7 @@ const server = http.createServer(async (req, res) => {
             } catch {
                 res.writeHead(400);
                 res.end("Invalid event");
-                console.log("\nInvalid event");
+                console.error("\nInvalid event");
             }
         });
     }

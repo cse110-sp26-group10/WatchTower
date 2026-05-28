@@ -12,7 +12,8 @@ import {
   relativeTime,
   escapeHtml,
   kvRow,
-  summarizeEvent
+  summarizeEvent,
+  visualizeStars
 } from './helpers.js';
 
 /**
@@ -56,9 +57,8 @@ function renderPrimary(event) {
     `;
   } else if (event.event_type === 'survey') {
     const r = Number(event.metadata.rating || 0);
-    const stars = '★★★★★'.slice(0, r) + '☆☆☆☆☆'.slice(0, 5 - r);
     box.innerHTML = `
-      <div class="issue-headline">${stars} <span class="event-meta">(${r}/5)</span></div>
+      <div class="issue-headline">${visualizeStars(r)} <span class="event-meta">(${r}/5)</span></div>
       <div class="event-message">${escapeHtml(event.metadata.comment || '(no comment)')}</div>
     `;
   } else {

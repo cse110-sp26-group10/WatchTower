@@ -1,12 +1,11 @@
-import pg from "pg";
+import { createClient } from "@supabase/supabase-js";
+import ws from "ws";
 import "dotenv/config";
 
-export const DB_NAME = process.env.DB_NAME;
-
-export const client = new pg.Client({
-    connectionString: `postgresql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/postgres`
-});
-
-export const pool = new pg.Pool({
-    connectionString: `postgresql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`
-});
+// Node 20 has no native WebSocket; supabase-js builds a Realtime client at
+// startup, so provide `ws` as the transport. (Not needed on Node 22+.)
+export const supabase = createClient(
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY,
+    { realtime: { transport: ws } }
+);
