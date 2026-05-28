@@ -9,12 +9,11 @@ import './components/grouped-error-panel.js';
 
 import { createRouter } from './router.js';
 import { HomePage } from './pages/home-page.js';
-import { SignalsPage } from './pages/signals-page.js';
 import { IssuePage } from './pages/issue-page.js';
 import { PageNotFound } from './pages/not-found.js';
 import { ErrorsPage } from './pages/errors-page.js';
 import { FeedbackPage } from './pages/feedback-page.js';
-import { ActivityPage } from './pages/activity-page.js'
+import { ActivityPage } from './pages/activity-page.js';
 
 const router = createRouter({
   routes: {
@@ -23,6 +22,7 @@ const router = createRouter({
     '/feedback': FeedbackPage,
     '/activity': ActivityPage,
     '/issue': IssuePage,
+    '/notfound': PageNotFound
   },
   outlet: () => document.getElementById('app-outlet'),
 });

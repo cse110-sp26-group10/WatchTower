@@ -1,6 +1,4 @@
-import { dataStore } from '../core/data-store.js';
 import { deploymentScope } from '../core/deployment-scope.js';
-import { resolvedSignals } from '../core/resolved-signals.js';
 
 export class PageNotFound extends HTMLElement {
   connectedCallback() {
