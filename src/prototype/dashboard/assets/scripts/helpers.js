@@ -13,7 +13,7 @@ export function relativeTime(iso) {
 
 /**
  * Derive an overall system status from the event list.
- * @param {Array<Object>} events
+ * @param {Array<object>} events
  * @returns {{label: string, level: 'ok'|'degraded'|'down'}}
  */
 export function deriveStatus(events) {
@@ -33,7 +33,7 @@ export function deriveStatus(events) {
 
 /**
  * Average rating across survey events, on a 1-5 scale.
- * @param {Array<Object>} events
+ * @param {Array<object>} events
  * @returns {number}
  */
 export function averageRating(events) {
@@ -45,7 +45,7 @@ export function averageRating(events) {
 
 /**
  * Average page-load time in ms across page_load events, or null if none.
- * @param {Array<Object>} events
+ * @param {Array<object>} events
  * @returns {number|null}
  */
 export function averageLoadTime(events) {
@@ -59,7 +59,7 @@ export function averageLoadTime(events) {
 
 /**
  * Produce a one-line summary for a single event, depending on its type.
- * @param {Object} e
+ * @param {object} e
  * @returns {string}
  */
 export function summarizeEvent(e) {
@@ -113,7 +113,7 @@ export function populateDeploymentFilter(onChange) {
 /**
  * Map an event onto a banner level so error severity / low ratings get
  * visually flagged consistently with the dashboard banner.
- * @param {Object} event
+ * @param {object} event
  * @returns {'ok'|'degraded'|'down'}
  */
 export function bannerLevel(event) {
@@ -140,12 +140,18 @@ export function kvRow(key, value, opts = {}) {
 }
 
 
+/**
+ *
+ */
 export function ratingTone(rating) {
   if (rating <= 2) return 'rating-low';
   if (rating >= 4) return 'rating-high';
   return 'rating-mid';
 }
 
+/**
+ *
+ */
 export function visualizeStars(rating) {
   const filled = Math.max(0, Math.min(5, Number(rating || 0)));
   return '★★★★★'.slice(0, filled) + '☆☆☆☆☆'.slice(0, 5 - filled);

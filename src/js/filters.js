@@ -99,7 +99,7 @@ export function filterByDateRange(events, from, to) {
  * Used by dashboard UI (dropdowns, search, timeline controls).
  *
  * @param {Array} events
- * @param {Object} [criteria]
+ * @param {object} [criteria]
  * @param {string} [criteria.deploymentId]
  * @param {"critical"|"high"|"medium"|"low"|"signal"} [criteria.severity]
  * @param {"error"|"survey"} [criteria.eventType]

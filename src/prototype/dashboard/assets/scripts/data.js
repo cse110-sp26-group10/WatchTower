@@ -31,12 +31,12 @@ let __eventCounter = 0;
 /**
  * Build one event in the trimmed shape. Assigns a stable, deterministic id
  * based on insertion order so the issue-detail page can link to it.
- * @param {Object} p
+ * @param {object} p
  * @param {string} p.deployment_id
  * @param {string} p.event_type
  * @param {number} p.minsAgo
  * @param {string} p.pathname
- * @param {Object} [p.meta] partial metadata override
+ * @param {object} [p.meta] partial metadata override
  */
 function makeEvent({ deployment_id, event_type, minsAgo, pathname, meta }) {
   const d = deploymentById(deployment_id);
@@ -116,7 +116,7 @@ function getUptimeLog() {
 /**
  * Returns the current set of mock events, optionally filtered by deployment.
  * @param {{ deploymentId?: string }} [opts]
- * @returns {Array<Object>}
+ * @returns {Array<object>}
  */
 function getEvents(opts = {}) {
   const { deploymentId } = opts;
@@ -126,7 +126,7 @@ function getEvents(opts = {}) {
 
 /**
  * Returns the list of known deployments (newest first).
- * @returns {Array<Object>}
+ * @returns {Array<object>}
  */
 function getDeployments() {
   return DEPLOYMENTS.slice();
@@ -135,7 +135,7 @@ function getDeployments() {
 /**
  * Look up a single deployment by id.
  * @param {string} id
- * @returns {Object|undefined}
+ * @returns {object | undefined}
  */
 function getDeployment(id) {
   return deploymentById(id);
@@ -216,7 +216,7 @@ async function updateUptimeLog() {
 /**
  * Look up a single event by its assigned id (e.g. "evt_004").
  * @param {string} id
- * @returns {Object|undefined}
+ * @returns {object | undefined}
  */
 function getEvent(id) {
   return EVENTS.find((e) => e.id === id);
@@ -226,8 +226,8 @@ function getEvent(id) {
  * Find signals contextually related to a given event: same pathname AND same
  * deployment, within a +/- 30-minute window. Used by the issue-detail page
  * to surface "what else was happening around this issue".
- * @param {Object} event
- * @returns {Array<Object>}
+ * @param {object} event
+ * @returns {Array<object>}
  */
 function getRelatedEvents(event) {
   if (!event) return [];

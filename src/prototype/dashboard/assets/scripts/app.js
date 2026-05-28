@@ -72,7 +72,7 @@ function applyDashboardView() {
  * error-derived health label appears as the sub-line, with probe stats on
  * the right. Uptime is global (not deployment-scoped); the health sub IS
  * deployment-scoped via the events arg.
- * @param {Array<Object>} events deployment-filtered event list
+ * @param {Array<object>} events deployment-filtered event list
  */
 function renderUptime(events) {
   const log = (window.WatchTowerData.getUptimeLog && window.WatchTowerData.getUptimeLog()) || [];
@@ -129,7 +129,7 @@ function renderUptime(events) {
 
 /**
  * Render the status banner and the summary tiles.
- * @param {Array<Object>} events
+ * @param {Array<object>} events
  */
 function renderHeader(events) {
   const counts = {
@@ -154,7 +154,7 @@ const SEVERITY_RANK = { critical: 0, warning: 1, info: 2 };
  * single recurring error doesn't flood the list. Each group shows a ×N
  * count, the worst severity seen, and first-seen time for recurring issues.
  * Sorted: critical first, then by occurrence count descending.
- * @param {Array<Object>} events
+ * @param {Array<object>} events
  */
 function renderErrors(events) {
   const list = document.getElementById('errors-list');
@@ -213,7 +213,7 @@ const PERF_BAR_MAX_MS = 3000;
 
 /**
  * Populate the Page Loads panel — grouped by pathname with avg load time.
- * @param {Array<Object>} events
+ * @param {Array<object>} events
  */
 function renderPageLoads(events) {
   const list = document.getElementById('page-loads-list');
@@ -265,7 +265,7 @@ function renderPageLoads(events) {
 
 /**
  * Populate the User Feedback panel with survey responses.
- * @param {Array<Object>} events
+ * @param {Array<object>} events
  */
 function renderFeedback(events) {
   const list = document.getElementById('feedback-list');
@@ -298,7 +298,7 @@ function renderFeedback(events) {
 
 /**
  * Populate the Clicks panel — grouped by pathname with counts.
- * @param {Array<Object>} events
+ * @param {Array<object>} events
  */
 function renderClicks(events) {
   const list = document.getElementById('clicks-list');
@@ -336,7 +336,7 @@ function renderClicks(events) {
 
 /**
  * Populate the recent-activity feed with the newest events across all types.
- * @param {Array<Object>} events
+ * @param {Array<object>} events
  */
 function renderActivity(events) {
   const list = document.getElementById('activity-list');

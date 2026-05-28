@@ -18,7 +18,7 @@ import {
 
 /**
  * Populate the issue header (banner, type pill, time, path).
- * @param {Object} event
+ * @param {object} event
  */
 function renderHeader(event) {
   const banner = document.getElementById('issue-banner');
@@ -46,7 +46,7 @@ function renderHeader(event) {
 
 /**
  * Render the primary body — varies by event type.
- * @param {Object} event
+ * @param {object} event
  */
 function renderPrimary(event) {
   const box = document.getElementById('issue-primary-body');
@@ -68,7 +68,7 @@ function renderPrimary(event) {
 
 /**
  * Render the Context kv-list (path, full url, ip, created_at).
- * @param {Object} event
+ * @param {object} event
  */
 function renderContext(event) {
   const list = document.getElementById('context-list');
@@ -84,7 +84,7 @@ function renderContext(event) {
 /**
  * Render the Deployment kv-list. Pulls extra fields (author, deployed_at)
  * from the deployments catalog since events only carry id/version/commit.
- * @param {Object} event
+ * @param {object} event
  */
 function renderDeployment(event) {
   const list = document.getElementById('deployment-list');
@@ -108,7 +108,7 @@ function renderDeployment(event) {
 
 /**
  * Render the related-signals feed.
- * @param {Object} event
+ * @param {object} event
  */
 function renderRelated(event) {
   const list = document.getElementById('related-list');
