@@ -1,6 +1,10 @@
 import { dataStore } from '../core/data-store.js';
 import { relativeTime } from '../core/formatters.js';
 
+
+/**
+ * Page for individual issue view
+ */
 export class IssuePage extends HTMLElement {
   set route(value) {
     this._route = value;

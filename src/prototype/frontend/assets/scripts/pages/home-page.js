@@ -2,7 +2,7 @@ import { dataStore } from '../core/data-store.js';
 import { deploymentScope } from '../core/deployment-scope.js';
 import { resolvedSignals } from '../core/resolved-signals.js';
 
-export class DashboardPage extends HTMLElement {
+export class HomePage extends HTMLElement {
   connectedCallback() {
     this.unsubscribe = deploymentScope.subscribe(() => this.render());
   }
@@ -39,4 +39,4 @@ export class DashboardPage extends HTMLElement {
   }
 }
 
-customElements.define('dashboard-page', DashboardPage);
+customElements.define('home-page', HomePage);

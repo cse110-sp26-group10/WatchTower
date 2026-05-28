@@ -3,6 +3,13 @@ import { deploymentScope } from '../core/deployment-scope.js';
 import { resolvedSignals } from '../core/resolved-signals.js';
 import { groupErrors } from '../core/signal-groups.js';
 
+
+/**
+ * THIS FILE IS ONLY FOR REFERENCE! Previously, the errors and feedback page just displayed the same content, except filtered
+ * out to their type. In the new wireframes, the feedback and error pages are completely different and thus cannot use the
+ * same js file anymore. This file remains just to display logic for getting signals, etc... and will be removed once the
+ * other pages are built out.
+ */
 export class SignalsPage extends HTMLElement {
   set route(value) {
     this._route = value;
