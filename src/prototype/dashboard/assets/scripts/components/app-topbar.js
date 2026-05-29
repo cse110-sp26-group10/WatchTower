@@ -1,30 +1,26 @@
 import { deploymentScope } from '../core/deployment-scope.js';
 
+const SUN_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <circle cx="12" cy="12" r="5"/>
+  <line x1="12" y1="1" x2="12" y2="3"/>
+  <line x1="12" y1="21" x2="12" y2="23"/>
+  <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+  <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+  <line x1="1" y1="12" x2="3" y2="12"/>
+  <line x1="21" y1="12" x2="23" y2="12"/>
+  <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+  <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+</svg>`;
+
+const MOON_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+  <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+</svg>`;
+
 export class AppTopbar extends HTMLElement {
   connectedCallback() {
     this.render();
+    this.setupThemeToggle();
 
-    // 1. SETUP THE THEME TOGGLE LISTENER
-    const themeBtn = this.querySelector('#theme-btn');
-    if (themeBtn) {
-      themeBtn.addEventListener('click', () => {
-        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
-        
-        if (currentTheme === 'dark') {
-          document.documentElement.setAttribute('data-theme', 'light');
-          themeBtn.textContent = '🌙 Dark';
-        } else {
-          document.documentElement.setAttribute('data-theme', 'dark');
-          themeBtn.textContent = '☀️ Light';
-        }
-      });
-      
-      // Sync the button text immediately on page load based on current state
-      const initialTheme = document.documentElement.getAttribute('data-theme') || 'light';
-      themeBtn.textContent = initialTheme === 'dark' ? '☀️ Light' : '🌙 Dark';
-    }
-
-    // Subscribe to state changes so the top metadata string live-updates
     if (deploymentScope && typeof deploymentScope.subscribe === 'function') {
       this.unsubscribe = deploymentScope.subscribe(() => {
         this.updateActiveMetadata();
@@ -36,22 +32,85 @@ export class AppTopbar extends HTMLElement {
     this.unsubscribe?.();
   }
 
+  setupThemeToggle() {
+    const themeBtn = this.querySelector('#theme-btn');
+    if (!themeBtn) return;
+
+    const updateToggleUI = (theme) => {
+      const sun = this.querySelector('#theme-icon-sun');
+      const moon = this.querySelector('#theme-icon-moon');
+      if (!sun || !moon) return;
+
+      if (theme === 'dark') {
+        moon.style.background = 'var(--wt-surface)';
+        moon.style.color = 'var(--wt-text)';
+        sun.style.background = 'transparent';
+        sun.style.color = 'var(--wt-text-3)';
+      } else {
+        sun.style.background = 'var(--wt-surface)';
+        sun.style.color = 'var(--wt-text)';
+        moon.style.background = 'transparent';
+        moon.style.color = 'var(--wt-text-3)';
+      }
+    };
+
+    themeBtn.addEventListener('click', () => {
+      const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+      const next = currentTheme === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      updateToggleUI(next);
+    });
+
+    const initialTheme = document.documentElement.getAttribute('data-theme') || 'light';
+    updateToggleUI(initialTheme);
+  }
+
   render() {
     this.innerHTML = `
       <header class="topbar">
-        <div class="topbar-left">          
+        <div class="topbar-left">
           <div style="display: flex; align-items: center; gap: 8px; margin-left: 16px;">
             <label style="font-weight: 600; color: var(--wt-text-2); font-size: 13px;">Deployment:</label>
-            
+
             <deployment-filter></deployment-filter>
-            
+
             <span id="header-metadata-strip" style="display: inline-flex; align-items: center; gap: 12px; margin-left: 12px; font-family: monospace; font-size: 12px; color: var(--wt-text-2);">
             </span>
           </div>
         </div>
 
         <div class="topbar-right">
-          <button class="theme-toggle" id="theme-btn">🌙 Dark</button>
+          <button id="theme-btn" style="
+            display: flex;
+            align-items: center;
+            background: var(--wt-surface-2);
+            border: 1px solid var(--wt-border);
+            border-radius: 999px;
+            padding: 4px;
+            cursor: pointer;
+            gap: 2px;
+          ">
+            <span id="theme-icon-sun" style="
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              width: 32px;
+              height: 32px;
+              border-radius: 50%;
+              transition: background 0.15s ease;
+              color: var(--wt-text-3);
+            ">${SUN_SVG}</span>
+            <span id="theme-icon-moon" style="
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              width: 32px;
+              height: 32px;
+              border-radius: 50%;
+              transition: background 0.15s ease;
+              color: var(--wt-text-3);
+            ">${MOON_SVG}</span>
+          </button>
         </div>
       </header>
     `;
@@ -61,16 +120,13 @@ export class AppTopbar extends HTMLElement {
     const metaContainer = this.querySelector('#header-metadata-strip');
     if (!metaContainer) return;
 
-    // Get active deployment object from scope
     const currentDep = deploymentScope.deployment;
 
-    // If 'All deployments' is selected, clear or hide the extra metrics
     if (!currentDep || deploymentScope.id === 'all') {
       metaContainer.innerHTML = `<span style="color: var(--wt-text-3); font-style: italic;">All active clusters monitored</span>`;
       return;
     }
 
-    // Format the keys cleanly with crisp spacing badges
     metaContainer.innerHTML = `
       <span style="background: var(--wt-surface-2); padding: 2px 6px; border-radius: var(--wt-radius-sm); border: 1px solid var(--wt-border);">id: <b>${currentDep.id}</b></span>
       <span style="background: var(--wt-surface-2); padding: 2px 6px; border-radius: var(--wt-radius-sm); border: 1px solid var(--wt-border);">version: <b>${currentDep.version}</b></span>
