@@ -5,19 +5,24 @@ import jsdoc from 'eslint-plugin-jsdoc';
 export default [
   js.configs.recommended,
   // All source JS
-  {
-    files: ['src/**/*.js'],
-    plugins: { jsdoc },
-    rules: {
-      'no-var': 'error',
-      semi: ['error', 'always'],
-      'no-console': 'off',
-      'jsdoc/require-jsdoc': ['warn', {
-        publicOnly: true,
-        require: { FunctionDeclaration: true },
-      }],
-    },
-  },
+{
+  files: ['src/**/*.js'],
+  plugins: { jsdoc },
+  rules: {
+    'no-var': 'error',
+    semi: ['error', 'always'],
+    'no-console': 'off',
+
+    // JSDoc comment checks
+    'jsdoc/require-jsdoc': 'off',
+    'jsdoc/check-alignment': 'error',
+    'jsdoc/check-param-names': 'error',
+    'jsdoc/check-tag-names': 'error',
+    'jsdoc/check-types': 'error',
+    'jsdoc/valid-types': 'error',
+    }, 
+},
+
   // Browser globals — dashboard, tracker, shared JS utilities, and test-app
   {
     files: [
