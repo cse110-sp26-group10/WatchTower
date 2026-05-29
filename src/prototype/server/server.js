@@ -175,11 +175,11 @@ function invalidateRequest(res) {
 const server = http.createServer(async (req, res) => {
     res.setHeader("Access-Control-Allow-Origin", "*"); // Allow any site
     res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
     const requestUrl = new URL(req.url, `http://${req.headers.host || `localhost:${PORT}`}`);
     const requestPath = requestUrl.pathname;
-    const searchParams = requestUrl.searchParams;
+    // const searchParams = requestUrl.searchParams; // Not currently in use
 
     if (req.method === "OPTIONS") {
         res.writeHead(204);
@@ -211,8 +211,9 @@ const server = http.createServer(async (req, res) => {
         req.on("end", async () => {
             if (requestPath === "/api/log") {
                 try {
-                    const apiKey = searchParams.get("apikey");
-                    if (apiKey === "null") { invalidateRequest(); return; }
+                    const authHeader = req.headers["authorization"];
+                    if (!authHeader || !authHeader.startsWith("Bearer ")) { invalidateRequest(); return; }
+                    const apiKey = authHeader.split(" ")[1];
                     const projectId = await getProjectIdFromAPIKey(apiKey);
                     if (projectId === null) throw new Error("Invalid API key");
                     const eventObject = new Event(body);
