@@ -19,10 +19,9 @@ export class UptimeCheckAttempt {
 }
 
 export class UptimeCheck {
-    constructor(project_id, url, attempts) {
+    constructor(url, attempts) {
         const lastAttempt = attempts[attempts.length - 1];
         return {
-            project_id,
             url,
             "timestamp": attempts[0].timestamp,
             "is_up": attemptSuccess(lastAttempt),

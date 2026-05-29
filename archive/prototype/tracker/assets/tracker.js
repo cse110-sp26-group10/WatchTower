@@ -1,13 +1,9 @@
 const originalWarn = console.warn;
 const originalFetch = window.fetch;
 
-const searchParams = new URLSearchParams({
-    apikey: document.currentScript.getAttribute("data-apikey")
-});
-
 async function logEvent(event) {
     try {
-        const response = await originalFetch(`http://localhost:8080/api/log?${searchParams.toString()}`, {
+        const response = await originalFetch("http://localhost:8080", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -24,6 +20,15 @@ async function logEvent(event) {
     }
 }
 
+function getUserId() {
+    let userId = localStorage.getItem("watchtower_user_id");
+    if (userId === null) {
+        userId = crypto.randomUUID(); // Generate new user_id
+        localStorage.setItem("watchtower_user_id", userId);
+    }
+    return userId;
+}
+
 function eventTemplate() {
     const event = {};
     event.timestamp = new Date().toISOString();
@@ -34,6 +39,7 @@ function eventTemplate() {
         "deployed_at": "2026-03-25T00:00:00.000Z",
         "author": "kevin"
     };
+    event.user_id = getUserId();
     event.current_url = window.location.href;
     event.referrer = document.referrer;
     return event;
