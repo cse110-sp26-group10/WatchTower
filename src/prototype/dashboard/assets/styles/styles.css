@@ -163,7 +163,13 @@ body {
 .sidebar {
   background-color: var(--wt-surface);
   border-right: 1px solid var(--wt-border);
-  padding: 1.5rem 0.75rem;             /* 24px 12px */
+  padding: 1.5rem 0.75rem;
+  height: 100%;                
+  position: sticky;            
+  top: 0;
+  align-self: start;           
+  max-height: 100vh;           
+  overflow-y: auto;           
 }
 
 .sidebar-list {
