@@ -163,7 +163,7 @@ body {
 .sidebar {
   background-color: var(--wt-surface);
   border-right: 1px solid var(--wt-border);
-  padding: 1.5rem 0.75rem;
+  padding: 1rem 0.75rem;
   height: 100%;                
   position: sticky;            
   top: 0;
@@ -195,6 +195,15 @@ body {
 .sidebar-link:hover {
   background-color: var(--color-active-bg);
   color: var(--color-active-text);
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: var(--wt-text);
+  font-weight: 700;
+  font-size: 1rem;
 }
 
 /* ── Main Layout Viewport ──────────────────────────────────────────────── */

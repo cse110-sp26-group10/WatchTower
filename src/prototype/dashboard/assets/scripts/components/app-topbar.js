@@ -39,9 +39,7 @@ export class AppTopbar extends HTMLElement {
   render() {
     this.innerHTML = `
       <header class="topbar">
-        <div class="topbar-left">
-          <a href="#" class="brand-name">WatchTower</a>
-          
+        <div class="topbar-left">          
           <div style="display: flex; align-items: center; gap: 8px; margin-left: 16px;">
             <label style="font-weight: 600; color: var(--wt-text-2); font-size: 13px;">Deployment:</label>
             
