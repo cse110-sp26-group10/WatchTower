@@ -8,37 +8,77 @@ const UPTIME_MONITOR_INTERVAL = 60; // seconds
 const TIMEOUT_THRESHOLD = 5; // seconds
 const MAX_TRIES = 3; // attempts
 const RETRY_INTERVAL = 5; // seconds
+const PORT = 8080;
 
-function getUserFromRequest() {
+async function getUserFromRequest() {
     // TODO
-    return { "id": 2 }; // Mock data
+    const { data, error } = await supabase.from("users").select("*").eq("id", 1).single(); // Mock data
+    if (error) { console.error("Query failed: ", error); return null; }
+    return data || null;
 }
 
-async function getEvents() {
+async function getProjectIdFromAPIKey(apiKey) {
     const { data, error } = await supabase
-        .from("events").select("*")
-        .order("timestamp", { ascending: false });
-    if (error) { console.error("Query failed: ", error); return []; }
-    return data;
+        .from("projects").select("id")
+        .eq("api_key", apiKey)
+        .single();
+    if (error) { console.error("Query failed: ", error); return null; }
+    return data.id || null;
 }
 
+// Returns all events from all projects associated with the user
+async function getEvents(user) {
+    const { data, error } = await supabase
+        .from("projects").select(`
+            users_projects!inner(user_id),
+            events (*)
+        `)
+        .eq("users_projects.user_id", user.id)
+        .order("timestamp", { referencedTable: 'events', ascending: false });
+    if (error) { console.error("Query failed: ", error); return []; }
+    const events = data?.flatMap(item => item.events || []) || [];
+    return events;
+}
+
+// Returns all uptime checks from all projects associated with the user
 async function getUptimeLog(user) {
-    const { data: u, error: uErr } = await supabase
-        .from("users").select("website_url").eq("id", user.id).single();
-    if (uErr || !u) { console.error("Query failed: ", uErr); return []; }
-    const hostname = new URL(u.website_url).hostname;
+    const { data, error } = await supabase
+        .from("projects").select(`
+            users_projects!inner(user_id),
+            website_url,
+            uptime_log (*)
+        `)
+        .eq("users_projects.user_id", user.id)
+        .order("timestamp", { referencedTable: 'uptime_log', ascending: false });
+    if (error) { console.error("Query failed: ", error); return []; }
+    const hostnames = new Set(data?.flatMap(item => {
+        try {
+            const url = item.website_url;
+            if (!url) return [];
+            return new URL(url).hostname;
+        } catch (error) {
+            console.error("URL failed: ", error);
+            return [];
+        }
+    }) || []);
+    const uptimeLog = data?.flatMap(item => item.uptime_log || []) || [];
+    return uptimeLog.filter((row) => hostnames.has(new URL(row.url).hostname));  // see gotcha #3
+}
+
+async function getUptimeLogForProject(project) {
     const { data, error } = await supabase
         .from("uptime_log").select("*")
+        .eq("project_id", project.id)
         .order("timestamp", { ascending: false });
-    if (error) { console.error("Query failed: ", error); return []; }
-    return data.filter((row) => new URL(row.url).hostname === hostname);  // see gotcha #3
+    if (error) { console.error("Query failed: ", error); return null; }
+    return data;
 }
 
 async function logEvent(eventObject) {
     const e = eventObject.event;
     const { error } = await supabase.from("events").insert({
         event_type: e.event_type, timestamp: e.timestamp, created_at: e.created_at,
-        deployment: e.deployment, ip: e.ip, user_id: e.user_id,
+        deployment: e.deployment, ip: e.ip, project_id: e.project_id,
         current_url: e.current_url, host: e.host, pathname: e.pathname,
         referrer: e.referrer, referring_domain: e.referring_domain,
         metadata: e.metadata,
@@ -51,18 +91,19 @@ async function logUptime(c) {
     const { error } = await supabase.from("uptime_log").insert({
         url: c.url, timestamp: c.timestamp, is_up: c.is_up,
         status: c.status, latency: c.latency, attempts: c.attempts,
+        project_id: c.project_id
     });
     if (error) { console.error("Query failed: ", error); return; }
     console.log("Uptime logged");
 }
 
-async function getWebsiteStatus(url) {
+async function getProjectStatus(project) {
     const attempts = [];
     for (let tries = 1; tries <= MAX_TRIES; tries++) {
         const startTime = new Date();
         let attempt;
         try {
-            const response = await fetch(url, { mode: "no-cors", signal: AbortSignal.timeout(TIMEOUT_THRESHOLD * 1000) });
+            const response = await fetch(project.website_url, { mode: "no-cors", signal: AbortSignal.timeout(TIMEOUT_THRESHOLD * 1000) });
             const endTime = new Date();
             attempt = new UptimeCheckAttempt(startTime, endTime, response.status, null);
         } catch (error) {
@@ -73,7 +114,7 @@ async function getWebsiteStatus(url) {
         if (attemptSuccess(attempt)) break;
         await sleep(RETRY_INTERVAL * 1000);
     }
-    return new UptimeCheck(url, attempts);
+    return new UptimeCheck(project.id, project.website_url, attempts);
 }
 
 async function sendAlert(user, uptimeCheck) {
@@ -90,12 +131,16 @@ async function sendAlert(user, uptimeCheck) {
     return false;
 }
 
-async function monitorWebsite(user) {
+async function monitorProject(user, project) {
+    if (new URL(project.website_url).hostname === "localhost") {
+        console.warn("Monitoring skipped for localhost");
+        return;
+    }
     while (true) {
-        const uptimeCheck = await getWebsiteStatus(user.website_url);
+        const uptimeCheck = await getProjectStatus(project);
         if (!uptimeCheck.is_up) {
-            const uptimeLog = await getUptimeLog(user);
-            if (uptimeLog.length == 0 || uptimeLog.at(-1).is_up) { // Only sends alert once each time the website goes down
+            const uptimeLog = await getUptimeLogForProject(project);
+            if (uptimeLog !== null && (uptimeLog.length == 0 || uptimeLog[0].is_up)) { // Only sends alert once each time the website goes down
                 sendAlert(user, uptimeCheck); // Runs asynchronously
             }
         }
@@ -104,12 +149,10 @@ async function monitorWebsite(user) {
     }
 }
 
-function initUser(user) {
-    if (new URL(user.website_url).hostname === "localhost") {
-        console.warn("Monitoring skipped for localhost");
-        return;
-    }
-    monitorWebsite(user);
+async function initUser(user) {
+    const { data, error } = await supabase.from("users_projects").select("projects(*)").eq("user_id", user.id);
+    if (error) { console.error("Failed to load projects: ", error); return; }
+    for (const entry of data) monitorProject(user, entry.projects);
 }
 
 async function initUsers() {
@@ -118,26 +161,38 @@ async function initUsers() {
     for (const user of data) initUser(user);
 }
 
+function invalidateRequest(res) {
+    res.writeHead(400);
+    res.end("Invalid request");
+}
+
 const server = http.createServer(async (req, res) => {
     res.setHeader("Access-Control-Allow-Origin", "*"); // Allow any site
     res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
     res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
+    const requestUrl = new URL(req.url, `http://${req.headers.host || `localhost:${PORT}`}`);
+    const requestPath = requestUrl.pathname;
+    const searchParams = requestUrl.searchParams;
+
     if (req.method === "OPTIONS") {
         res.writeHead(204);
         res.end();
     } else if (req.method === "GET") {
-        const user = getUserFromRequest(req);
-        if (req.url === "/api/events") {
+        const user = await getUserFromRequest(req);
+        if (user === null) invalidateRequest();
+        if (requestPath === "/api/events") {
             const events = await getEvents(user);
             res.writeHead(200, { "Content-Type": "application/json" });
             res.end(JSON.stringify(events));
             console.log("Event log sent");
-        } else if (req.url === "/api/uptime") {
+        } else if (requestPath === "/api/uptime") {
             const uptimeLog = await getUptimeLog(user);
             res.writeHead(200, { "Content-Type": "application/json" });
             res.end(JSON.stringify(uptimeLog));
             console.log("Uptime log sent");
+        } else {
+            invalidateRequest(res);
         }
     } else if (req.method === "POST") {
         let body = "";
@@ -147,24 +202,31 @@ const server = http.createServer(async (req, res) => {
                 req.destroy();
             }
         });
-        req.on("end", () => {
-            try {
-                const eventObject = new Event(body);
-                if (!eventObject.valid) throw new Error("Invalid event");
-                eventObject.setField("ip", req.socket.remoteAddress);
-                logEvent(eventObject);
-                res.writeHead(200, { "Content-Type": "application/json" });
-                res.end(JSON.stringify({ status: "success" }));
-            } catch {
-                res.writeHead(400);
-                res.end("Invalid event");
-                console.error("\nInvalid event");
+        req.on("end", async () => {
+            if (requestPath === "/api/log") {
+                try {
+                    const projectId = await getProjectIdFromAPIKey(searchParams.get("apikey"));
+                    if (projectId === null) throw new Error("Invalid API key");
+                    const eventObject = new Event(body);
+                    if (!eventObject.valid) throw new Error("Invalid event");
+                    eventObject.setField("project_id", projectId);
+                    eventObject.setField("ip", req.socket.remoteAddress);
+                    logEvent(eventObject);
+                    res.writeHead(200, { "Content-Type": "application/json" });
+                    res.end(JSON.stringify({ status: "success" }));
+                } catch {
+                    res.writeHead(400);
+                    res.end("Invalid event");
+                    console.error("\nInvalid event");
+                }
+            } else {
+                invalidateRequest(res);
             }
         });
     }
 });
 
-server.listen(8080, () => {
+server.listen(PORT, () => {
     console.log("Server running");
     initUsers();
 });

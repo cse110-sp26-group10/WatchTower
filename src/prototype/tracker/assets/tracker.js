@@ -1,9 +1,13 @@
 const originalWarn = console.warn;
 const originalFetch = window.fetch;
 
+const searchParams = new URLSearchParams({
+    apikey: document.currentScript.getAttribute("data-apikey")
+});
+
 async function logEvent(event) {
     try {
-        const response = await originalFetch("http://localhost:8080", {
+        const response = await originalFetch(`http://localhost:8080/api/log?${searchParams.toString()}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
