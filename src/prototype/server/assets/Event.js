@@ -4,7 +4,7 @@ const EVENT_FIELDS = new Set([
     "created_at",
     "deployment",
     "ip",
-    "user_id",
+    "project_id",
     "current_url",
     "host",
     "pathname",
@@ -26,7 +26,6 @@ const METADATA_FIELDS = {
     "click": new Set(["element_id", "element_class", "input_delay"])
 };
 const MAX_CLOCK_SKEW_SECONDS = 300;
-const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 /**
  * Converts a JSON string into an Object. Return null if the JSON string is invalid.
@@ -75,13 +74,6 @@ function validateDeployment(event) {
     let now = new Date();
     if (date > now) return false; // Timestamp in the future
     if (typeof deployment.author !== "string") return false;
-    return true;
-}
-
-function validateUser(event) {
-    let userId = event.user_id;
-    if (typeof userId !== "string") return false;
-    if (!UUID_REGEX.test(userId)) return false;
     return true;
 }
 
@@ -140,7 +132,6 @@ export default class Event {
         if (!validateEventType(event)) return null;
         if (!validateTimestamp(event)) return null;
         if (!validateDeployment(event)) return null;
-        if (!validateUser(event)) return null;
         if (!validateURL(event)) return null;
         if (!validateReferrer(event)) return null;
         if (!validateMetadata(event)) return null;
