@@ -23,6 +23,9 @@ export class HomePage extends HTMLElement {
     const filter = document.createElement('deployment-filter');
     const header = document.createElement('section');
     header.className = 'status-banner';
+    header.setAttribute('role', 'status');
+    header.setAttribute('aria-live', 'polite');
+    header.setAttribute('aria-atomic', 'true');
     header.dataset.level = visibleErrors.some((event) => event.metadata?.severity === 'critical')
       ? 'down'
       : visibleErrors.length > 0 ? 'degraded' : 'ok';

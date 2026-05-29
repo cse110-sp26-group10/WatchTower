@@ -42,7 +42,14 @@ export class AppSidebar extends HTMLElement {
 
   setActive(path) {
     this.querySelectorAll('.sidebar-link').forEach((link) => {
-      link.classList.toggle('is-active', link.dataset.route === path);
+      const active = link.dataset.route === path;
+      link.classList.toggle('is-active', active);
+      // aria-current="page" tells screen readers which link is the current page
+      if (active) {
+        link.setAttribute('aria-current', 'page');
+      } else {
+        link.removeAttribute('aria-current');
+      }
     });
   }
 }
