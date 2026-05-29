@@ -25,9 +25,10 @@ https://youtu.be/1RdMwzMQqv8
 **Link**: 
 
 ## Repository Structure
-
 ```
-watchtower/
+WatchTower/
+├── .github/
+│   └── workflows/                # CI/CD GitHub Actions pipelines
 ├── admin/
 │   └── sprints/                  # Sprint logs and planning docs
 │       └── sprint-template.md
@@ -35,18 +36,26 @@ watchtower/
 │   ├── adr/                      # Architecture Decision Records (MADR format)
 │   │   └── ADR-00X-template.md
 │   ├── design/                   # Design artifacts and wireframes
-│   └── user/                     # User personas and user stories
-├── specs/
-│   ├── MVP_DEFINITION.md         # Minimal viable product scope
-│   └── TECHNICAL_SPECS.md        # Stack, structure, and process requirements
+│   ├── specs/
+│   │   ├── MVP_DEFINITION.md     # Minimal viable product scope
+│   │   ├── TECHNICAL_SPECS.md   # Stack, structure, and process requirements
+│   │   ├── CHANGELOG.md          # Version history
+│   │   └── GENAI.md              # AI assistance disclosure log
+│   ├── user/                     # User personas and user stories
+│   └── pr-template.md            # Pull request template
 ├── src/
 │   └── assets/                   # JS, CSS, images
-├── tests/                        # Jest unit tests
-├── CHANGELOG.md                  # Version history
-├── GENAI.md                      # AI assistance disclosure log
-└── README.md                     # You are here
+├── tests/                        # Unit and E2E tests
+├── .gitignore
+├── .htmlvalidate.json             # HTML validation config
+├── .stylelintrc.json              # CSS linting config
+├── eslint.config.js               # JS linting config
+├── package.json                   # Node dependencies and scripts
+├── package-lock.json
+├── playwright.config.js           # E2E test config
+├── vitest.config.js               # Unit test config
+└── README.md                      # You are here
 ```
-
 ## Tech Stack
 
 - **HTML5** — standards-based markup
@@ -66,10 +75,10 @@ watchtower/
 
 ## Documentation
 
-- [MVP Definition](specs/MVP_DEFINITION.md)
-- [Technical Specs](specs/TECHNICAL_SPEC.md)
-- [Changelog](CHANGELOG.md)
-- [AI Disclosure](GENAI.md)
+- [MVP Definition](docs/specs/MVP_DEFINITION.md)
+- [Technical Specs](docs/specs/TECHNICAL_SPEC.md)
+- [Changelog](docs/specs/CHANGELOG.md)
+- [AI Disclosure](docs/specs/GENAI.md)
 
 ## How to Run (in the feat/dashboard–prototype branch)
 
