@@ -51,14 +51,14 @@
 | Name | Did | Doing | Blockers |
 |------|-----|-------|----------|
 | Nicole Sutedja | added sprint 3 md and organized docs, researched sms & decided on ntfy, finished Wireframes details | implement frontend design into app | waiting on code to be ready in new dashboard branch |
-| Kaley Chung | | | |
-| Jensen Guo | | | |
-| Prakhar Shah | | | |
-| Bethany Miyamoto | | | |
-| Kevin Wang | | | |
-| Han Yang-Lin | | | |
-| Aron Wu | | | |
-| Benedict Luis | | | |
+| Kaley Chung | Asked Powell key points of accessibility and  communicated more potential features to add | Research more about accessibility and responsiveness | Quiz |
+| Jensen Guo | finish architecture skeleton for refactor, attend professor office hours | implement new frontend design | Midterm tomorrow |
+| Prakhar Shah | started working on adding accessibility to the dashboard through ARIA, zoom, colorblind theme etc | start testing on different screens | Quiz + midterms |
+| Bethany Miyamoto | research about notification, coordinating development design process | start coding the new pages on frontend in accordance with the wireframes | None |
+| Kevin Wang | research about notification methods, went to prof's oh asking for advice | refactor frontend | None |
+| Han Yang-Lin | Researched authentication using Supabase, designed new authentication process, researched using SMS, emails, and push notifications to alert users, and attended Professor Powell's office hours | Implement authentication and user alerts in the backend | None |
+| Aron Wu | Added dependency and code formatting checks to the CI pipeline | Begin adding additional tests | None |
+| Benedict Luis | Added JSDoc comment validation through ESLint, fixed existing JSDoc type formatting issues, confirmed the full lint check passes and updated CHANGELOG.md in the feat/testing-ci branch | Commit and push the remaining JSDoc formatting fixes, update the changelog if needed and continue helping with additional feature tests from the testing/prototype branch. Research more about CI pipeline and how to implement them with Aron | Midterms |
 | Evan Marriott | office hours with Powell and organized tasks for sprint 3 | more errors in test app and screen size tracking | None |
 
 ### Stand-up 2 — 05/29/2026
