@@ -9,6 +9,11 @@ const TIMEOUT_THRESHOLD = 5; // seconds
 const MAX_TRIES = 3; // attempts
 const RETRY_INTERVAL = 5; // seconds
 const PORT = 8080;
+// const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i; // Uncomment later
+
+/* function isUUID(uuid) { // Uncomment later
+    return UUID_REGEX.test(uuid);
+} */
 
 async function getUserFromRequest() {
     // TODO
@@ -18,12 +23,17 @@ async function getUserFromRequest() {
 }
 
 async function getProjectIdFromAPIKey(apiKey) {
+    /* Uncomment later
+    if (!isUUID(apiKey)) return null;
     const { data, error } = await supabase
         .from("projects").select("id")
         .eq("api_key", apiKey)
         .single();
     if (error) { console.error("Query failed: ", error); return null; }
-    return data.id || null;
+    //return data.id || null;
+    */
+    console.log(apiKey);
+    return 1; // Mock data
 }
 
 // Returns all events from all projects associated with the user
@@ -140,7 +150,7 @@ async function monitorProject(user, project) {
         const uptimeCheck = await getProjectStatus(project);
         if (!uptimeCheck.is_up) {
             const uptimeLog = await getUptimeLogForProject(project);
-            if (uptimeLog !== null && (uptimeLog.length == 0 || uptimeLog[0].is_up)) { // Only sends alert once each time the website goes down
+            if (uptimeLog && (uptimeLog.length == 0 || uptimeLog[0].is_up)) { // Only sends alert once each time the website goes down
                 sendAlert(user, uptimeCheck); // Runs asynchronously
             }
         }
@@ -180,7 +190,7 @@ const server = http.createServer(async (req, res) => {
         res.end();
     } else if (req.method === "GET") {
         const user = await getUserFromRequest(req);
-        if (user === null) invalidateRequest();
+        if (!user) { invalidateRequest(); return; }
         if (requestPath === "/api/events") {
             const events = await getEvents(user);
             res.writeHead(200, { "Content-Type": "application/json" });
@@ -205,7 +215,9 @@ const server = http.createServer(async (req, res) => {
         req.on("end", async () => {
             if (requestPath === "/api/log") {
                 try {
-                    const projectId = await getProjectIdFromAPIKey(searchParams.get("apikey"));
+                    const apiKey = searchParams.get("apikey");
+                    // if (apiKey === "null") { invalidateRequest(); return; } // Uncomment after implemented
+                    const projectId = await getProjectIdFromAPIKey(apiKey);
                     if (projectId === null) throw new Error("Invalid API key");
                     const eventObject = new Event(body);
                     if (!eventObject.valid) throw new Error("Invalid event");
