@@ -9,31 +9,27 @@ const TIMEOUT_THRESHOLD = 5; // seconds
 const MAX_TRIES = 3; // attempts
 const RETRY_INTERVAL = 5; // seconds
 const PORT = 8080;
-// const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i; // Uncomment later
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i; // Uncomment later
 
-/* function isUUID(uuid) { // Uncomment later
-    return UUID_REGEX.test(uuid);
-} */
+function isUUID(uuid) { // Uncomment later
+    return typeof uuid === "string" && UUID_REGEX.test(uuid);
+}
 
 async function getUserFromRequest() {
     // TODO
-    const { data, error } = await supabase.from("users").select("*").eq("id", 1).single(); // Mock data
+    const { data, error } = await supabase.from("users").select("*").eq("id", 1).maybeSingle(); // Mock data
     if (error) { console.error("Query failed: ", error); return null; }
     return data || null;
 }
 
 async function getProjectIdFromAPIKey(apiKey) {
-    /* Uncomment later
     if (!isUUID(apiKey)) return null;
     const { data, error } = await supabase
         .from("projects").select("id")
         .eq("api_key", apiKey)
-        .single();
+        .maybeSingle();
     if (error) { console.error("Query failed: ", error); return null; }
-    //return data.id || null;
-    */
-    console.log(apiKey);
-    return 1; // Mock data
+    return data.id || null;
 }
 
 // Returns all events from all projects associated with the user
@@ -216,7 +212,7 @@ const server = http.createServer(async (req, res) => {
             if (requestPath === "/api/log") {
                 try {
                     const apiKey = searchParams.get("apikey");
-                    // if (apiKey === "null") { invalidateRequest(); return; } // Uncomment after implemented
+                    if (apiKey === "null") { invalidateRequest(); return; }
                     const projectId = await getProjectIdFromAPIKey(apiKey);
                     if (projectId === null) throw new Error("Invalid API key");
                     const eventObject = new Event(body);
@@ -226,10 +222,10 @@ const server = http.createServer(async (req, res) => {
                     logEvent(eventObject);
                     res.writeHead(200, { "Content-Type": "application/json" });
                     res.end(JSON.stringify({ status: "success" }));
-                } catch {
+                } catch (error) {
                     res.writeHead(400);
                     res.end("Invalid event");
-                    console.error("\nInvalid event");
+                    console.error("\nEvent log failed: ", error);
                 }
             } else {
                 invalidateRequest(res);

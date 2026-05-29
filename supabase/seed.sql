@@ -2,7 +2,7 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 DO $$
 DECLARE
-  v_auth_id UUID := gen_random_uuid();
+  v_auth_id UUID := 43ec5a9a-74bb-460a-b368-4767846455e0; -- gen_random_uuid();
   v_email TEXT := 'hyanglin@ucsd.edu';
   v_encrypted_password TEXT := crypt('password123', gen_salt('bf'));
   v_project_name TEXT := 'project123';
