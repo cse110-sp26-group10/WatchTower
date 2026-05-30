@@ -49,15 +49,17 @@ export class SignalsPage extends HTMLElement {
       list.textContent = this.mode === 'feedback' ? 'No survey responses yet.' : 'No errors recorded.';
     } else if (this.mode === 'errors') {
       for (const group of groupErrors(signals)) {
-        const panel = document.createElement('grouped-error-panel');
-        panel.group = group;
-        list.append(panel);
+        const item = document.createElement('article');
+        item.className = 'event-row';
+        item.textContent = `${group.message}${group.count > 1 ? ` x${group.count}` : ''}`;
+        list.append(item);
       }
     } else {
       for (const signal of signals) {
-        const panel = document.createElement('signal-panel');
-        panel.signal = signal;
-        list.append(panel);
+        const item = document.createElement('article');
+        item.className = 'event-row';
+        item.textContent = signal.metadata?.comment || signal.metadata?.message || '(no message)';
+        list.append(item);
       }
     }
 

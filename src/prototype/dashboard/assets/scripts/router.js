@@ -1,3 +1,8 @@
+/**
+ * Creates a simple hash router
+ * @param {*} options renders page at path specified by routes in the outlet
+ * @returns router instance
+ */
 export function createRouter({ routes, outlet }) {
   function getRoute() {
     const hash = window.location.hash.slice(1);
