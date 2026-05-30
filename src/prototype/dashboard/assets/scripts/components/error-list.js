@@ -1,6 +1,6 @@
 import { relativeTime } from '../core/formatters.js';
 
-export class HomeErrorList extends HTMLElement {
+export class ErrorList extends HTMLElement {
   set errors(value) {
     this._errors = Array.isArray(value) ? value : [];
     this.render();
@@ -29,7 +29,7 @@ export class HomeErrorList extends HTMLElement {
       left.className = 'row-left-group';
 
       const severity = document.createElement('span');
-      severity.style.color = 'var(--wt-danger)';
+      severity.style.color = this.getSeverityColor(error);
       severity.style.fontWeight = '700';
       severity.style.fontFamily = 'monospace';
       severity.style.fontSize = '11px';
@@ -66,12 +66,18 @@ export class HomeErrorList extends HTMLElement {
     this.append(empty);
   }
 
+  getSeverityColor(error) {
+    return error.metadata?.severity?.toLowerCase() === 'warning'
+      ? 'var(--wt-warning)'
+      : 'var(--wt-danger)';
+  }
+
   dispatchErrorSelected(errorId) {
-    this.dispatchEvent(new CustomEvent('home-error-selected', {
+    this.dispatchEvent(new CustomEvent('error-selected', {
       bubbles: true,
       detail: { errorId },
     }));
   }
 }
 
-customElements.define('home-error-list', HomeErrorList);
+customElements.define('error-list', ErrorList);
