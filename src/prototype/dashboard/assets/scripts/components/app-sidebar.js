@@ -21,6 +21,15 @@ export class AppSidebar extends HTMLElement {
     nav.className = 'sidebar';
     nav.setAttribute('aria-label', 'Dashboard sections');
 
+    // Brand logo at the top of the sidebar
+    const brand = document.createElement('a');
+    brand.href = '#/';
+    brand.className = 'sidebar-brand';
+    brand.innerHTML = `
+      <img src="/src/prototype/dashboard/public/logo.png" alt="WatchTower logo" style="height: 32px; width: auto;">
+      <span style="color: var(--wt-info); font-size: 1.15rem; font-weight: 700;">WatchTower</span>
+    `;
+
     const list = document.createElement('ul');
     list.className = 'sidebar-list';
 
@@ -35,7 +44,7 @@ export class AppSidebar extends HTMLElement {
       list.append(item);
     }
 
-    nav.append(list);
+    nav.append(brand, list);
     this.replaceChildren(nav);
     this.setActive(window.location.hash.slice(1) || '/');
   }

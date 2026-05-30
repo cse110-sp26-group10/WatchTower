@@ -1,98 +1,139 @@
-import { dataStore } from '../core/data-store.js';
 import { deploymentScope } from '../core/deployment-scope.js';
 
-/** Announce a message to screen readers via the global live region. */
-export function announce(message) {
-  const el = document.getElementById('aria-announcer');
-  if (!el) return;
-  // Clear first so repeated identical messages still fire.
-  el.textContent = '';
-  requestAnimationFrame(() => { el.textContent = message; });
-}
+const SUN_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <circle cx="12" cy="12" r="5"/>
+  <line x1="12" y1="1" x2="12" y2="3"/>
+  <line x1="12" y1="21" x2="12" y2="23"/>
+  <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+  <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+  <line x1="1" y1="12" x2="3" y2="12"/>
+  <line x1="21" y1="12" x2="23" y2="12"/>
+  <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+  <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+</svg>`;
 
-/** Apply or remove the colorblind theme on <html> and persist the choice. */
-function applyTheme(colorblind) {
-  document.documentElement.dataset.theme = colorblind ? 'colorblind' : '';
-  localStorage.setItem('wt_colorblind', colorblind ? '1' : '');
-}
+const MOON_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+  <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+</svg>`;
 
 export class AppTopbar extends HTMLElement {
   connectedCallback() {
     this.render();
-    this.unsubscribe = deploymentScope.subscribe(() => this.updateMeta());
-    // Restore saved theme preference on page load.
-    applyTheme(!!localStorage.getItem('wt_colorblind'));
-    this._updateToggleLabel();
+    this.setupThemeToggle();
+
+    if (deploymentScope && typeof deploymentScope.subscribe === 'function') {
+      this.unsubscribe = deploymentScope.subscribe(() => {
+        this.updateActiveMetadata();
+      });
+    }
   }
 
   disconnectedCallback() {
     this.unsubscribe?.();
   }
 
+  setupThemeToggle() {
+    const themeBtn = this.querySelector('#theme-btn');
+    if (!themeBtn) return;
+
+    const updateToggleUI = (theme) => {
+      const sun = this.querySelector('#theme-icon-sun');
+      const moon = this.querySelector('#theme-icon-moon');
+      if (!sun || !moon) return;
+
+      if (theme === 'dark') {
+        moon.style.background = 'var(--wt-surface)';
+        moon.style.color = 'var(--wt-text)';
+        sun.style.background = 'transparent';
+        sun.style.color = 'var(--wt-text-3)';
+      } else {
+        sun.style.background = 'var(--wt-surface)';
+        sun.style.color = 'var(--wt-text)';
+        moon.style.background = 'transparent';
+        moon.style.color = 'var(--wt-text-3)';
+      }
+    };
+
+    themeBtn.addEventListener('click', () => {
+      const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+      const next = currentTheme === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      updateToggleUI(next);
+    });
+
+    const initialTheme = document.documentElement.getAttribute('data-theme') || 'light';
+    updateToggleUI(initialTheme);
+  }
+
   render() {
-    this.replaceChildren();
+    this.innerHTML = `
+      <header class="topbar">
+        <div class="topbar-left">
+          <div style="display: flex; align-items: center; gap: 8px; margin-left: 16px;">
+            <label style="font-weight: 600; color: var(--wt-text-2); font-size: 13px;">Deployment:</label>
 
-    const header = document.createElement('header');
-    header.className = 'topbar';
-    header.setAttribute('role', 'banner');
+            <deployment-filter></deployment-filter>
 
-    const brand = document.createElement('a');
-    brand.className = 'brand-name';
-    brand.href = '#/';
-    brand.textContent = 'WatchTower';
-    brand.setAttribute('aria-label', 'WatchTower — go to dashboard home');
+            <span id="header-metadata-strip" style="display: inline-flex; align-items: center; gap: 12px; margin-left: 12px; font-family: monospace; font-size: 12px; color: var(--wt-text-2);">
+            </span>
+          </div>
+        </div>
 
-    const meta = document.createElement('div');
-    meta.className = 'topbar-meta';
-
-    this.deploymentInfo = document.createElement('span');
-    this.deploymentInfo.setAttribute('aria-label', 'Active deployment info');
-
-    this.updatedAt = document.createElement('span');
-    // aria-live here so "Updated HH:MM:SS" is announced on each refresh.
-    this.updatedAt.setAttribute('aria-live', 'polite');
-    this.updatedAt.setAttribute('aria-atomic', 'true');
-
-    const dot = document.createElement('span');
-    dot.className = 'dot';
-    dot.setAttribute('aria-hidden', 'true');
-    dot.textContent = '-';
-
-    this.themeToggle = document.createElement('button');
-    this.themeToggle.className = 'theme-toggle';
-    this.themeToggle.setAttribute('type', 'button');
-    this.themeToggle.addEventListener('click', () => this._toggleTheme());
-
-    meta.append(this.deploymentInfo, dot, this.updatedAt, this.themeToggle);
-    header.append(brand, meta);
-    this.append(header);
+        <div class="topbar-right">
+          <button id="theme-btn" style="
+            display: flex;
+            align-items: center;
+            background: var(--wt-surface-2);
+            border: 1px solid var(--wt-border);
+            border-radius: 999px;
+            padding: 4px;
+            cursor: pointer;
+            gap: 2px;
+          ">
+            <span id="theme-icon-sun" style="
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              width: 32px;
+              height: 32px;
+              border-radius: 50%;
+              transition: background 0.15s ease;
+              color: var(--wt-text-3);
+            ">${SUN_SVG}</span>
+            <span id="theme-icon-moon" style="
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              width: 32px;
+              height: 32px;
+              border-radius: 50%;
+              transition: background 0.15s ease;
+              color: var(--wt-text-3);
+            ">${MOON_SVG}</span>
+          </button>
+        </div>
+      </header>
+    `;
   }
 
-  updateMeta() {
-    const deployment = deploymentScope.deployment;
-    this.deploymentInfo.textContent = deployment
-      ? `deployment ${deployment.version} (${deployment.commit_hash})`
-      : `${dataStore.getDeployments().length} deployments`;
-    this.updatedAt.textContent = `Updated ${new Date().toLocaleTimeString()}`;
-  }
+  updateActiveMetadata() {
+    const metaContainer = this.querySelector('#header-metadata-strip');
+    if (!metaContainer) return;
 
-  _toggleTheme() {
-    const isColorblind = document.documentElement.dataset.theme === 'colorblind';
-    applyTheme(!isColorblind);
-    this._updateToggleLabel();
-    announce(!isColorblind ? 'Colorblind-safe theme enabled' : 'Default theme restored');
-  }
+    const currentDep = deploymentScope.deployment;
 
-  _updateToggleLabel() {
-    const isColorblind = document.documentElement.dataset.theme === 'colorblind';
-    this.themeToggle.textContent = isColorblind ? '🎨 Colorblind: ON' : '🎨 Colorblind: OFF';
-    this.themeToggle.setAttribute(
-      'aria-pressed', isColorblind ? 'true' : 'false'
-    );
-    this.themeToggle.setAttribute(
-      'aria-label',
-      isColorblind ? 'Colorblind-safe theme is on — click to disable' : 'Colorblind-safe theme is off — click to enable'
-    );
+    if (!currentDep || deploymentScope.id === 'all') {
+      metaContainer.innerHTML = `<span style="color: var(--wt-text-3); font-style: italic;">All active clusters monitored</span>`;
+      return;
+    }
+
+    metaContainer.innerHTML = `
+      <span style="background: var(--wt-surface-2); padding: 2px 6px; border-radius: var(--wt-radius-sm); border: 1px solid var(--wt-border);">id: <b>${currentDep.id}</b></span>
+      <span style="background: var(--wt-surface-2); padding: 2px 6px; border-radius: var(--wt-radius-sm); border: 1px solid var(--wt-border);">version: <b>${currentDep.version}</b></span>
+      <span style="background: var(--wt-surface-2); padding: 2px 6px; border-radius: var(--wt-radius-sm); border: 1px solid var(--wt-border);">commit: <b>${currentDep.commit_hash}</b></span>
+      <span style="background: var(--wt-surface-2); padding: 2px 6px; border-radius: var(--wt-radius-sm); border: 1px solid var(--wt-border);">author: <b>${currentDep.author || 'system'}</b></span>
+      <span style="color: var(--wt-text-3); font-size: 11px; margin-left: 4px;">deployed 45m ago</span>
+    `;
   }
 }
 

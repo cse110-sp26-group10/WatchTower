@@ -1,30 +1,26 @@
 const originalWarn = console.warn;
 const originalFetch = window.fetch;
 
-const searchParams = new URLSearchParams({
-  apikey: document.currentScript?.getAttribute("data-apikey") ?? "",
-});
+const apiKey = document.currentScript.getAttribute("data-apikey");
 
 async function logEvent(event) {
-  try {
-    const response = await originalFetch(
-      `http://localhost:8080/api/log?${searchParams.toString()}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(event),
-      },
-    );
-    if (!response.ok) {
-      throw new Error("Network response failed");
+    try {
+        const response = await originalFetch(`http://localhost:8080/api/log`, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${apiKey}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(event)
+        });
+        if (!response.ok) {
+            throw new Error("Network response failed");
+        }
+        const data = await response.json();
+        console.log("Response:", data);
+    } catch (error) {
+        console.log("Logging failed:", error);
     }
-    const data = await response.json();
-    console.log("Response:", data);
-  } catch (error) {
-    console.log("Logging failed:", error);
-  }
 }
 
 function getUserId() {
