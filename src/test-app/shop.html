@@ -21,6 +21,12 @@
     <div class="filters" id="filters"></div>
     <div class="product-grid" id="product-grid"></div>
   </section>
+  <div class="error-zone">
+    <p>WatchTower test tools — trigger errors for dashboard testing</p>
+    <button type="button" class="btn btn-danger" onclick="triggerReferenceError()">Trigger ReferenceError</button>
+    <button type="button" class="btn btn-danger" onclick="triggerUnhandledRejection()">Trigger Unhandled Rejection</button>
+  </div>
+
   <footer class="footer">Drape Test Store — WatchTower integration test</footer>
   <script src="assets/scripts/products.js"></script>
   <script src="assets/scripts/cart.js"></script>
