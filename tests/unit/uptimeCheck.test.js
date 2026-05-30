@@ -25,7 +25,7 @@ describe("attemptSuccess", () => {
   it("Handles non-number status", () => {
     expect(attemptSuccess({ status: "200" })).toBe(false);
   });
-  it("Handles attempt  with status beyond upper bound", () => {
+  it("Handles attempt with status beyond upper bound", () => {
     expect(attemptSuccess({ status: 600 })).toBe(false);
   });
   it("Handles attempt with status less than lower bound", () => {

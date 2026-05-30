@@ -2,38 +2,23 @@ const originalWarn = console.warn;
 const originalFetch = window.fetch;
 
 const searchParams = new URLSearchParams({
-    apikey: document.currentScript.getAttribute("data-apikey")
+  apikey: document.currentScript?.getAttribute("data-apikey") ?? "",
 });
 
 async function logEvent(event) {
-<<<<<<< HEAD
-    try {
-        const response = await originalFetch(`http://localhost:8080/api/log?${searchParams.toString()}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(event)
-        });
-        if (!response.ok) {
-            throw new Error("Network response failed");
-        }
-        const data = await response.json();
-        console.log("Response:", data);
-    } catch (error) {
-        console.log("Logging failed:", error);
-=======
   try {
-    const response = await originalFetch("http://localhost:8080", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    const response = await originalFetch(
+      `http://localhost:8080/api/log?${searchParams.toString()}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(event),
       },
-      body: JSON.stringify(event),
-    });
+    );
     if (!response.ok) {
       throw new Error("Network response failed");
->>>>>>> 614c9ed06fd99d8dae2767c77855a2adc2f9d235
     }
     const data = await response.json();
     console.log("Response:", data);
@@ -42,25 +27,10 @@ async function logEvent(event) {
   }
 }
 
-<<<<<<< HEAD
-function eventTemplate() {
-    const event = {};
-    event.timestamp = new Date().toISOString();
-    event.deployment = (window.WatchTower = {}).deployment = { // Mock data
-        "id": "dep_abcd",
-        "version": "0.0.0",
-        "commit_hash": "a1b2c3d",
-        "deployed_at": "2026-03-25T00:00:00.000Z",
-        "author": "kevin"
-    };
-    event.current_url = window.location.href;
-    event.referrer = document.referrer;
-    return event;
-=======
 function getUserId() {
   let userId = localStorage.getItem("watchtower_user_id");
   if (userId === null) {
-    userId = crypto.randomUUID(); // Generate new user_id
+    userId = crypto.randomUUID();
     localStorage.setItem("watchtower_user_id", userId);
   }
   return userId;
@@ -70,7 +40,6 @@ function eventTemplate() {
   const event = {};
   event.timestamp = new Date().toISOString();
   event.deployment = (window.WatchTower = {}).deployment = {
-    // Mock data
     id: "dep_abcd",
     version: "0.0.0",
     commit_hash: "a1b2c3d",
@@ -81,7 +50,6 @@ function eventTemplate() {
   event.current_url = window.location.href;
   event.referrer = document.referrer;
   return event;
->>>>>>> 614c9ed06fd99d8dae2767c77855a2adc2f9d235
 }
 
 function logPageLoad(load_time) {

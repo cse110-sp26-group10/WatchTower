@@ -1,18 +1,4 @@
 const EVENT_FIELDS = new Set([
-<<<<<<< HEAD
-    "event_type",
-    "timestamp",
-    "created_at",
-    "deployment",
-    "ip",
-    "project_id",
-    "current_url",
-    "host",
-    "pathname",
-    "referrer",
-    "referring_domain",
-    "metadata"
-=======
   "event_type",
   "timestamp",
   "created_at",
@@ -25,7 +11,6 @@ const EVENT_FIELDS = new Set([
   "referrer",
   "referring_domain",
   "metadata",
->>>>>>> 614c9ed06fd99d8dae2767c77855a2adc2f9d235
 ]);
 const DEPLOYMENT_FIELDS = new Set([
   "id",
@@ -41,11 +26,8 @@ const METADATA_FIELDS = {
   click: new Set(["element_id", "element_class", "input_delay"]),
 };
 const MAX_CLOCK_SKEW_SECONDS = 300;
-<<<<<<< HEAD
-=======
 const UUID_REGEX =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
->>>>>>> 614c9ed06fd99d8dae2767c77855a2adc2f9d235
 
 /**
  * Converts a JSON string into an Object. Return null if the JSON string is invalid.
@@ -97,8 +79,6 @@ function validateDeployment(event) {
   return true;
 }
 
-<<<<<<< HEAD
-=======
 function validateUser(event) {
   let userId = event.user_id;
   if (typeof userId !== "string") return false;
@@ -106,7 +86,6 @@ function validateUser(event) {
   return true;
 }
 
->>>>>>> 614c9ed06fd99d8dae2767c77855a2adc2f9d235
 function validateURL(event) {
   let currentURL = event.current_url;
   if (typeof currentURL !== "string") return false;
@@ -154,33 +133,6 @@ function cleanupExtraFields(object, fields) {
 }
 
 export default class Event {
-<<<<<<< HEAD
-    constructor(json) {
-        this.valid = false;
-        let event = parseJSON(json);
-        if (event === null) return null;
-        if (typeof event !== "object") return null;
-        if (!validateEventType(event)) return null;
-        if (!validateTimestamp(event)) return null;
-        if (!validateDeployment(event)) return null;
-        if (!validateURL(event)) return null;
-        if (!validateReferrer(event)) return null;
-        if (!validateMetadata(event)) return null;
-        event.created_at = new Date().toISOString();
-        let urlObject = new URL(event.current_url);
-        event.host = urlObject.host;
-        event.pathname = urlObject.pathname;
-        if (event.referrer !== "") {
-            event.referring_domain = new URL(event.referrer).hostname;
-        } else {
-            event.referring_domain = "";
-        }
-        cleanupExtraFields(event.deployment, DEPLOYMENT_FIELDS);
-        cleanupExtraFields(event.metadata, METADATA_FIELDS[event.event_type]);
-        cleanupExtraFields(event, EVENT_FIELDS);
-        this.event = event;
-        this.valid = true;
-=======
   constructor(json) {
     this.valid = false;
     let event = parseJSON(json);
@@ -201,7 +153,6 @@ export default class Event {
       event.referring_domain = new URL(event.referrer).hostname;
     } else {
       event.referring_domain = "";
->>>>>>> 614c9ed06fd99d8dae2767c77855a2adc2f9d235
     }
     cleanupExtraFields(event.deployment, DEPLOYMENT_FIELDS);
     cleanupExtraFields(event.metadata, METADATA_FIELDS[event.event_type]);

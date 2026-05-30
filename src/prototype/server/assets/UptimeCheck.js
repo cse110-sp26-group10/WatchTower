@@ -23,21 +23,6 @@ export class UptimeCheckAttempt {
 }
 
 export class UptimeCheck {
-<<<<<<< HEAD
-    constructor(project_id, url, attempts) {
-        const lastAttempt = attempts[attempts.length - 1];
-        return {
-            project_id,
-            url,
-            "timestamp": attempts[0].timestamp,
-            "is_up": attemptSuccess(lastAttempt),
-            "status": lastAttempt.status,
-            "latency": lastAttempt.latency,
-            attempts
-        };
-    }
-}
-=======
   constructor(url, attempts) {
     const lastAttempt = attempts[attempts.length - 1];
     return {
@@ -50,4 +35,3 @@ export class UptimeCheck {
     };
   }
 }
->>>>>>> 614c9ed06fd99d8dae2767c77855a2adc2f9d235
