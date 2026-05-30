@@ -1,5 +1,10 @@
 const SEVERITY_RANK = { critical: 0, warning: 1, info: 2 };
 
+/**
+ * Groups identical signals to the same panel
+ * @param {*} signals Input signals to render
+ * @returns Grouped signal array
+ */
 export function groupErrors(signals) {
   const groups = new Map();
 

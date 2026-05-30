@@ -19,13 +19,12 @@
 
   /* Global Surface Tokens — Beautiful Light Grey-ish Design */
   --wt-bg:              #f3f4f6;       /* Soft light grey-ish background canvas */
-  --wt-surface:         #ffffff;       /* Pure white floating panels/cards */
+  --wt-surface:         #fff;       /* Pure white floating panels/cards */
   --wt-surface-2:       #e5e7eb;       /* Darker grey accent for interactive list items */
   --wt-border:          #d1d5db;       /* Crisp divider borders */
   --wt-text:            #1f2937;       /* Deep slate-dark text for extreme readability */
   --wt-text-2:          #4b5563;       /* Balanced secondary labels */
   --wt-text-3:          #9ca3af;       /* Subdued timestamp captions */
-  
   --wt-danger:          #d32f2f;
   --wt-warning:         #f57c00;
   --wt-success:         #2e7d32;
