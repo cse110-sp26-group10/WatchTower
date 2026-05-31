@@ -2,6 +2,7 @@ import Event from "./assets/Event.js";
 import {attemptSuccess, UptimeCheckAttempt, UptimeCheck} from "./assets/UptimeCheck.js";
 import http from "http";
 import { supabase, newClient } from "./assets/db.js";   // was: import { pool }
+import { notifyDowntime, notifyError } from "./assets/notify.js";
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 const UPTIME_MONITOR_INTERVAL = 60; // seconds
@@ -108,6 +109,7 @@ async function logEvent(eventObject) {
     });
     if (error) { console.error("Query failed: ", error); return; }
     console.log("Event logged");
+    if (e.event_type === "error") notifyError(e); // Runs asynchronously
 }
 
 async function logUptime(c) {
@@ -140,18 +142,8 @@ async function getProjectStatus(project) {
     return new UptimeCheck(project.id, project.website_url, attempts);
 }
 
-async function sendAlert(user, uptimeCheck) {
-    for (let tries = 1; tries <= MAX_TRIES; tries++) {
-        try {
-            console.log("Placeholder", user, uptimeCheck);
-            return true;
-        } catch (error) {
-            console.error("Alert error: ", error);
-        }
-        await sleep(RETRY_INTERVAL * 1000);
-    }
-    console.error("Alert failed");
-    return false;
+async function sendAlert(project, uptimeCheck) {
+    return notifyDowntime(project, uptimeCheck);
 }
 
 async function monitorProject(user, project) {
@@ -164,7 +156,7 @@ async function monitorProject(user, project) {
         if (!uptimeCheck.is_up) {
             const uptimeLog = await getUptimeLogForProject(project);
             if (uptimeLog && (uptimeLog.length == 0 || uptimeLog[0].is_up)) { // Only sends alert once each time the website goes down
-                sendAlert(user, uptimeCheck); // Runs asynchronously
+                sendAlert(project, uptimeCheck); // Runs asynchronously
             }
         }
         await logUptime(uptimeCheck);
