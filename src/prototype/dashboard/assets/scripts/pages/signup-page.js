@@ -14,30 +14,15 @@ const MOON_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
   <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
 </svg>`;
 
-/**
- * @class LoginPage
- * @extends HTMLElement
- * @description Full-screen login page for WatchTower. Mocks authentication
- * and redirects to the dashboard (hash route #/) on successful submit.
- *
- * Usage: Add <login-page></login-page> to your HTML, or render it via the
- * router before the main app-container is shown.
- */
-export class LoginPage extends HTMLElement {
+export class SignUpPage extends HTMLElement {
   connectedCallback() {
     this.render();
     this.bindEvents();
   }
 
-  disconnectedCallback() {
-    // Nothing async to clean up, but good practice to keep the hook
-  }
-
   render() {
     this.innerHTML = `
       <div class="login-shell">
-
-        <!-- ── Top nav bar (mirrors app topbar style) ────────────────── -->
         <nav class="login-nav">
           <a class="login-nav-brand" href="#">
             <img
@@ -49,7 +34,7 @@ export class LoginPage extends HTMLElement {
             WatchTower
           </a>
           <button
-            id="login-theme-toggle"
+            id="signup-theme-toggle"
             aria-label="Toggle theme"
             style="
               display: flex;
@@ -75,10 +60,7 @@ export class LoginPage extends HTMLElement {
           </button>
         </nav>
 
-        <!-- ── Main two-column layout ───────────────────────────────── -->
         <div class="login-body">
-
-          <!-- Left: branding + tagline -->
           <div class="login-hero" aria-hidden="true">
             <div class="login-hero-inner">
               <div class="login-tower-graphic">
@@ -88,60 +70,68 @@ export class LoginPage extends HTMLElement {
             </div>
           </div>
 
-          <!-- Right: login card -->
           <div class="login-card-wrap">
             <div class="login-card" role="main">
-              <h1 class="login-card-title">Login</h1>
+              <h1 class="login-card-title">Sign Up</h1>
 
-              <div class="login-form" id="login-form" novalidate>
-
+              <div class="login-form" id="signup-form" novalidate>
                 <div class="login-field">
-                  <label class="sr-only" for="login-username">Username or Email</label>
+                  <label class="sr-only" for="signup-email">Email</label>
                   <input
                     class="login-input"
-                    type="text"
-                    id="login-username"
-                    name="username"
-                    placeholder="Username or Email"
-                    autocomplete="username"
+                    type="email"
+                    id="signup-email"
+                    name="email"
+                    placeholder="Email"
+                    autocomplete="email"
                     required
                   />
                 </div>
 
                 <div class="login-field">
-                  <label class="sr-only" for="login-password">Password</label>
+                  <label class="sr-only" for="signup-password">Password</label>
                   <input
                     class="login-input"
                     type="password"
-                    id="login-password"
+                    id="signup-password"
                     name="password"
                     placeholder="Password"
-                    autocomplete="current-password"
+                    autocomplete="new-password"
                     required
                   />
                 </div>
 
-                <p class="login-error" id="login-error" aria-live="polite" hidden></p>
+                <div class="login-field">
+                  <label class="sr-only" for="signup-confirm-password">Confirm Password</label>
+                  <input
+                    class="login-input"
+                    type="password"
+                    id="signup-confirm-password"
+                    name="confirm-password"
+                    placeholder="Confirm Password"
+                    autocomplete="new-password"
+                    required
+                  />
+                </div>
 
-                <button class="login-submit" id="login-submit" type="button">
-                  <span class="login-submit-label">Sign In</span>
+                <p class="login-error" id="signup-error" aria-live="polite" hidden></p>
+
+                <button class="login-submit" id="signup-submit" type="button">
+                  <span class="login-submit-label">Create Account</span>
                   <span class="login-submit-spinner" hidden aria-hidden="true"></span>
                 </button>
 
                 <p class="login-auth-switch">
-                  Don't have an account?
-                  <a href="#/signup">Create an account</a>
+                  Already have an account?
+                  <a href="#">Sign in</a>
                 </p>
-
               </div>
             </div>
           </div>
-
         </div>
       </div>
 
       <style>
-        /* ── Login Shell ─────────────────────────────────────────── */
         .login-shell {
           min-height: 100vh;
           display: flex;
@@ -151,7 +141,6 @@ export class LoginPage extends HTMLElement {
           font-family: var(--font-sans);
         }
 
-        /* ── Nav ─────────────────────────────────────────────────── */
         .login-nav {
           display: flex;
           align-items: center;
@@ -178,33 +167,6 @@ export class LoginPage extends HTMLElement {
           object-fit: contain;
         }
 
-        .login-nav-links {
-          display: flex;
-          list-style: none;
-          margin: 0;
-          padding: 0;
-          gap: 1.5rem;
-        }
-
-        .login-nav-links a {
-          color: var(--wt-text-2);
-          text-decoration: none;
-          font-size: 0.875rem;
-          font-weight: 500;
-          transition: color 0.15s;
-        }
-
-        .login-nav-links a:hover {
-          color: var(--wt-text);
-        }
-
-        .login-theme-btn {
-          /* reuses .theme-toggle from global styles.css */
-          font-size: 0.8rem;
-          letter-spacing: 0.05em;
-        }
-
-        /* ── Body layout ─────────────────────────────────────────── */
         .login-body {
           flex: 1;
           display: grid;
@@ -226,7 +188,6 @@ export class LoginPage extends HTMLElement {
           .login-hero { display: none; }
         }
 
-        /* ── Hero / Branding side ────────────────────────────────── */
         .login-hero {
           display: flex;
           justify-content: center;
@@ -254,7 +215,6 @@ export class LoginPage extends HTMLElement {
           margin: 0;
         }
 
-        /* ── Login Card ──────────────────────────────────────────── */
         .login-card-wrap {
           display: flex;
           justify-content: center;
@@ -279,7 +239,6 @@ export class LoginPage extends HTMLElement {
           color: var(--wt-text);
         }
 
-        /* ── Form ────────────────────────────────────────────────── */
         .login-form {
           display: flex;
           flex-direction: column;
@@ -317,14 +276,12 @@ export class LoginPage extends HTMLElement {
           box-shadow: 0 0 0 3px var(--color-crit-bg);
         }
 
-        /* ── Error message ───────────────────────────────────────── */
         .login-error {
           margin: 0;
           font-size: 0.8125rem;
           color: var(--wt-danger);
         }
 
-        /* ── Submit button ───────────────────────────────────────── */
         .login-submit {
           margin-top: 0.5rem;
           padding: 0.75rem 1rem;
@@ -356,7 +313,6 @@ export class LoginPage extends HTMLElement {
           cursor: not-allowed;
         }
 
-        /* Spinner */
         @keyframes login-spin {
           to { transform: rotate(360deg); }
         }
@@ -391,16 +347,16 @@ export class LoginPage extends HTMLElement {
   }
 
   bindEvents() {
-    const form      = this.querySelector('#login-form');
-    const submitBtn = this.querySelector('#login-submit');
-    const errorEl   = this.querySelector('#login-error');
-    const usernameInput = this.querySelector('#login-username');
-    const passwordInput = this.querySelector('#login-password');
-    const themeBtn  = this.querySelector('#login-theme-toggle');
+    const form = this.querySelector('#signup-form');
+    const submitBtn = this.querySelector('#signup-submit');
+    const errorEl = this.querySelector('#signup-error');
+    const emailInput = this.querySelector('#signup-email');
+    const passwordInput = this.querySelector('#signup-password');
+    const confirmPasswordInput = this.querySelector('#signup-confirm-password');
+    const themeBtn = this.querySelector('#signup-theme-toggle');
 
-    // ── Theme toggle (mirrors app behaviour) ──────────────────────
     const updateToggleUI = (isDark) => {
-      const sun  = this.querySelector('#theme-icon-sun');
+      const sun = this.querySelector('#theme-icon-sun');
       const moon = this.querySelector('#theme-icon-moon');
       if (!sun || !moon) return;
       if (isDark) {
@@ -427,71 +383,67 @@ export class LoginPage extends HTMLElement {
       updateToggleUI(!isDark);
     });
 
-    // Set initial icon state
     updateToggleUI(document.documentElement.dataset.theme?.includes('dark'));
 
-    // ── Submit handler ─────────────────────────────────────────────
+    const setLoading = (isLoading) => {
+      submitBtn.disabled = isLoading;
+      submitBtn.querySelector('.login-submit-label').textContent = isLoading ? 'Creating account...' : 'Create Account';
+      submitBtn.querySelector('.login-submit-spinner').hidden = !isLoading;
+    };
+
+    const showError = (message, fields = []) => {
+      errorEl.textContent = message;
+      errorEl.hidden = false;
+      fields.forEach((field) => field.classList.add('is-invalid'));
+      fields[0]?.focus();
+    };
+
     const handleSubmit = () => {
-      // Clear previous errors
       errorEl.hidden = true;
       errorEl.textContent = '';
-      usernameInput.classList.remove('is-invalid');
-      passwordInput.classList.remove('is-invalid');
+      [emailInput, passwordInput, confirmPasswordInput].forEach((field) => field.classList.remove('is-invalid'));
 
-      const username = usernameInput.value.trim();
+      const email = emailInput.value.trim();
       const password = passwordInput.value;
+      const confirmPassword = confirmPasswordInput.value;
+      const emailIsValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-      // Basic client-side validation
-      let valid = true;
-      if (!username) {
-        usernameInput.classList.add('is-invalid');
-        valid = false;
-      }
-      if (!password) {
-        passwordInput.classList.add('is-invalid');
-        valid = false;
-      }
-      if (!valid) {
-        errorEl.textContent = 'Please fill in all fields.';
-        errorEl.hidden = false;
+      if (!email || !password || !confirmPassword) {
+        showError('Please fill in all fields.', [emailInput, passwordInput, confirmPasswordInput].filter((field) => !field.value));
         return;
       }
 
-      // ── Mock auth ─────────────────────────────────────────────────
-      // Swap this block for a real fetch() call when the backend is ready.
-      submitBtn.disabled = true;
-      submitBtn.querySelector('.login-submit-label').textContent = 'Signing in…';
-      submitBtn.querySelector('.login-submit-spinner').hidden = false;
+      if (!emailIsValid) {
+        showError('Please enter a valid email address.', [emailInput]);
+        return;
+      }
+
+      if (password.length < 6) {
+        showError('Password must be at least 6 characters.', [passwordInput]);
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        showError('Passwords do not match.', [passwordInput, confirmPasswordInput]);
+        confirmPasswordInput.value = '';
+        return;
+      }
+
+      setLoading(true);
 
       setTimeout(() => {
-        // Mock: any non-empty credentials pass
-        // Replace with: const ok = await authService.login(username, password);
-        const mockSuccess = true;
-
-        if (mockSuccess) {
-          localStorage.setItem('wt-auth', '1');
-          window.location.reload();
-        } else {
-          submitBtn.disabled = false;
-          submitBtn.querySelector('.login-submit-label').textContent = 'Sign In';
-          submitBtn.querySelector('.login-submit-spinner').hidden = true;
-
-          errorEl.textContent = 'Invalid username or password.';
-          errorEl.hidden = false;
-          passwordInput.value = '';
-          passwordInput.classList.add('is-invalid');
-          passwordInput.focus();
-        }
-      }, 0); // No real backend — redirect immediately
+        localStorage.setItem('wt-auth', '1');
+        window.location.hash = '#/';
+        window.location.reload();
+      }, 0);
     };
 
     submitBtn?.addEventListener('click', handleSubmit);
 
-    // Allow Enter key anywhere in the form
     form?.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') handleSubmit();
     });
   }
 }
 
-customElements.define('login-page', LoginPage);
+customElements.define('signup-page', SignUpPage);
