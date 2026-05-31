@@ -1,4 +1,4 @@
-export class HomeDashboardBanner extends HTMLElement {
+export class DashboardBanner extends HTMLElement {
   connectedCallback() {
     this.render();
   }
@@ -16,4 +16,4 @@ export class HomeDashboardBanner extends HTMLElement {
   }
 }
 
-customElements.define('home-dashboard-banner', HomeDashboardBanner);
+customElements.define('dashboard-banner', DashboardBanner);

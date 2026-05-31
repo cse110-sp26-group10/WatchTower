@@ -1,4 +1,4 @@
-export class HomeActivityList extends HTMLElement {
+export class ActivityList extends HTMLElement {
   set events(value) {
     this._events = Array.isArray(value) ? value : [];
     this.render();
@@ -73,11 +73,11 @@ export class HomeActivityList extends HTMLElement {
   }
 
   dispatchErrorSelected(errorId) {
-    this.dispatchEvent(new CustomEvent('home-error-selected', {
+    this.dispatchEvent(new CustomEvent('error-selected', {
       bubbles: true,
       detail: { errorId },
     }));
   }
 }
 
-customElements.define('home-activity-list', HomeActivityList);
+customElements.define('activity-list', ActivityList);
