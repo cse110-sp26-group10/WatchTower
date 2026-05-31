@@ -95,6 +95,7 @@ export function getErrorSeverityCounts(errors) {
 export function getHomeDashboardData(deploymentId = getCurrentDeploymentId()) {
   const events = getScopedEvents(deploymentId);
   const { errors, pageLoads, clicks, surveys } = splitEventsByType(events);
+  const uptimeLog = dataStore.getUptimeLog();
 
   return {
     events,
@@ -102,6 +103,7 @@ export function getHomeDashboardData(deploymentId = getCurrentDeploymentId()) {
     pageLoads,
     clicks,
     surveys,
+    uptime: buildUptimeSummary(uptimeLog),
     loadPaths: groupEventsByPath(pageLoads),
     clickPaths: groupEventsByPath(clicks),
     metrics: [
@@ -111,6 +113,53 @@ export function getHomeDashboardData(deploymentId = getCurrentDeploymentId()) {
       { label: 'Clicks', value: clicks.length },
     ],
   };
+}
+
+/**
+ * Build a compact uptime summary for the overview timeline card.
+ */
+function buildUptimeSummary(log) {
+  const sorted = sortEventsByTimestamp(log).reverse();
+  const latest = sorted[sorted.length - 1] || null;
+  const checks = expandUptimeTimeline(sorted);
+  const upCount = checks.filter((check) => check.is_up).length;
+  const uptimePercent = checks.length ? Math.round((upCount / checks.length) * 100) : 0;
+  const currentDeployment = deploymentScope?.deployment || dataStore.getDeployments()[0];
+
+  return {
+    name: currentDeployment?.name || 'Drape App',
+    category: 'Production',
+    url: 'drape.example.com',
+    isHealthy: latest?.is_up !== false,
+    latency: latest?.latency || 0,
+    uptimePercent,
+    checks,
+    rangeStartLabel: '9 hours ago',
+    rangeEndLabel: '6 minutes ago',
+  };
+}
+
+function expandUptimeTimeline(log) {
+  if (!log.length) return [];
+
+  const pattern = log.flatMap((entry) => {
+    const repeats = entry.is_up ? 5 : 2;
+    return Array.from({ length: repeats }, () => ({
+      is_up: entry.is_up,
+      latency: entry.latency,
+      status: entry.status,
+      timestamp: entry.timestamp,
+    }));
+  });
+
+  while (pattern.length < 48) {
+    pattern.unshift({
+      ...pattern[pattern.length % log.length],
+      is_up: pattern.length % 11 === 0 ? false : pattern[pattern.length % log.length].is_up,
+    });
+  }
+
+  return pattern.slice(-48);
 }
 
 /**
