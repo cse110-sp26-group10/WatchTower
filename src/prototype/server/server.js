@@ -34,7 +34,7 @@ function getCookie(req, name) {
 
 async function getUserFromRequest(req) {
     const accessToken = getCookie(req, "access_token");
-    if (!accessToken) return { user: null, error: "Missing access token" };
+    if (!accessToken) return { user: null, authUser: null, error: "Missing access token" };
     return await dbHelper.getUserFromToken(accessToken);
 }
 
@@ -72,7 +72,7 @@ async function sendAlert(user, uptimeCheck) {
             console.log("Placeholder", user, uptimeCheck);
             return true;
         } catch (error) {
-            console.error("Alert error: ", error);
+            console.error("Alert error:", error);
         }
         await sleep(RETRY_INTERVAL * 1000);
     }
@@ -93,20 +93,24 @@ async function monitorProject(user, project) {
                 sendAlert(user, uptimeCheck); // Runs asynchronously
             }
         }
-        await dbHelper.logUptime(uptimeCheck);
+        const error = await dbHelper.logUptime(uptimeCheck);
+        if (error) {
+            const { data: checkProject, error: checkError } = await dbHelper.getProjectFromId(project.id);
+            if (!checkError && !checkProject) { console.log(`Stopped monitoring project ${project.id}`); break; } // Project no longer exists
+        }
         await sleep(UPTIME_MONITOR_INTERVAL * 1000);
     }
 }
 
 async function initUser(user) {
-    const { projects, error } = await dbHelper.getProjectsFromUser(user);
-    if (error) { console.error("Failed to load projects: ", error); return; }
+    const { projects, error } = await dbHelper.getProjects(user);
+    if (error) { console.error("Failed to load projects:", error); return; }
     for (const project of projects) monitorProject(user, project);
 }
 
 async function initUsers() {
     const { users, error } = await dbHelper.getUsers();
-    if (error) { console.error("Failed to load users: ", error); return; }
+    if (error) { console.error("Failed to load users:", error); return; }
     for (const user of users) initUser(user);
 }
 
@@ -160,9 +164,18 @@ const server = http.createServer(async (req, res) => {
         res.writeHead(204);
         res.end();
     } else if (req.method === "GET") {
-        const { user, error: accessError } = await getUserFromRequest(req);
-        if (accessError) { unauthorizedRequest(res); console.error("Unauthorized: ", accessError); return; }
-        if (requestPath === "/api/events") {
+        const { user, authUser, error: accessError } = await getUserFromRequest(req);
+        if (accessError) { unauthorizedRequest(res); console.error("Unauthorized:", accessError); return; }
+        if (requestPath === "/profile") {
+            const profile = {
+                email: authUser.email,
+                created_at: authUser.created_at,
+                alert_id: user.alert_id
+            };
+            res.writeHead(200, { "Content-Type": "application/json" });
+            console.log("Profile sent");
+            res.end(JSON.stringify(profile));
+        } else if (requestPath === "/api/events") {
             const { events, error } = await dbHelper.getEvents(user);
             if (error) { invalidateRequest(res); return; }
             res.writeHead(200, { "Content-Type": "application/json" });
@@ -174,6 +187,12 @@ const server = http.createServer(async (req, res) => {
             res.writeHead(200, { "Content-Type": "application/json" });
             res.end(JSON.stringify(uptimeLog));
             console.log("Uptime log sent");
+        } else if (requestPath === "/api/projects") {
+            const { projects, error } = await dbHelper.getProjects(user);
+            if (error) { invalidateRequest(res); return; }
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify(projects));
+            console.log("Projects sent");
         } else {
             invalidateRequest(res);
         }
@@ -189,7 +208,12 @@ const server = http.createServer(async (req, res) => {
             if (requestPath === "/api/log") {
                 try {
                     const { project, error: accessError } = await getProjectFromRequest(req);
-                    if (accessError) { unauthorizedRequest(res); console.error("Unauthorized: ", accessError); return; }
+                    if (accessError) { unauthorizedRequest(res); console.error("Unauthorized:", accessError); return; }
+                    if (new URL(project.website_url).hostname !== new URL(origin).hostname) {
+                        unauthorizedRequest(res);
+                        console.error("Unauthorized:", "Request origin does not match project URL");
+                        return;
+                    }
                     const eventObject = new Event(body);
                     if (!eventObject.valid) throw new Error("Invalid event");
                     eventObject.setField("project_id", project.id);
@@ -200,7 +224,7 @@ const server = http.createServer(async (req, res) => {
                     res.end(JSON.stringify({ status: "success" }));
                 } catch (error) {
                     invalidateRequest(res, "Invalid event");
-                    console.error("Event log failed: ", error);
+                    console.error("Event log failed:", error);
                 }
             } else if (requestPath === "/signup") {
                 try {
@@ -214,7 +238,7 @@ const server = http.createServer(async (req, res) => {
                     console.log("Signed up successfully");
                 } catch (error) {
                     invalidateRequest(res);
-                    console.error("Sign up failed: ", error);
+                    console.error("Sign up failed:", error);
                 }
             } else if (requestPath === "/login") {
                 try {
@@ -226,7 +250,7 @@ const server = http.createServer(async (req, res) => {
                     console.log("Logged in successfully");
                 } catch (error) {
                     invalidateRequest(res);
-                    console.error("Login failed: ", error);
+                    console.error("Login failed:", error);
                 }
             } else if (requestPath === "/logout") {
                 const accessToken = getCookie(req, "access_token");
@@ -238,9 +262,9 @@ const server = http.createServer(async (req, res) => {
                 const { data, error } = await dbHelper.refreshSession(refreshToken);
                 if (error) { unauthorizedRequest(res); return; }
                 validateSession(res, data.session);
-            } else if (requestPath === "/projects/create") {
+            } else if (requestPath === "/api/projects/create") {
                 const { user, error: accessError } = await getUserFromRequest(req);
-                if (accessError) { unauthorizedRequest(res); console.error("Unauthorized: ", accessError); return; }
+                if (accessError) { unauthorizedRequest(res); console.error("Unauthorized:", accessError); return; }
                 try {
                     const { name, website_url: websiteUrl } = JSON.parse(body);
                     if (!name || !websiteUrl) throw new Error("Missing project name or website URL");
@@ -249,14 +273,14 @@ const server = http.createServer(async (req, res) => {
                     if (error) { invalidateRequest(res); return; };
                     monitorProject(user, project); // Start monitoring the website
                     res.writeHead(200, { "Content-Type": "application/json" });
-                    res.end(JSON.stringify({ status: "success" }));
+                    res.end(JSON.stringify(project));
                 } catch (error) {
                     invalidateRequest(res);
-                    console.error("Project creation failed: ", error);
+                    console.error("Project creation failed:", error);
                 }
-            } else if (requestPath === "/projects/delete") {
+            } else if (requestPath === "/api/projects/delete") {
                 const { user, error: accessError } = await getUserFromRequest(req);
-                if (accessError) { unauthorizedRequest(res); console.error("Unauthorized: ", accessError); return; }
+                if (accessError) { unauthorizedRequest(res); console.error("Unauthorized:", accessError); return; }
                 try {
                     const { id: projectId } = JSON.parse(body);
                     if (!projectId) throw new Error("Missing project id");
@@ -267,7 +291,7 @@ const server = http.createServer(async (req, res) => {
                     res.end(JSON.stringify({ status: "success" }));
                 } catch (error) {
                     invalidateRequest(res);
-                    console.error("Project deletion failed: ", error);
+                    console.error("Project deletion failed:", error);
                 }
             } else {
                 invalidateRequest(res);
