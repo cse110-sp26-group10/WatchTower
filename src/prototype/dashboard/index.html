@@ -8,18 +8,13 @@
   <link rel="icon" type="image/png" href="/src/prototype/dashboard/public/favicon.png">
 </head>
 <body>
+  <!-- Login mounts here when not authenticated -->
+  <div id="login-outlet"></div>
 
-  <div class="app-container">
-    <app-sidebar></app-sidebar>
-
-    <div class="main-content">
-      <app-topbar></app-topbar>
-      <main id="app-outlet"></main>
-    </div>
-  </div>
+  <!-- App shell is built by main.js only when authenticated -->
+  <div id="app-shell"></div>
 
   <div id="aria-announcer" aria-live="polite" aria-atomic="true" class="sr-only"></div>
-
   <script type="module" src="assets/scripts/main.js"></script>
 </body>
 </html>

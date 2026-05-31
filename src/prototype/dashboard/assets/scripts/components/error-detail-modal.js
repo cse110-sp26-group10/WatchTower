@@ -1,4 +1,4 @@
-export class HomeErrorDetailModal extends HTMLElement {
+export class ErrorDetailModal extends HTMLElement {
   connectedCallback() {
     this.render();
     this.modal = this.querySelector('#error-detail-modal');
@@ -114,4 +114,4 @@ export class HomeErrorDetailModal extends HTMLElement {
   }
 }
 
-customElements.define('home-error-detail-modal', HomeErrorDetailModal);
+customElements.define('error-detail-modal', ErrorDetailModal);
