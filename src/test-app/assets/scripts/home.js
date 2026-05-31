@@ -34,7 +34,18 @@ function updateCartCount() {
   document.getElementById("cart-count").textContent = getCartCount();
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+// TypeError: accessing property on null — captured by window.onerror
+function triggerTypeError() {
+  const el = null;
+  el.toString();
+}
+
+// console.warn is captured by WatchTower as a "warning"-severity event
+function triggerWarning() {
+  console.warn('WatchTower test warning — triggered from home page');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
   renderFeatured();
   updateCartCount();
 });

@@ -29,8 +29,9 @@ function validBase(eventType = "page_load", metadata = { load_time: 100 }) {
       author: "evan",
     },
     user_id: VALID_UUID,
-    current_url: "https://example.com/page",
-    referrer: "",
+    current_url: 'https://example.com/page',
+    referrer: '',
+    browser: { name: 'Chrome', version: '124' },
     metadata,
   };
 }
@@ -167,85 +168,100 @@ describe("Event — deployment validation", () => {
     expect(new Event(JSON.stringify(data)).valid).toBe(false);
   });
 
-  it("rejects deployment that is not an object", () => {
-    expect(
-      new Event(JSON.stringify({ ...validBase(), deployment: "dep_001" }))
-        .valid,
-    ).toBe(false);
+  it('rejects deployment that is not an object', () => {
+    expect(new Event(JSON.stringify({ ...validBase(), deployment: 'dep_001' })).valid).toBe(false);
   });
 });
 
-describe("Event — user_id validation", () => {
-  it("rejects a malformed UUID", () => {
-    expect(
-      new Event(JSON.stringify({ ...validBase(), user_id: "not-a-uuid" }))
-        .valid,
-    ).toBe(false);
+describe('Event — user_id validation', () => {
+  it('rejects a malformed UUID', () => {
+    expect(new Event(JSON.stringify({ ...validBase(), user_id: 'not-a-uuid' })).valid).toBe(false);
   });
 
-  it("rejects a numeric user_id", () => {
-    expect(
-      new Event(JSON.stringify({ ...validBase(), user_id: 12345 })).valid,
-    ).toBe(false);
+  it('rejects a numeric user_id', () => {
+    expect(new Event(JSON.stringify({ ...validBase(), user_id: 12345 })).valid).toBe(false);
   });
 });
 
-describe("Event — URL validation", () => {
-  it("rejects an invalid current_url", () => {
-    expect(
-      new Event(JSON.stringify({ ...validBase(), current_url: "not a url" }))
-        .valid,
-    ).toBe(false);
+describe('Event — URL validation', () => {
+  it('rejects an invalid current_url', () => {
+    expect(new Event(JSON.stringify({ ...validBase(), current_url: 'not a url' })).valid).toBe(false);
   });
 
-  it("rejects a non-empty invalid referrer", () => {
-    expect(
-      new Event(JSON.stringify({ ...validBase(), referrer: "not a url" }))
-        .valid,
-    ).toBe(false);
+  it('rejects a non-empty invalid referrer', () => {
+    expect(new Event(JSON.stringify({ ...validBase(), referrer: 'not a url' })).valid).toBe(false);
   });
 
-  it("accepts an empty referrer", () => {
-    expect(
-      new Event(JSON.stringify({ ...validBase(), referrer: "" })).valid,
-    ).toBe(true);
+  it('accepts an empty referrer', () => {
+    expect(new Event(JSON.stringify({ ...validBase(), referrer: '' })).valid).toBe(true);
   });
 });
 
-describe("Event — metadata validation", () => {
-  it("rejects page_load with missing load_time", () => {
-    expect(new Event(JSON.stringify(validBase("page_load", {}))).valid).toBe(
-      false,
-    );
+describe('Event — metadata validation', () => {
+  it('rejects page_load with missing load_time', () => {
+    expect(new Event(JSON.stringify(validBase('page_load', {}))).valid).toBe(false);
   });
 
-  it("rejects error with missing severity", () => {
-    expect(
-      new Event(JSON.stringify(validBase("error", { message: "oops" }))).valid,
-    ).toBe(false);
+  it('rejects error with missing severity', () => {
+    expect(new Event(JSON.stringify(validBase('error', { message: 'oops' }))).valid).toBe(false);
   });
 
-  it("rejects error with missing message", () => {
-    expect(
-      new Event(JSON.stringify(validBase("error", { severity: "critical" })))
-        .valid,
-    ).toBe(false);
+  it('rejects error with missing message', () => {
+    expect(new Event(JSON.stringify(validBase('error', { severity: 'critical' }))).valid).toBe(false);
   });
 
-  it("rejects survey with missing rating", () => {
-    expect(
-      new Event(JSON.stringify(validBase("survey", { message: "nice" }))).valid,
-    ).toBe(false);
+  it('rejects survey with missing rating', () => {
+    expect(new Event(JSON.stringify(validBase('survey', { message: 'nice' }))).valid).toBe(false);
   });
 
-  it("rejects click with missing element_id", () => {
-    expect(
-      new Event(
-        JSON.stringify(
-          validBase("click", { element_class: "btn", input_delay: 5 }),
-        ),
-      ).valid,
-    ).toBe(false);
+  it('rejects click with missing element_id', () => {
+    expect(new Event(JSON.stringify(validBase('click', { element_class: 'btn', input_delay: 5 }))).valid).toBe(false);
+  });
+});
+
+describe('Event — browser validation', () => {
+  it('accepts a valid browser field', () => {
+    const e = new Event(JSON.stringify(validBase()));
+    expect(e.valid).toBe(true);
+    expect(e.event.browser).toEqual({ name: 'Chrome', version: '124' });
+  });
+
+  it('rejects a missing browser field', () => {
+    const data = validBase();
+    delete data.browser;
+    expect(new Event(JSON.stringify(data)).valid).toBe(false);
+  });
+
+  it('rejects browser where name is not a string', () => {
+    const data = { ...validBase(), browser: { name: 42, version: '124' } };
+    expect(new Event(JSON.stringify(data)).valid).toBe(false);
+  });
+
+  it('rejects browser where version is not a string', () => {
+    const data = { ...validBase(), browser: { name: 'Chrome', version: 124 } };
+    expect(new Event(JSON.stringify(data)).valid).toBe(false);
+  });
+
+  it('rejects browser that is not an object', () => {
+    const data = { ...validBase(), browser: 'Chrome' };
+    expect(new Event(JSON.stringify(data)).valid).toBe(false);
+  });
+
+  it('strips extra fields inside browser', () => {
+    const data = { ...validBase(), browser: { name: 'Chrome', version: '124', extra: 'remove' } };
+    const e = new Event(JSON.stringify(data));
+    expect(e.valid).toBe(true);
+    expect(e.event.browser.extra).toBeUndefined();
+  });
+
+  it('rejects browser that is null', () => {
+    const data = { ...validBase(), browser: null };
+    expect(new Event(JSON.stringify(data)).valid).toBe(false);
+  });
+
+  it('rejects browser that is an array', () => {
+    const data = { ...validBase(), browser: [] };
+    expect(new Event(JSON.stringify(data)).valid).toBe(false);
   });
 });
 

@@ -1,16 +1,17 @@
 const EVENT_FIELDS = new Set([
-  "event_type",
-  "timestamp",
-  "created_at",
-  "deployment",
-  "ip",
-  "user_id",
-  "current_url",
-  "host",
-  "pathname",
-  "referrer",
-  "referring_domain",
-  "metadata",
+    "event_type",
+    "timestamp",
+    "created_at",
+    "deployment",
+    "ip",
+    "user_id",
+    "current_url",
+    "host",
+    "pathname",
+    "referrer",
+    "referring_domain",
+    "browser",
+    "metadata"
 ]);
 const DEPLOYMENT_FIELDS = new Set([
   "id",
@@ -19,6 +20,7 @@ const DEPLOYMENT_FIELDS = new Set([
   "deployed_at",
   "author",
 ]);
+const BROWSER_FIELDS = new Set(["name", "version"]);
 const METADATA_FIELDS = {
   page_load: new Set(["load_time"]),
   error: new Set(["severity", "message"]),
@@ -94,10 +96,18 @@ function validateURL(event) {
 }
 
 function validateReferrer(event) {
-  let referrer = event.referrer;
-  if (typeof referrer !== "string") return false;
-  if (referrer !== "" && !URL.canParse(referrer)) return false;
-  return true;
+    let referrer = event.referrer;
+    if (typeof referrer !== "string") return false;
+    if (referrer !== "" && !URL.canParse(referrer)) return false;
+    return true;
+}
+
+function validateBrowser(event) {
+    let browser = event.browser;
+    if (typeof browser !== "object" || browser === null || Array.isArray(browser)) return false;
+    if (typeof browser.name !== "string") return false;
+    if (typeof browser.version !== "string") return false;
+    return true;
 }
 
 function validateMetadata(event) {
@@ -133,33 +143,35 @@ function cleanupExtraFields(object, fields) {
 }
 
 export default class Event {
-  constructor(json) {
-    this.valid = false;
-    let event = parseJSON(json);
-    if (event === null) return null;
-    if (typeof event !== "object") return null;
-    if (!validateEventType(event)) return null;
-    if (!validateTimestamp(event)) return null;
-    if (!validateDeployment(event)) return null;
-    if (!validateUser(event)) return null;
-    if (!validateURL(event)) return null;
-    if (!validateReferrer(event)) return null;
-    if (!validateMetadata(event)) return null;
-    event.created_at = new Date().toISOString();
-    let urlObject = new URL(event.current_url);
-    event.host = urlObject.host;
-    event.pathname = urlObject.pathname;
-    if (event.referrer !== "") {
-      event.referring_domain = new URL(event.referrer).hostname;
-    } else {
-      event.referring_domain = "";
+    constructor(json) {
+        this.valid = false;
+        let event = parseJSON(json);
+        if (event === null) return null;
+        if (typeof event !== "object") return null;
+        if (!validateEventType(event)) return null;
+        if (!validateTimestamp(event)) return null;
+        if (!validateDeployment(event)) return null;
+        if (!validateUser(event)) return null;
+        if (!validateURL(event)) return null;
+        if (!validateReferrer(event)) return null;
+        if (!validateBrowser(event)) return null;
+        if (!validateMetadata(event)) return null;
+        event.created_at = new Date().toISOString();
+        let urlObject = new URL(event.current_url);
+        event.host = urlObject.host;
+        event.pathname = urlObject.pathname;
+        if (event.referrer !== "") {
+            event.referring_domain = new URL(event.referrer).hostname;
+        } else {
+            event.referring_domain = "";
+        }
+        cleanupExtraFields(event.browser, BROWSER_FIELDS);
+        cleanupExtraFields(event.deployment, DEPLOYMENT_FIELDS);
+        cleanupExtraFields(event.metadata, METADATA_FIELDS[event.event_type]);
+        cleanupExtraFields(event, EVENT_FIELDS);
+        this.event = event;
+        this.valid = true;
     }
-    cleanupExtraFields(event.deployment, DEPLOYMENT_FIELDS);
-    cleanupExtraFields(event.metadata, METADATA_FIELDS[event.event_type]);
-    cleanupExtraFields(event, EVENT_FIELDS);
-    this.event = event;
-    this.valid = true;
-  }
 
   setField(field, value) {
     if (!EVENT_FIELDS.has(field)) return false;

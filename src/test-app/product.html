@@ -18,6 +18,12 @@
     <a class="nav-cart" href="cart.html">Cart (<span id="cart-count">0</span>)</a>
   </nav>
   <div id="product-container"></div>
+  <div class="error-zone">
+    <p>WatchTower test tools — trigger errors for dashboard testing</p>
+    <button type="button" class="btn btn-danger" onclick="triggerRangeError()">Trigger RangeError</button>
+    <button type="button" class="btn btn-danger" onclick="triggerCallUndefined()">Trigger Call Undefined</button>
+  </div>
+
   <footer class="footer">Drape Test Store — WatchTower integration test</footer>
   <script src="assets/scripts/products.js"></script>
   <script src="assets/scripts/cart.js"></script>

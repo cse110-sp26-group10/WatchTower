@@ -22,6 +22,12 @@
     <div id="cart-items"></div>
     <div class="cart-totals" id="cart-totals"></div>
   </div>
+  <div class="error-zone">
+    <p>WatchTower test tools — trigger errors for dashboard testing</p>
+    <button type="button" class="btn btn-danger" onclick="triggerURIError()">Trigger URIError</button>
+    <button type="button" class="btn btn-danger" onclick="triggerUnhandledRejection()">Trigger Unhandled Rejection</button>
+  </div>
+
   <footer class="footer">Drape Test Store — WatchTower integration test</footer>
   <script src="assets/scripts/products.js"></script>
   <script src="assets/scripts/cart.js"></script>

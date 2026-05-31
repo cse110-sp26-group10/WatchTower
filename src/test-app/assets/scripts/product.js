@@ -73,8 +73,19 @@ function renderNotFound() {
     '<div class="empty-state"><p>Product not found. <a href="shop.html">Back to shop</a></p></div>';
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  const id = new URLSearchParams(window.location.search).get("id");
+// RangeError: invalid array length
+function triggerRangeError() {
+  new Array(-1);
+}
+
+// TypeError: calling undefined as a function
+function triggerCallUndefined() {
+  const fn = undefined;
+  fn();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const id = new URLSearchParams(window.location.search).get('id');
   const product = getProductById(id);
   if (!product) {
     renderNotFound();
