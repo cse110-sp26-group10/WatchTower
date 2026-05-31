@@ -93,7 +93,11 @@ async function monitorProject(user, project) {
                 sendAlert(user, uptimeCheck); // Runs asynchronously
             }
         }
-        await dbHelper.logUptime(uptimeCheck);
+        const error = await dbHelper.logUptime(uptimeCheck);
+        if (error) {
+            const { data: checkProject, error: checkError } = await dbHelper.getProjectFromId(project.id);
+            if (!checkError && !checkProject) { console.log(`Stopped monitoring project ${project.id}`); break; } // Project no longer exists
+        }
         await sleep(UPTIME_MONITOR_INTERVAL * 1000);
     }
 }

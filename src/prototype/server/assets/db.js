@@ -157,5 +157,10 @@ export const dbHelper = {
         const { data: users, error } = await supabase.from("users").select("*");
         if (error || !users) { console.error("Query error:", error); return { users: null, error: error }; }
         return { users: users, error: null };
+    },
+    async getProjectFromId(projectId) {
+        const { data: project, error } = await supabase.from("projects").select("*").eq("id", projectId).limit(1).maybeSingle();
+        if (error) console.error("Query failed:", error);
+        return { project, error };
     }
 };
