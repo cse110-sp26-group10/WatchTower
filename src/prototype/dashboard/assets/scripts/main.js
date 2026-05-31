@@ -14,7 +14,8 @@ import { PageNotFound } from './pages/not-found.js';
 import { ErrorsPage } from './pages/errors-page.js';
 import { FeedbackPage } from './pages/feedback-page.js';
 import { ActivityPage } from './pages/activity-page.js';
-import { LoginPage } from './pages/login-page.js';
+import './pages/login-page.js';
+import './pages/signup-page.js';
 
 // Apply saved theme flags before first render to avoid flash.
 const flags = [];
@@ -26,10 +27,15 @@ window.addEventListener('DOMContentLoaded', () => {
   const isLoggedIn = localStorage.getItem('wt-auth') === '1';
 
   if (!isLoggedIn) {
-    // Mount login standalone — no shell, no router
-    const loginOutlet = document.getElementById('login-outlet');
-    const loginEl = document.createElement('login-page');
-    loginOutlet.appendChild(loginEl);
+    const renderAuthPage = () => {
+      const loginOutlet = document.getElementById('login-outlet');
+      const isSignUpRoute = window.location.hash === '#/signup';
+      loginOutlet.replaceChildren(document.createElement(isSignUpRoute ? 'signup-page' : 'login-page'));
+    };
+
+    // Mount auth pages standalone — no shell, no app router
+    renderAuthPage();
+    window.addEventListener('hashchange', renderAuthPage);
     return;
   }
 
