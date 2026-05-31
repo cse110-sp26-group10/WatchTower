@@ -130,3 +130,49 @@ export function getErrorsDashboardData(deploymentId = getCurrentDeploymentId()) 
     ],
   };
 }
+
+/**
+ * Build the data model used by the feedback dashboard.
+ */
+export function getFeedbackDashboardData(deploymentId = getCurrentDeploymentId()) {
+  const events = getScopedEvents(deploymentId);
+  const { surveys } = splitEventsByType(events);
+  const ratings = surveys
+    .map((survey) => Number(survey.metadata?.rating || 0))
+    .filter((rating) => rating > 0);
+  const averageRating = ratings.length
+    ? (ratings.reduce((sum, rating) => sum + rating, 0) / ratings.length).toFixed(1)
+    : '-';
+
+  return {
+    surveys,
+    metrics: [
+      { label: 'Feedback Entries', value: surveys.length },
+      { label: 'Avg Rating', value: averageRating === '-' ? '-' : `${averageRating}/5`, state: 'warning' },
+      { label: 'Low Ratings', value: ratings.filter((rating) => rating <= 2).length, state: 'danger' },
+      { label: 'High Ratings', value: ratings.filter((rating) => rating >= 4).length, state: 'success' },
+    ],
+  };
+}
+
+/**
+ * Build the data model used by the activity dashboard.
+ */
+export function getActivityDashboardData(deploymentId = getCurrentDeploymentId()) {
+  const events = getScopedEvents(deploymentId);
+  const { pageLoads, clicks } = splitEventsByType(events);
+
+  return {
+    events,
+    pageLoads,
+    clicks,
+    loadPaths: groupEventsByPath(pageLoads),
+    clickPaths: groupEventsByPath(clicks),
+    metrics: [
+      { label: 'Total Activity', value: events.length },
+      { label: 'Page Loads', value: pageLoads.length },
+      { label: 'Clicks', value: clicks.length },
+      { label: 'Avg Load Time', value: pageLoads.length ? `${calculateAverageLatency(pageLoads)}ms` : '-' },
+    ],
+  };
+}
