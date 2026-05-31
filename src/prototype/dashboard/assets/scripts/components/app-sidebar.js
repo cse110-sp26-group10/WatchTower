@@ -1,5 +1,6 @@
 const LINKS = [
   ['#/', 'Overview', '/'],
+  ['#/projects', 'Projects', '/projects'],
   ['#/errors', 'Errors', '/errors'],
   ['#/feedback', 'Feedback', '/feedback'],
   ['#/activity', 'Activity', '/activity'],
@@ -26,7 +27,7 @@ export class AppSidebar extends HTMLElement {
     brand.href = '#/';
     brand.className = 'sidebar-brand';
     brand.innerHTML = `
-      <img src="/src/prototype/dashboard/public/logo.png" alt="WatchTower logo" style="height: 32px; width: auto;">
+      <img src="/src/prototype/dashboard/public/logo.svg" alt="WatchTower logo" style="height: 32px; width: auto;">
       <span style="color: var(--wt-info); font-size: 1.15rem; font-weight: 700;">WatchTower</span>
     `;
 
