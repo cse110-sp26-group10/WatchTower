@@ -103,16 +103,27 @@ async function getUptimeLogForProject(project) {
 }
 
 async function logEvent(eventObject) {
-    const e = eventObject.event;
-    const { error } = await supabase.from("events").insert({
-        event_type: e.event_type, timestamp: e.timestamp, created_at: e.created_at,
-        deployment: e.deployment, ip: e.ip, project_id: e.project_id,
-        current_url: e.current_url, host: e.host, pathname: e.pathname,
-        referrer: e.referrer, referring_domain: e.referring_domain,
-        metadata: e.metadata,
-    });
-    if (error) { console.error("Query failed: ", error); return; }
-    console.log("Event logged");
+    const event = eventObject.event;
+    const query = `
+        INSERT INTO events (
+            event_type, timestamp, created_at, deployment, ip,
+            user_id, current_url, host, pathname, referrer,
+            referring_domain, metadata, browser
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+    `;
+    const values = [
+        event.event_type, event.timestamp, event.created_at, JSON.stringify(event.deployment), event.ip,
+        event.user_id, event.current_url, event.host, event.pathname, event.referrer,
+        event.referring_domain, JSON.stringify(event.metadata), JSON.stringify(event.browser)
+    ];
+    console.log("\nLogging event...");
+    try {
+        await pool.query(query, values);
+        console.log("Event logged");
+        console.log(JSON.stringify(eventObject, null, 2));
+    } catch (error) {
+        console.error("Query failed: ", error);
+    }
 }
 
 async function logUptime(c) {

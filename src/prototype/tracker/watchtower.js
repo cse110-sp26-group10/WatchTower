@@ -6,11 +6,11 @@ const baseUrl = isLocal
 const scripts = ["src/prototype/tracker/assets/tracker.js"];
 
 scripts.forEach((src) => {
-  const scriptName = src.split("/").at(-1);
-  const script = document.createElement("script");
-  script.src = `${baseUrl}/${src}`;
-  script.onload = () => console.log(`WatchTower: ${scriptName} loaded`);
-  script.onerror = () =>
-    console.error(`WatchTower: Failed to load ${scriptName}`);
-  document.head.appendChild(script);
+    const scriptName = src.split('/').at(-1);
+    const script = document.createElement('script');
+    script.type = 'module';
+    script.src = `${baseUrl}/${src}`;
+    script.onload = () => console.log(`WatchTower: ${scriptName} loaded`);
+    script.onerror = () => console.error(`WatchTower: Failed to load ${scriptName}`);
+    document.head.appendChild(script);
 });
