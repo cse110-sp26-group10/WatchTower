@@ -48,11 +48,6 @@ export class LoginPage extends HTMLElement {
             />
             WatchTower
           </a>
-          <ul class="login-nav-links">
-            <li><a href="#">Home</a></li>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Team</a></li>
-          </ul>
           <button
             id="login-theme-toggle"
             aria-label="Toggle theme"
@@ -89,7 +84,7 @@ export class LoginPage extends HTMLElement {
               <div class="login-tower-graphic">
                 <img src="/src/prototype/dashboard/public/logo.svg" alt="WatchTower" />
               </div>
-              <p class="login-tagline">See what's on fire<br>before your users do</p>
+              <p class="login-tagline">See what's on fire<br>before your users do.</p>
             </div>
           </div>
 
