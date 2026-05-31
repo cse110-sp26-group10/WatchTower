@@ -1,6 +1,6 @@
 import { starsForRating } from '../core/formatters.js';
 
-export class HomeFeedbackList extends HTMLElement {
+export class FeedbackList extends HTMLElement {
   set surveys(value) {
     this._surveys = Array.isArray(value) ? value : [];
     this.render();
@@ -58,4 +58,4 @@ export class HomeFeedbackList extends HTMLElement {
   }
 }
 
-customElements.define('home-feedback-list', HomeFeedbackList);
+customElements.define('feedback-list', FeedbackList);
