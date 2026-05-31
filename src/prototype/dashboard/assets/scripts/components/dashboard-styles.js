@@ -1,4 +1,4 @@
-export class HomeDashboardStyles extends HTMLElement {
+export class DashboardStyles extends HTMLElement {
   connectedCallback() {
     this.innerHTML = `
       <style>
@@ -21,18 +21,18 @@ export class HomeDashboardStyles extends HTMLElement {
         .error-click-target-btn:focus-visible {
           outline: 2px solid var(--wt-info);
         }
-        home-panel-section,
-        home-error-list,
-        home-feedback-list,
-        home-path-count-list,
-        home-activity-list {
+        panel-section,
+        error-list,
+        feedback-list,
+        path-count-list,
+        activity-list {
           display: flex;
           flex-direction: column;
         }
-        home-error-list,
-        home-feedback-list,
-        home-path-count-list,
-        home-activity-list {
+        error-list,
+        feedback-list,
+        path-count-list,
+        activity-list {
           gap: 0.5rem;
         }
       </style>
@@ -40,4 +40,4 @@ export class HomeDashboardStyles extends HTMLElement {
   }
 }
 
-customElements.define('home-dashboard-styles', HomeDashboardStyles);
+customElements.define('dashboard-styles', DashboardStyles);

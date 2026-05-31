@@ -1,4 +1,4 @@
-export class HomePathCountList extends HTMLElement {
+export class PathCountList extends HTMLElement {
   static get observedAttributes() {
     return ['empty-message'];
   }
@@ -56,4 +56,4 @@ export class HomePathCountList extends HTMLElement {
   }
 }
 
-customElements.define('home-path-count-list', HomePathCountList);
+customElements.define('path-count-list', PathCountList);
