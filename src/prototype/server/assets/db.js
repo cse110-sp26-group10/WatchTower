@@ -121,6 +121,7 @@ export const dbHelper = {
         const { data, error } = await supabase.auth.refreshSession({ refresh_token: refreshToken });
         const altMessage = "Invalid credentials";
         if (error || !data || !data.session) { console.error("Session refresh failed: ", error || altMessage); return { data: null, error: error || altMessage }; }
+        console.log("Session refreshed successfully");
         return { data: data, error: null };
     },
     async createProject(user, name, websiteUrl) {
