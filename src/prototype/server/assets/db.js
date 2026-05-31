@@ -24,11 +24,11 @@ export const dbHelper = {
     },
     async getUserFromToken(accessToken) {
         const { user: authUser, error: authError } = await dbHelper.getAuthUserFromToken(accessToken);
-        if (authError) return { user: null, error: authError };
+        if (authError) return { user: null, authUser: null, error: authError };
         const { data: user, error } = await supabase.from("users").select("*").eq("auth_id", authUser.id).limit(1).maybeSingle();
-        if (error) { console.error("Query failed:", error); return { user: null, error: error }; }
-        if (!user) return { user: null, error: "Missing user" };
-        return { user: user, error: null };
+        if (error) { console.error("Query failed:", error); return { user: null, authUser: null, error: error }; }
+        if (!user) return { user: null, authUser: null, error: "Missing user" };
+        return { user: user, authUser: authUser, error: null };
     },
     async getProjectFromAPIKey(apiKey) {
         const { data: project, error } = await supabase.from("projects").select("*").eq("api_key", apiKey).limit(1).maybeSingle();
@@ -148,7 +148,7 @@ export const dbHelper = {
         console.log("Project deleted");
         return null;
     },
-    async getProjectsFromUser(user) {
+    async getProjects(user) {
         const { data, error } = await supabase.from("users_projects").select("projects(*)").eq("user_id", user.id);
         if (error || !data) { console.error("Query error:", error); return { projects: null, error: error }; }
         return { projects: data.map((entry) => entry.projects), error: null };

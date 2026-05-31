@@ -34,7 +34,7 @@ function getCookie(req, name) {
 
 async function getUserFromRequest(req) {
     const accessToken = getCookie(req, "access_token");
-    if (!accessToken) return { user: null, error: "Missing access token" };
+    if (!accessToken) return { user: null, authUser: null, error: "Missing access token" };
     return await dbHelper.getUserFromToken(accessToken);
 }
 
@@ -99,7 +99,7 @@ async function monitorProject(user, project) {
 }
 
 async function initUser(user) {
-    const { projects, error } = await dbHelper.getProjectsFromUser(user);
+    const { projects, error } = await dbHelper.getProjects(user);
     if (error) { console.error("Failed to load projects:", error); return; }
     for (const project of projects) monitorProject(user, project);
 }
@@ -160,9 +160,18 @@ const server = http.createServer(async (req, res) => {
         res.writeHead(204);
         res.end();
     } else if (req.method === "GET") {
-        const { user, error: accessError } = await getUserFromRequest(req);
+        const { user, authUser, error: accessError } = await getUserFromRequest(req);
         if (accessError) { unauthorizedRequest(res); console.error("Unauthorized:", accessError); return; }
-        if (requestPath === "/api/events") {
+        if (requestPath === "/profile") {
+            const profile = {
+                email: authUser.email,
+                created_at: authUser.created_at,
+                alert_id: user.alert_id
+            };
+            res.writeHead(200, { "Content-Type": "application/json" });
+            console.log("Profile sent");
+            res.end(JSON.stringify(profile));
+        } else if (requestPath === "/api/events") {
             const { events, error } = await dbHelper.getEvents(user);
             if (error) { invalidateRequest(res); return; }
             res.writeHead(200, { "Content-Type": "application/json" });
@@ -174,6 +183,12 @@ const server = http.createServer(async (req, res) => {
             res.writeHead(200, { "Content-Type": "application/json" });
             res.end(JSON.stringify(uptimeLog));
             console.log("Uptime log sent");
+        } else if (requestPath === "/api/projects") {
+            const { projects, error } = await dbHelper.getProjects(user);
+            if (error) { invalidateRequest(res); return; }
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify(projects));
+            console.log("Projects sent");
         } else {
             invalidateRequest(res);
         }
@@ -243,7 +258,7 @@ const server = http.createServer(async (req, res) => {
                 const { data, error } = await dbHelper.refreshSession(refreshToken);
                 if (error) { unauthorizedRequest(res); return; }
                 validateSession(res, data.session);
-            } else if (requestPath === "/projects/create") {
+            } else if (requestPath === "/api/projects/create") {
                 const { user, error: accessError } = await getUserFromRequest(req);
                 if (accessError) { unauthorizedRequest(res); console.error("Unauthorized:", accessError); return; }
                 try {
@@ -254,12 +269,12 @@ const server = http.createServer(async (req, res) => {
                     if (error) { invalidateRequest(res); return; };
                     monitorProject(user, project); // Start monitoring the website
                     res.writeHead(200, { "Content-Type": "application/json" });
-                    res.end(JSON.stringify({ status: "success" }));
+                    res.end(JSON.stringify(project));
                 } catch (error) {
                     invalidateRequest(res);
                     console.error("Project creation failed:", error);
                 }
-            } else if (requestPath === "/projects/delete") {
+            } else if (requestPath === "/api/projects/delete") {
                 const { user, error: accessError } = await getUserFromRequest(req);
                 if (accessError) { unauthorizedRequest(res); console.error("Unauthorized:", accessError); return; }
                 try {
