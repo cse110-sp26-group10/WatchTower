@@ -11,6 +11,11 @@ DECLARE
   v_user_id INT;
   v_project_id INT;
   v_project_api_key UUID := 'b23b3210-3597-45ad-8484-14936a967760';
+  -- Second user (Kevin), co-owner of the same project. Subscribe ntfy to v_alert_id2.
+  v_auth_id2 UUID := '66b2239d-02b3-4b59-ae6a-9693653d00b0';
+  v_alert_id2 UUID := '8b99ad15-8734-4c1a-b4c7-4615f32d47ed';
+  v_email2 TEXT := 'xuw040@ucsd.edu';
+  v_user_id2 INT;
 BEGIN
 
   INSERT INTO auth.users (
@@ -78,5 +83,70 @@ BEGIN
   INSERT INTO projects (name, website_url, api_key) VALUES (v_project_name, v_website_url, v_project_api_key) RETURNING id INTO v_project_id;
 
   INSERT INTO users_projects (user_id, project_id) VALUES (v_user_id, v_project_id);
+
+  -- Second user (Kevin): same project, separate alert_id + email.
+  INSERT INTO auth.users (
+    id,
+    instance_id,
+    aud,
+    role,
+    email,
+    encrypted_password,
+    email_confirmed_at,
+    raw_app_meta_data,
+    raw_user_meta_data,
+    created_at,
+    updated_at,
+    confirmation_token,
+    email_change,
+    email_change_token_new,
+    recovery_token,
+    is_sso_user,
+    is_anonymous
+  )
+  VALUES (
+    v_auth_id2,
+    '00000000-0000-0000-0000-000000000000',
+    'authenticated',
+    'authenticated',
+    v_email2,
+    v_encrypted_password,
+    NOW(),
+    '{"provider":"email","providers":["email"]}',
+    '{"first_name": "Kevin", "last_name": "Wang"}',
+    NOW(),
+    NOW(),
+    '',
+    '',
+    '',
+    '',
+    FALSE,
+    FALSE
+  );
+
+  INSERT INTO auth.identities (
+    id,
+    user_id,
+    identity_data,
+    provider,
+    provider_id,
+    last_sign_in_at,
+    created_at,
+    updated_at
+  )
+  VALUES (
+    v_auth_id2,
+    v_auth_id2,
+    jsonb_build_object('sub', v_auth_id2, 'email', v_email2),
+    'email',
+    v_auth_id2,
+    NOW(),
+    NOW(),
+    NOW()
+  );
+
+  INSERT INTO users (auth_id, alert_id) VALUES (v_auth_id2, v_alert_id2) RETURNING id INTO v_user_id2;
+
+  INSERT INTO users_projects (user_id, project_id) VALUES (v_user_id2, v_project_id);
 
 END $$;

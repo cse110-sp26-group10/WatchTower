@@ -1,4 +1,4 @@
-export class HomePanelSection extends HTMLElement {
+export class PanelSection extends HTMLElement {
   connectedCallback() {
     this.render();
   }
@@ -38,4 +38,4 @@ export class HomePanelSection extends HTMLElement {
   }
 }
 
-customElements.define('home-panel-section', HomePanelSection);
+customElements.define('panel-section', PanelSection);
