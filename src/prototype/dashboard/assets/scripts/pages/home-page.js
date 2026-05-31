@@ -5,7 +5,6 @@ import '../components/dashboard-banner.js';
 import '../components/dashboard-styles.js';
 import '../components/error-detail-modal.js';
 import '../components/error-list.js';
-import '../components/feedback-list.js';
 import '../components/panel-section.js';
 import '../components/path-count-list.js';
 import '../components/summary-metrics.js';
@@ -44,15 +43,9 @@ export class HomePage extends HTMLElement {
       <dashboard-banner></dashboard-banner>
       <summary-metrics></summary-metrics>
 
-      <section class="dashboard-double-row">
-        <panel-section heading="Errors" subheading="click an error row for full details">
-          <error-list id="home-errors"></error-list>
-        </panel-section>
-
-        <panel-section heading="User Feedback" subheading="most recent first">
-          <feedback-list id="home-feedback"></feedback-list>
-        </panel-section>
-      </section>
+      <panel-section heading="Errors" subheading="click an error row for full details">
+        <error-list id="home-errors"></error-list>
+      </panel-section>
 
       <section class="dashboard-double-row" id="section-activity-top" style="margin-bottom: 20px;">
         <panel-section heading="Page Loads" subheading="grouped by path">
@@ -76,7 +69,6 @@ export class HomePage extends HTMLElement {
   cacheElements() {
     this.metrics = this.querySelector('summary-metrics');
     this.errorList = this.querySelector('#home-errors');
-    this.feedbackList = this.querySelector('#home-feedback');
     this.loadPaths = this.querySelector('#home-load-paths');
     this.clickPaths = this.querySelector('#home-click-paths');
     this.activityList = this.querySelector('#home-activity');
@@ -88,7 +80,6 @@ export class HomePage extends HTMLElement {
 
     this.metrics.items = data.metrics;
     this.errorList.errors = data.errors;
-    this.feedbackList.surveys = data.surveys;
     this.loadPaths.pathCounts = data.loadPaths;
     this.clickPaths.pathCounts = data.clickPaths;
     this.activityList.events = data.events;

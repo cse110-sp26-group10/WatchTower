@@ -1,8 +1,9 @@
-//import { dataStore } from '../core/data-store.js';
 import { deploymentScope } from '../core/deployment-scope.js';
-//import { resolvedSignals } from '../core/resolved-signals.js';
-//import { groupErrors } from '../core/signal-groups.js';
-
+import { getFeedbackDashboardData } from '../core/dashboard-data.js';
+import '../components/dashboard-styles.js';
+import '../components/feedback-list.js';
+import '../components/panel-section.js';
+import '../components/summary-metrics.js';
 
 export class FeedbackPage extends HTMLElement {
   set route(value) {
@@ -10,7 +11,13 @@ export class FeedbackPage extends HTMLElement {
   }
 
   connectedCallback() {
-    this.unsubscribe = deploymentScope.subscribe(() => this.render());
+    this.render();
+    this.cacheElements();
+    if (deploymentScope && typeof deploymentScope.subscribe === 'function') {
+      this.unsubscribe = deploymentScope.subscribe(() => this.updatePageData());
+    } else {
+      this.updatePageData();
+    }
   }
 
   disconnectedCallback() {
@@ -18,10 +25,27 @@ export class FeedbackPage extends HTMLElement {
   }
 
   render() {
-    const page = document.createElement('div');
-    page.className = 'page-stack';
+    this.className = 'dashboard-viewport';
+    this.innerHTML = `
+      <summary-metrics></summary-metrics>
 
-    this.replaceChildren(page);
+      <panel-section heading="User Feedback" subheading="most recent first">
+        <feedback-list id="feedback-page-list"></feedback-list>
+      </panel-section>
+
+      <dashboard-styles></dashboard-styles>
+    `;
+  }
+
+  cacheElements() {
+    this.metrics = this.querySelector('summary-metrics');
+    this.feedbackList = this.querySelector('#feedback-page-list');
+  }
+
+  updatePageData() {
+    const data = getFeedbackDashboardData();
+    this.metrics.items = data.metrics;
+    this.feedbackList.surveys = data.surveys;
   }
 }
 
