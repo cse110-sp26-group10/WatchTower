@@ -5,16 +5,12 @@ const DEFAULT_PROJECTS = [
     id: 'proj_shop',
     name: 'Drape Storefront',
     url: 'https://drape.example.com',
-    type: 'Website',
-    environment: 'Production',
     createdAt: '2026-05-30T09:00:00.000Z',
   },
   {
     id: 'proj_api',
     name: 'Core API',
     url: 'https://api.drape.example.com',
-    type: 'API',
-    environment: 'Staging',
     createdAt: '2026-05-29T16:30:00.000Z',
   },
 ];
@@ -91,27 +87,6 @@ export class ProjectsPage extends HTMLElement {
             <span>Website or App URL</span>
             <input id="project-url" name="url" type="url" placeholder="https://example.com" autocomplete="off" required>
           </label>
-
-          <div class="project-form-row">
-            <label class="project-field">
-              <span>Type</span>
-              <select id="project-type" name="type">
-                <option>Website</option>
-                <option>Web App</option>
-                <option>API</option>
-                <option>Mobile App</option>
-              </select>
-            </label>
-
-            <label class="project-field">
-              <span>Environment</span>
-              <select id="project-environment" name="environment">
-                <option>Production</option>
-                <option>Staging</option>
-                <option>Development</option>
-              </select>
-            </label>
-          </div>
 
           <p class="project-error" id="project-error" aria-live="polite" hidden></p>
 
@@ -206,18 +181,6 @@ export class ProjectsPage extends HTMLElement {
           white-space: nowrap;
         }
 
-        .project-form-row {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 0.75rem;
-        }
-
-        @media (max-width: 32rem) {
-          .project-form-row {
-            grid-template-columns: 1fr;
-          }
-        }
-
         .project-field {
           display: flex;
           flex-direction: column;
@@ -227,8 +190,7 @@ export class ProjectsPage extends HTMLElement {
           font-weight: 600;
         }
 
-        .project-field input,
-        .project-field select {
+        .project-field input {
           width: 100%;
           min-height: 2.625rem;
           border: 1px solid var(--wt-border);
@@ -241,8 +203,7 @@ export class ProjectsPage extends HTMLElement {
           outline: none;
         }
 
-        .project-field input:focus,
-        .project-field select:focus {
+        .project-field input:focus {
           border-color: var(--color-active);
           box-shadow: 0 0 0 3px var(--color-active-bg);
         }
@@ -284,7 +245,6 @@ export class ProjectsPage extends HTMLElement {
           display: flex;
           flex-direction: column;
           gap: 0.75rem;
-          min-height: 11rem;
           border: 1px solid var(--wt-border);
           border-radius: var(--wt-radius-md);
           background: var(--wt-surface-2);
@@ -317,23 +277,9 @@ export class ProjectsPage extends HTMLElement {
           text-decoration: underline;
         }
 
-        .project-pill {
-          border: 1px solid var(--wt-border);
-          border-radius: 999px;
-          background: var(--wt-surface);
-          color: var(--wt-text-2);
-          font-size: 0.75rem;
-          font-weight: 700;
-          padding: 0.2rem 0.55rem;
-          white-space: nowrap;
-        }
-
         .project-meta {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 0.5rem;
           margin-top: auto;
-          color: var(--wt-text-2);
+          color: var(--wt-text-3);
           font-size: 0.75rem;
         }
 
@@ -385,8 +331,6 @@ export class ProjectsPage extends HTMLElement {
   addProject() {
     const nameInput = this.querySelector('#project-name');
     const urlInput = this.querySelector('#project-url');
-    const typeInput = this.querySelector('#project-type');
-    const environmentInput = this.querySelector('#project-environment');
     const errorEl = this.querySelector('#project-error');
     const name = nameInput.value.trim();
     const url = normalizeUrl(urlInput.value);
@@ -417,8 +361,6 @@ export class ProjectsPage extends HTMLElement {
       id: `proj_${Date.now().toString(36)}`,
       name,
       url,
-      type: typeInput.value,
-      environment: environmentInput.value,
       createdAt: new Date().toISOString(),
     };
 
@@ -442,21 +384,15 @@ export class ProjectsPage extends HTMLElement {
     list.innerHTML = this.projects.map((project) => {
       const name = escapeHtml(project.name);
       const url = escapeHtml(project.url);
-      const type = escapeHtml(project.type);
-      const environment = escapeHtml(project.environment);
       const createdAt = escapeHtml(formatDate(project.createdAt));
 
       return `
       <article class="project-card">
         <div class="project-card-header">
           <h3>${name}</h3>
-          <span class="project-pill">${environment}</span>
         </div>
         <a class="project-url" href="${url}" target="_blank" rel="noreferrer">${url}</a>
-        <div class="project-meta">
-          <span>${type}</span>
-          <span>Added ${createdAt}</span>
-        </div>
+        <div class="project-meta">Added ${createdAt}</div>
         <button class="project-remove" type="button" data-remove-project="${project.id}">Remove</button>
       </article>
     `;
