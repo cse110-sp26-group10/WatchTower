@@ -1,7 +1,7 @@
 import Event from "./assets/Event.js";
 import {attemptSuccess, UptimeCheckAttempt, UptimeCheck} from "./assets/UptimeCheck.js";
 import http from "http";
-import { supabase, newClient } from "./assets/db.js";   // was: import { pool }
+import { dbHelper } from "./assets/db.js";   // was: import { pool }
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 const UPTIME_MONITOR_INTERVAL = 60; // seconds
@@ -32,92 +32,18 @@ function getCookie(req, name) {
     return match ? decodeURIComponent(match[2]) : null;
 }
 
-async function getAuthUserFromToken(accessToken) {
-    const { data: { user }, error } = await supabase.auth.getUser(accessToken);
-    if (error || !user) return [null, error];
-    return [user, null];
+async function getUserFromRequest(req) {
+    const accessToken = getCookie(req, "access_token");
+    if (!accessToken) return { user: null, error: "Missing access token" };
+    return await dbHelper.getUserFromToken(accessToken);
 }
 
-async function getUserFromToken(accessToken) {
-    const [authUser, authError] = await getAuthUserFromToken(accessToken);
-    if (authError || !authUser) return [null, authError];
-    const { data: user, error } = await supabase.from("users").select("*").eq("auth_id", authUser.id).limit(1).maybeSingle();
-    // const { data, error } = await supabase.from("users").select("*").eq("id", 1).limit(1).maybeSingle(); // Mock data
-    if (error || !user) return [null, error];
-    return [user, null];
-}
-
-async function getProjectIdFromAPIKey(apiKey) {
-    if (!isUUID(apiKey)) return null;
-    const { data: project, error } = await supabase
-        .from("projects").select("id")
-        .eq("api_key", apiKey)
-        .limit(1)
-        .maybeSingle();
-    if (error || !project) { console.error("Query failed: ", error); return null; }
-    return project.id || null;
-}
-
-// Returns all events from all projects associated with the user
-async function getEvents(user) {
-    const { data, error } = await supabase
-        .from("projects").select(`
-            users_projects!inner(user_id),
-            events (*)
-        `)
-        .eq("users_projects.user_id", user.id)
-        .order("timestamp", { referencedTable: 'events', ascending: false });
-    if (error) { console.error("Query failed: ", error); return []; }
-    const events = data?.flatMap(item => item.events || []) || [];
-    return events;
-}
-
-// Returns all uptime checks from all projects associated with the user
-async function getUptimeLog(user) {
-    const { data, error } = await supabase
-        .from("projects").select(`
-            users_projects!inner(user_id),
-            website_url,
-            uptime_log (*)
-        `)
-        .eq("users_projects.user_id", user.id)
-        .order("timestamp", { referencedTable: 'uptime_log', ascending: false });
-    if (error) { console.error("Query failed: ", error); return []; }
-    const hostnames = new Set(data?.flatMap(item => URL.canParse(item.website_url) && new URL(item.website_url).hostname || []) || []);
-    const uptimeLog = data?.flatMap(item => item.uptime_log || []) || [];
-    return uptimeLog.filter((row) => hostnames.has(new URL(row.url).hostname));  // see gotcha #3
-}
-
-async function getUptimeLogForProject(project) {
-    const { data, error } = await supabase
-        .from("uptime_log").select("*")
-        .eq("project_id", project.id)
-        .order("timestamp", { ascending: false });
-    if (error) { console.error("Query failed: ", error); return null; }
-    return data;
-}
-
-async function logEvent(eventObject) {
-    const e = eventObject.event;
-    const { error } = await supabase.from("events").insert({
-        event_type: e.event_type, timestamp: e.timestamp, created_at: e.created_at,
-        deployment: e.deployment, ip: e.ip, project_id: e.project_id,
-        current_url: e.current_url, host: e.host, pathname: e.pathname,
-        referrer: e.referrer, referring_domain: e.referring_domain,
-        metadata: e.metadata,
-    });
-    if (error) { console.error("Query failed: ", error); return; }
-    console.log("Event logged");
-}
-
-async function logUptime(c) {
-    const { error } = await supabase.from("uptime_log").insert({
-        url: c.url, timestamp: c.timestamp, is_up: c.is_up,
-        status: c.status, latency: c.latency, attempts: c.attempts,
-        project_id: c.project_id
-    });
-    if (error) { console.error("Query failed: ", error); return; }
-    console.log("Uptime logged");
+async function getProjectFromRequest(req) {
+    const authHeader = req.headers["authorization"];
+    if (!authHeader || !authHeader.startsWith("Bearer ")) return { project: null, error: "Missing API key" };
+    const apiKey = authHeader.split(" ")[1];
+    if (!isUUID(apiKey)) return { project: null, error: "Invalid API key" };
+    return await dbHelper.getProjectFromAPIKey(apiKey);
 }
 
 async function getProjectStatus(project) {
@@ -162,26 +88,26 @@ async function monitorProject(user, project) {
     while (true) {
         const uptimeCheck = await getProjectStatus(project);
         if (!uptimeCheck.is_up) {
-            const uptimeLog = await getUptimeLogForProject(project);
+            const uptimeLog = await dbHelper.getUptimeLogFromProject(project);
             if (uptimeLog && (uptimeLog.length == 0 || uptimeLog[0].is_up)) { // Only sends alert once each time the website goes down
                 sendAlert(user, uptimeCheck); // Runs asynchronously
             }
         }
-        await logUptime(uptimeCheck);
+        await dbHelper.logUptime(uptimeCheck);
         await sleep(UPTIME_MONITOR_INTERVAL * 1000);
     }
 }
 
 async function initUser(user) {
-    const { data, error } = await supabase.from("users_projects").select("projects(*)").eq("user_id", user.id);
+    const { projects, error } = await dbHelper.getProjectsFromUser(user);
     if (error) { console.error("Failed to load projects: ", error); return; }
-    for (const entry of data) monitorProject(user, entry.projects);
+    for (const project of projects) monitorProject(user, project);
 }
 
 async function initUsers() {
-    const { data, error } = await supabase.from("users").select("*");
+    const { users, error } = await dbHelper.getUsers();
     if (error) { console.error("Failed to load users: ", error); return; }
-    for (const user of data) initUser(user);
+    for (const user of users) initUser(user);
 }
 
 function invalidateRequest(res, msg) {
@@ -201,6 +127,7 @@ function validateSession(res, session) {
     ]);
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(JSON.stringify({ status: "success" }));
+    console.log("Browser cookies updated");
 }
 
 function invalidateSession(res) {
@@ -212,6 +139,7 @@ function invalidateSession(res) {
         "Content-Type": "application/json"
     });
     res.end(JSON.stringify({ status: "success" }));
+    console.log("Browser cookies cleared");
 }
 
 const server = http.createServer(async (req, res) => {
@@ -232,25 +160,17 @@ const server = http.createServer(async (req, res) => {
         res.writeHead(204);
         res.end();
     } else if (req.method === "GET") {
-        const accessToken = getCookie(req, "access_token");
-        if (!accessToken) {
-            unauthorizedRequest(res, "Missing access token");
-            console.error("Missing access token");
-            return;
-        }
-        const [user, error] = await getUserFromToken(accessToken);
-        if (error || !user) {
-            unauthorizedRequest(res);
-            console.error("Invalid access token: ", error || "Invalid credentials");
-            return;
-        }
+        const { user, error: accessError } = await getUserFromRequest(req);
+        if (accessError) { unauthorizedRequest(res); console.error("Unauthorized: ", accessError); return; }
         if (requestPath === "/api/events") {
-            const events = await getEvents(user);
+            const { events, error } = await dbHelper.getEvents(user);
+            if (error) { invalidateRequest(res); return; }
             res.writeHead(200, { "Content-Type": "application/json" });
             res.end(JSON.stringify(events));
             console.log("Event log sent");
         } else if (requestPath === "/api/uptime") {
-            const uptimeLog = await getUptimeLog(user);
+            const { uptimeLog, error } = await dbHelper.getUptimeLog(user);
+            if (error) { invalidateRequest(res); return; }
             res.writeHead(200, { "Content-Type": "application/json" });
             res.end(JSON.stringify(uptimeLog));
             console.log("Uptime log sent");
@@ -268,24 +188,14 @@ const server = http.createServer(async (req, res) => {
         req.on("end", async () => {
             if (requestPath === "/api/log") {
                 try {
-                    const authHeader = req.headers["authorization"];
-                    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-                        unauthorizedRequest(res);
-                        console.error("No API key provided");
-                        return;
-                    }
-                    const apiKey = authHeader.split(" ")[1];
-                    const projectId = await getProjectIdFromAPIKey(apiKey);
-                    if (projectId === null) {
-                        unauthorizedRequest(res);
-                        console.error("API key invalid");
-                        return;
-                    };
+                    const { project, error: accessError } = await getProjectFromRequest(req);
+                    if (accessError) { unauthorizedRequest(res); console.error("Unauthorized: ", accessError); return; }
                     const eventObject = new Event(body);
                     if (!eventObject.valid) throw new Error("Invalid event");
-                    eventObject.setField("project_id", projectId);
+                    eventObject.setField("project_id", project.id);
                     eventObject.setField("ip", req.socket.remoteAddress);
-                    logEvent(eventObject);
+                    const error = await dbHelper.logEvent(eventObject);
+                    if (error) { invalidateRequest(res); return; }
                     res.writeHead(200, { "Content-Type": "application/json" });
                     res.end(JSON.stringify({ status: "success" }));
                 } catch (error) {
@@ -295,24 +205,11 @@ const server = http.createServer(async (req, res) => {
             } else if (requestPath === "/signup") {
                 try {
                     const { email, password } = JSON.parse(body);
-                    if (!email || !password) {
-                        invalidateRequest(res, "Missing email or password");
-                        console.error("Missing email or password");
-                        return;
-                    }
-                    if (!isEmail(email)) {
-                        invalidateRequest(res, "Invalid email");
-                        console.error("Invalid email");
-                        return;
-                    }
-                    const { data, error } = await newClient().auth.signUp({email, password});
-                    if (error || !data.session || !data.user) throw new Error(error || "Invalid credentials");
-                    const { error: creationError } = await supabase.from("users").insert({ auth_id: data.user.id });
-                    if (!creationError) {
-                        console.log("User creation success");
-                    } else {
-                        console.error("User creation failed: ", creationError);
-                    }
+                    if (!email || !password) throw new Error("Missing email or password");
+                    if (!isEmail(email)) throw new Error("Invalid email");
+                    const { data, user, error } = await dbHelper.signUp(email, password);
+                    if (error) { invalidateRequest(res); return; };
+                    initUser(user);
                     validateSession(res, data.session);
                     console.log("Signed up successfully");
                 } catch (error) {
@@ -322,13 +219,9 @@ const server = http.createServer(async (req, res) => {
             } else if (requestPath === "/login") {
                 try {
                     const { email, password } = JSON.parse(body);
-                    if (!email || !password) {
-                        invalidateRequest(res, "Missing email or password");
-                        console.error("Missing email or password");
-                        return;
-                    }
-                    const { data, error } = await newClient().auth.signInWithPassword({email, password});
-                    if (error || !data.session) throw new Error(error || "Invalid credentials");
+                    if (!email || !password) throw new Error("Missing email or password");
+                    const { data, error } = await dbHelper.logIn(email, password);
+                    if (error) { invalidateRequest(res); return; }
                     validateSession(res, data.session);
                     console.log("Logged in successfully");
                 } catch (error) {
@@ -337,62 +230,44 @@ const server = http.createServer(async (req, res) => {
                 }
             } else if (requestPath === "/logout") {
                 const accessToken = getCookie(req, "access_token");
-                if (accessToken) {
-                    await newClient().auth.signOut(accessToken).catch((error) => {
-                        console.error("Sign out failed: ", error);
-                    });
-                }
+                if (accessToken) await dbHelper.logOut(accessToken);
                 invalidateSession(res);
-                console.log("Logged out successfully");
             } else if (requestPath === "/auth/refresh") {
                 const refreshToken = getCookie(req, "refresh_token");
-                if (!refreshToken) {
-                    unauthorizedRequest(res, "Missing refresh token");
-                    console.error("Missing refresh token");
-                    return;
-                }
-                const { data, error } = await supabase.auth.refreshSession({ refresh_token: refreshToken });
-                if (error || !data.session) {
-                    unauthorizedRequest(res);
-                    console.error("Invalid refresh token: ", error || "Invalid credentials");
-                    return;
-                }
+                if (!refreshToken) { unauthorizedRequest(res, "Missing refresh token"); console.error("Missing refresh token"); return; }
+                const { data, error } = await dbHelper.refreshSession(refreshToken);
+                if (error) { unauthorizedRequest(res); return; }
                 validateSession(res, data.session);
-            } else if (requestPath === "/projects/add") {
-                const accessToken = getCookie(req, "access_token");
-                if (!accessToken) {
-                    unauthorizedRequest(res, "Missing access token");
-                    console.error("Missing access token");
-                    return;
-                }
-                const [user, userError] = await getUserFromToken(accessToken);
-                if (userError || !user) {
-                    unauthorizedRequest(res);
-                    console.error("Invalid access token: ", userError || "Invalid credentials");
-                    return;
-                }
+            } else if (requestPath === "/projects/create") {
+                const { user, error: accessError } = await getUserFromRequest(req);
+                if (accessError) { unauthorizedRequest(res); console.error("Unauthorized: ", accessError); return; }
                 try {
-                    const { name, website_url } = JSON.parse(body);
-                    if (!name || !website_url) {
-                        invalidateRequest(res, "Missing name or website URL");
-                        console.error("Missing name or website URL");
-                        return;
-                    }
-                    if (!URL.canParse(website_url)) {
-                        invalidateRequest(res, "Invalid website URL");
-                        console.error("Invalid website URL");
-                        return;
-                    }
-                    const { data: project, error } = await supabase.from("projects").insert({name, website_url}).select().single();
-                    if (error) throw new Error(error);
-                    const { error : relationError } = await supabase.from("users_projects").insert({user_id: user.id, project_id: project.id});
-                    if (relationError) throw new Error(relationError);
+                    const { name, website_url: websiteUrl } = JSON.parse(body);
+                    if (!name || !websiteUrl) throw new Error("Missing project name or website URL");
+                    if (!URL.canParse(websiteUrl)) throw new Error("Invalid website URL");
+                    const { project, error } = await dbHelper.createProject(user, name, websiteUrl);
+                    if (error) { invalidateRequest(res); return; };
                     monitorProject(user, project); // Start monitoring the website
                     res.writeHead(200, { "Content-Type": "application/json" });
                     res.end(JSON.stringify({ status: "success" }));
                 } catch (error) {
                     invalidateRequest(res);
                     console.error("Project creation failed: ", error);
+                }
+            } else if (requestPath === "/projects/delete") {
+                const { user, error: accessError } = await getUserFromRequest(req);
+                if (accessError) { unauthorizedRequest(res); console.error("Unauthorized: ", accessError); return; }
+                try {
+                    const { id: projectId } = JSON.parse(body);
+                    if (!projectId) throw new Error("Missing project id");
+                    if (typeof projectId !== "number") throw new Error("Invalid project id");
+                    const error = await dbHelper.deleteProject(user, projectId);
+                    if (error) { invalidateRequest(res); return; };
+                    res.writeHead(200, { "Content-Type": "application/json" });
+                    res.end(JSON.stringify({ status: "success" }));
+                } catch (error) {
+                    invalidateRequest(res);
+                    console.error("Project deletion failed: ", error);
                 }
             } else {
                 invalidateRequest(res);
