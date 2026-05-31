@@ -88,32 +88,48 @@ async function sendEmail(to, { title, message }) {
 }
 
 
+// Channels used when the notify_methods column was not loaded onto the user
+const DEFAULT_NOTIFY_METHODS = ["push", "email"];
+
 /**
- * Notifies a single user over ntfy (push) and email. Push and email are sent
- * independently; the push is retried a few times before giving up.
+ * Notifies a single user over the channels listed in their notify_methods
+ * (e.g. ["push", "email"]). Channels are sent independently; the push is
+ * retried a few times before giving up. Falls back to all channels when the
+ * preference is unset.
  * @param {Object} user A row from public.users (needs alert_id and auth_id).
  * @param {Object} payload See publishNtfy payload.
- * @returns {Promise<boolean>} True if the push was delivered, false otherwise.
+ * @returns {Promise<boolean>} True if a push was delivered, false otherwise.
  */
 export async function notify(user, payload) {
     if (!user || !user.alert_id) {
         console.error("Cannot notify: user has no alert_id");
         return false;
     }
+    // notify_methods: an array => exactly those channels (incl. [] for none);
+    // null => the user opted out of everything; undefined => the caller did not
+    // load the column, so fall back to all channels.
+    const methods = user.notify_methods === undefined
+        ? DEFAULT_NOTIFY_METHODS
+        : (user.notify_methods || []);
+
     let pushed = false;
-    for (let tries = 1; tries <= MAX_TRIES; tries++) {
-        try {
-            await publishNtfy(user.alert_id, payload);
-            console.log("Push sent");
-            pushed = true;
-            break;
-        } catch (error) {
-            console.error("Push error: ", error);
+    if (methods.includes("push")) {
+        for (let tries = 1; tries <= MAX_TRIES; tries++) {
+            try {
+                await publishNtfy(user.alert_id, payload);
+                console.log("Push sent");
+                pushed = true;
+                break;
+            } catch (error) {
+                console.error("Push error: ", error);
+            }
+            await sleep(RETRY_INTERVAL * 1000);
         }
-        await sleep(RETRY_INTERVAL * 1000);
     }
-    const email = await getUserEmail(user);
-    if (email) await sendEmail(email, payload).catch((error) => console.error("Email error: ", error));
+    if (methods.includes("email")) {
+        const email = await getUserEmail(user);
+        if (email) await sendEmail(email, payload).catch((error) => console.error("Email error: ", error));
+    }
     return pushed;
 }
 

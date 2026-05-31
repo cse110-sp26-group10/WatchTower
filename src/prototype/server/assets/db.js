@@ -162,5 +162,12 @@ export const dbHelper = {
         const { data: project, error } = await supabase.from("projects").select("*").eq("id", projectId).limit(1).maybeSingle();
         if (error) console.error("Query failed:", error);
         return { project, error };
+    },
+    // methods: an array of channels (e.g. ["push", "email"]), [] for none, or null to opt out
+    async updateNotifyMethods(user, methods) {
+        const { error } = await supabase.from("users").update({ notify_methods: methods }).eq("id", user.id);
+        if (error) { console.error("Failed to update notify methods:", error); return error; }
+        console.log("Notify methods updated");
+        return null;
     }
 };
