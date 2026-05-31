@@ -8,6 +8,7 @@ import '../components/error-list.js';
 import '../components/panel-section.js';
 import '../components/path-count-list.js';
 import '../components/summary-metrics.js';
+import '../components/uptime-card.js';
 
 export class HomePage extends HTMLElement {
   constructor() {
@@ -43,9 +44,13 @@ export class HomePage extends HTMLElement {
       <dashboard-banner></dashboard-banner>
       <summary-metrics></summary-metrics>
 
-      <panel-section heading="Errors" subheading="click an error row for full details">
-        <error-list id="home-errors"></error-list>
-      </panel-section>
+      <section class="dashboard-double-row">
+        <panel-section heading="Errors" subheading="click an error row for full details">
+          <error-list id="home-errors"></error-list>
+        </panel-section>
+
+        <uptime-card id="home-uptime"></uptime-card>
+      </section>
 
       <section class="dashboard-double-row" id="section-activity-top" style="margin-bottom: 20px;">
         <panel-section heading="Page Loads" subheading="grouped by path">
@@ -68,6 +73,7 @@ export class HomePage extends HTMLElement {
 
   cacheElements() {
     this.metrics = this.querySelector('summary-metrics');
+    this.uptimeCard = this.querySelector('#home-uptime');
     this.errorList = this.querySelector('#home-errors');
     this.loadPaths = this.querySelector('#home-load-paths');
     this.clickPaths = this.querySelector('#home-click-paths');
@@ -79,6 +85,7 @@ export class HomePage extends HTMLElement {
     const data = getHomeDashboardData();
 
     this.metrics.items = data.metrics;
+    this.uptimeCard.uptime = data.uptime;
     this.errorList.errors = data.errors;
     this.loadPaths.pathCounts = data.loadPaths;
     this.clickPaths.pathCounts = data.clickPaths;
