@@ -14,6 +14,7 @@ const TIMEOUT_THRESHOLD = 5; // seconds
 const MAX_TRIES = 3; // attempts
 const RETRY_INTERVAL = 5; // seconds
 const PORT = 8080;
+const NOTIFY_METHODS = new Set(["push", "email"]); // valid notification channels
 const UUID_REGEX =
     /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -200,6 +201,7 @@ const server = http.createServer(async (req, res) => {
                 email: authUser.email,
                 created_at: authUser.created_at,
                 alert_id: user.alert_id,
+                notify_methods: user.notify_methods,
             };
             res.writeHead(200, { "Content-Type": "application/json" });
             console.log("Profile sent");
@@ -378,6 +380,32 @@ const server = http.createServer(async (req, res) => {
                 } catch (error) {
                     invalidateRequest(res);
                     console.error("Project deletion failed:", error);
+                }
+            } else if (requestPath === "/api/notifications/methods") {
+                const { user, error: accessError } = await getUserFromRequest(req);
+                if (accessError) {
+                    unauthorizedRequest(res);
+                    console.error("Unauthorized:", accessError);
+                    return;
+                }
+                try {
+                    const { methods } = JSON.parse(body);
+                    // null = opt out of everything; otherwise an array of allowed channels
+                    if (methods !== null) {
+                        if (!Array.isArray(methods)) throw new Error("methods must be an array or null");
+                        if (!methods.every((m) => NOTIFY_METHODS.has(m))) throw new Error("Invalid notification method");
+                    }
+                    const cleaned = methods === null ? null : [...new Set(methods)]; // dedupe
+                    const error = await dbHelper.updateNotifyMethods(user, cleaned);
+                    if (error) {
+                        invalidateRequest(res);
+                        return;
+                    }
+                    res.writeHead(200, { "Content-Type": "application/json" });
+                    res.end(JSON.stringify({ status: "success", notify_methods: cleaned }));
+                } catch (error) {
+                    invalidateRequest(res);
+                    console.error("Notification methods update failed:", error);
                 }
             } else {
                 invalidateRequest(res);
