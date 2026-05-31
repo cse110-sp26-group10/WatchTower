@@ -14,6 +14,7 @@ import { PageNotFound } from './pages/not-found.js';
 import { ErrorsPage } from './pages/errors-page.js';
 import { FeedbackPage } from './pages/feedback-page.js';
 import { ActivityPage } from './pages/activity-page.js';
+import { ProjectsPage } from './pages/projects-page.js';
 import './pages/login-page.js';
 import './pages/signup-page.js';
 
@@ -54,6 +55,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const router = createRouter({
     routes: {
       '/': HomePage,
+      '/projects': ProjectsPage,
       '/errors': ErrorsPage,
       '/feedback': FeedbackPage,
       '/activity': ActivityPage,
