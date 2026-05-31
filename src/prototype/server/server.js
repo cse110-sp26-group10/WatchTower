@@ -190,6 +190,11 @@ const server = http.createServer(async (req, res) => {
                 try {
                     const { project, error: accessError } = await getProjectFromRequest(req);
                     if (accessError) { unauthorizedRequest(res); console.error("Unauthorized: ", accessError); return; }
+                    if (new URL(project.website_url).hostname !== new URL(origin).hostname) {
+                        unauthorizedRequest(res);
+                        console.error("Unauthorized: ", "Request origin does not match project URL");
+                        return;
+                    }
                     const eventObject = new Event(body);
                     if (!eventObject.valid) throw new Error("Invalid event");
                     eventObject.setField("project_id", project.id);
