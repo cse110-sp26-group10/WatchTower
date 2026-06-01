@@ -18,7 +18,7 @@ import { ProjectsPage } from './pages/projects-page.js';
 import './pages/login-page.js';
 import './pages/signup-page.js';
 
-const DATA_UPDATE_INTERVAL = 10;
+const DATA_UPDATE_INTERVAL = 5;
 
 // Apply saved theme flags before first render to avoid flash.
 const flags = [];
@@ -37,6 +37,7 @@ async function updateData() {
     }
   }
   if (error) { console.log("Data update failed:", error); return; }
+  document.dispatchEvent(new CustomEvent("watchtower:data-update"));
   console.log("Data updated");
 }
 

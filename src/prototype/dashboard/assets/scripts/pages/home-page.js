@@ -24,10 +24,10 @@ export class HomePage extends HTMLElement {
 
     if (deploymentScope && typeof deploymentScope.subscribe === 'function') {
       this.unsubscribe = deploymentScope.subscribe(() => {
-        this.updateDashboardData();
+        this.updatePageData();
       });
     } else {
-      this.updateDashboardData();
+      this.updatePageData();
     }
 
     this.addEventListener('error-selected', this.handleErrorSelected);
@@ -81,7 +81,7 @@ export class HomePage extends HTMLElement {
     this.errorModal = this.querySelector('#home-error-modal');
   }
 
-  updateDashboardData() {
+  updatePageData() {
     const data = getHomeDashboardData();
 
     this.metrics.items = data.metrics;

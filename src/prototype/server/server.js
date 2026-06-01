@@ -95,8 +95,8 @@ async function monitorProject(user, project) {
     while (true) {
         const uptimeCheck = await getProjectStatus(project);
         if (!uptimeCheck.is_up) {
-            const uptimeLog = await dbHelper.getUptimeLogFromProject(project);
-            if (uptimeLog && (uptimeLog.length == 0 || uptimeLog[0].is_up)) {
+            const { uptimeLog, error } = await dbHelper.getUptimeLogFromProject(project);
+            if (!error && (uptimeLog.length === 0 || uptimeLog[0].is_up)) {
                 // Only sends alert once each time the website goes down
                 sendAlert(project, uptimeCheck); // Runs asynchronously
             }
