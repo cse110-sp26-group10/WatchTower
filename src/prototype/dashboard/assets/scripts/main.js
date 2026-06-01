@@ -15,6 +15,7 @@ import { ErrorsPage } from './pages/errors-page.js';
 import { FeedbackPage } from './pages/feedback-page.js';
 import { ActivityPage } from './pages/activity-page.js';
 import { ProjectsPage } from './pages/projects-page.js';
+import { SettingsPage } from './pages/settings-page.js';
 import './pages/login-page.js';
 import './pages/signup-page.js';
 
@@ -79,6 +80,7 @@ window.addEventListener('DOMContentLoaded', async () => {
       '/errors': ErrorsPage,
       '/feedback': FeedbackPage,
       '/activity': ActivityPage,
+      '/settings': SettingsPage,
       '/issue': IssuePage,
       '/notfound': PageNotFound,
     },

@@ -6,6 +6,7 @@ const LINKS = [
   ['#/errors', 'Errors', '/errors'],
   ['#/feedback', 'Feedback', '/feedback'],
   ['#/activity', 'Activity', '/activity'],
+  ['#/settings', 'Settings', '/settings'],
 ];
 
 export class AppSidebar extends HTMLElement {
@@ -34,8 +35,6 @@ export class AppSidebar extends HTMLElement {
     nav.className = 'sidebar';
     nav.id = 'app-sidebar-nav';
     nav.setAttribute('aria-label', 'Dashboard sections');
-
-    nav.classList.add('is-collapsed');
 
     const list = document.createElement('ul');
     list.className = 'sidebar-list';

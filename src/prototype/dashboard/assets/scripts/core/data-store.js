@@ -246,6 +246,14 @@ export const dataStore = {
     return null;
   },
 
+  async updateNotifyMethods(methods) {
+    const { error } = await postToServer("/api/notifications/methods", { methods });
+    if (error) { console.log("Notification methods update failed:", error); return error; }
+    console.log("Notification methods updated successfully");
+    await this.updateProfile();
+    return null;
+  },
+
   async updateEvents() {
     const { data: events, error } = await getEventsFromServer();
     if (error) {
