@@ -17,13 +17,13 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
  * @returns {Promise<string|null>} The user's email, or null if unavailable.
  */
 async function getUserEmail(user) {
-    if (!user || !user.auth_id) return null;
-    const { data, error } = await supabase.auth.admin.getUserById(user.auth_id);
-    if (error || !data || !data.user) {
-        console.error("Email lookup failed: ", error || "No auth user");
-        return null;
-    }
-    return data.user.email || null;
+  if (!user || !user.auth_id) return null;
+  const { data, error } = await supabase.auth.admin.getUserById(user.auth_id);
+  if (error || !data || !data.user) {
+    console.error("Email lookup failed: ", error || "No auth user");
+    return null;
+  }
+  return data.user.email || null;
 }
 
 /**
@@ -36,32 +36,38 @@ async function getUserEmail(user) {
  * @param {string[]} [payload.tags] ntfy tags/emoji shortcodes.
  * @returns {Promise<void>} Resolves on success, throws on a non-OK response.
  */
-async function publishNtfy(topic, { title, message, priority = "default", tags = [] }) {
-    const headers = {
-        "Content-Type": "text/plain",
-        "X-Title": title,
-        "X-Priority": String(priority)
-    };
-    if (tags.length) headers["X-Tags"] = tags.join(",");
-    const response = await fetch(`${NTFY_BASE_URL}/${encodeURIComponent(topic)}`, {
-        method: "POST",
-        headers,
-        body: message
-    });
-    if (!response.ok) throw new Error(`ntfy responded ${response.status}`);
+async function publishNtfy(
+  topic,
+  { title, message, priority = "default", tags = [] },
+) {
+  const headers = {
+    "Content-Type": "text/plain",
+    "X-Title": title,
+    "X-Priority": String(priority),
+  };
+  if (tags.length) headers["X-Tags"] = tags.join(",");
+  const response = await fetch(
+    `${NTFY_BASE_URL}/${encodeURIComponent(topic)}`,
+    {
+      method: "POST",
+      headers,
+      body: message,
+    },
+  );
+  if (!response.ok) throw new Error(`ntfy responded ${response.status}`);
 }
 
 let transporter = null;
 
 // Builds (once) a Gmail SMTP transporter from env, or null if unconfigured.
 function getTransporter() {
-    if (transporter) return transporter;
-    if (!process.env.SMTP_USER || !process.env.SMTP_PASS) return null;
-    transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS }
-    });
-    return transporter;
+  if (transporter) return transporter;
+  if (!process.env.SMTP_USER || !process.env.SMTP_PASS) return null;
+  transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+  });
+  return transporter;
 }
 
 /**
@@ -72,21 +78,20 @@ function getTransporter() {
  * @returns {Promise<boolean>} True if the email was sent.
  */
 async function sendEmail(to, { title, message }) {
-    const mailer = getTransporter();
-    if (!mailer) {
-        console.warn(`Email skipped (SMTP not configured): would email ${to}`);
-        return false;
-    }
-    await mailer.sendMail({
-        from: process.env.SMTP_FROM || process.env.SMTP_USER,
-        to,
-        subject: title,
-        text: message
-    });
-    console.log("Email sent");
-    return true;
+  const mailer = getTransporter();
+  if (!mailer) {
+    console.warn(`Email skipped (SMTP not configured): would email ${to}`);
+    return false;
+  }
+  await mailer.sendMail({
+    from: process.env.SMTP_FROM || process.env.SMTP_USER,
+    to,
+    subject: title,
+    text: message,
+  });
+  console.log("Email sent");
+  return true;
 }
-
 
 // Channels used when the notify_methods column was not loaded onto the user
 const DEFAULT_NOTIFY_METHODS = ["push", "email"];
@@ -101,36 +106,40 @@ const DEFAULT_NOTIFY_METHODS = ["push", "email"];
  * @returns {Promise<boolean>} True if a push was delivered, false otherwise.
  */
 export async function notify(user, payload) {
-    if (!user || !user.alert_id) {
-        console.error("Cannot notify: user has no alert_id");
-        return false;
-    }
-    // notify_methods: an array => exactly those channels (incl. [] for none);
-    // null => the user opted out of everything; undefined => the caller did not
-    // load the column, so fall back to all channels.
-    const methods = user.notify_methods === undefined
-        ? DEFAULT_NOTIFY_METHODS
-        : (user.notify_methods || []);
+  if (!user || !user.alert_id) {
+    console.error("Cannot notify: user has no alert_id");
+    return false;
+  }
+  // notify_methods: an array => exactly those channels (incl. [] for none);
+  // null => the user opted out of everything; undefined => the caller did not
+  // load the column, so fall back to all channels.
+  const methods =
+    user.notify_methods === undefined
+      ? DEFAULT_NOTIFY_METHODS
+      : user.notify_methods || [];
 
-    let pushed = false;
-    if (methods.includes("push")) {
-        for (let tries = 1; tries <= MAX_TRIES; tries++) {
-            try {
-                await publishNtfy(user.alert_id, payload);
-                console.log("Push sent");
-                pushed = true;
-                break;
-            } catch (error) {
-                console.error("Push error: ", error);
-            }
-            await sleep(RETRY_INTERVAL * 1000);
-        }
+  let pushed = false;
+  if (methods.includes("push")) {
+    for (let tries = 1; tries <= MAX_TRIES; tries++) {
+      try {
+        await publishNtfy(user.alert_id, payload);
+        console.log("Push sent");
+        pushed = true;
+        break;
+      } catch (error) {
+        console.error("Push error: ", error);
+      }
+      await sleep(RETRY_INTERVAL * 1000);
     }
-    if (methods.includes("email")) {
-        const email = await getUserEmail(user);
-        if (email) await sendEmail(email, payload).catch((error) => console.error("Email error: ", error));
-    }
-    return pushed;
+  }
+  if (methods.includes("email")) {
+    const email = await getUserEmail(user);
+    if (email)
+      await sendEmail(email, payload).catch((error) =>
+        console.error("Email error: ", error),
+      );
+  }
+  return pushed;
 }
 
 /**
@@ -140,13 +149,17 @@ export async function notify(user, payload) {
  * @returns {Promise<void>}
  */
 export async function notifyDowntime(project) {
-    const users = await getProjectUsers(project.id);
-    await Promise.allSettled(users.map((user) => notify(user, {
+  const users = await getProjectUsers(project.id);
+  await Promise.allSettled(
+    users.map((user) =>
+      notify(user, {
         title: `${project.name} is down`,
         message: `${project.website_url} appears to be offline.`,
         priority: "high",
-        tags: ["warning"]
-    })));
+        tags: ["warning"],
+      }),
+    ),
+  );
 }
 
 /**
@@ -155,16 +168,21 @@ export async function notifyDowntime(project) {
  * @returns {Promise<void>}
  */
 export async function notifyError(event) {
-    if (!event || event.event_type !== "error") return;
-    const severity = event.metadata && event.metadata.severity;
-    const detail = (event.metadata && event.metadata.message) || "An error was reported.";
-    const users = await getProjectUsers(event.project_id);
-    await Promise.allSettled(users.map((user) => notify(user, {
+  if (!event || event.event_type !== "error") return;
+  const severity = event.metadata && event.metadata.severity;
+  const detail =
+    (event.metadata && event.metadata.message) || "An error was reported.";
+  const users = await getProjectUsers(event.project_id);
+  await Promise.allSettled(
+    users.map((user) =>
+      notify(user, {
         title: `Error on ${event.host}`,
         message: `${severity ? `[${severity}] ` : ""}${detail}\n${event.current_url}`,
         priority: severity === "high" ? "high" : "default",
-        tags: ["rotating_light"]
-    })));
+        tags: ["rotating_light"],
+      }),
+    ),
+  );
 }
 
 /**
@@ -173,14 +191,13 @@ export async function notifyError(event) {
  * @returns {Promise<Object[]>} Array of public.users rows.
  */
 async function getProjectUsers(projectId) {
-    const { data, error } = await supabase
-        .from("users_projects")
-        .select("users(*)")
-        .eq("project_id", projectId);
-    if (error) {
-        console.error("Failed to load project users: ", error);
-        return [];
-    }
-    return (data || []).flatMap((row) => row.users || []);
+  const { data, error } = await supabase
+    .from("users_projects")
+    .select("users(*)")
+    .eq("project_id", projectId);
+  if (error) {
+    console.error("Failed to load project users: ", error);
+    return [];
+  }
+  return (data || []).flatMap((row) => row.users || []);
 }
-
