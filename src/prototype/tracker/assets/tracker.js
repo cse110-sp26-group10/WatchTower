@@ -58,15 +58,6 @@ async function logEvent(event) {
     }
 }
 
-function getUserId() {
-  let userId = localStorage.getItem("watchtower_user_id");
-  if (userId === null) {
-    userId = crypto.randomUUID();
-    localStorage.setItem("watchtower_user_id", userId);
-  }
-  return userId;
-}
-
 function eventTemplate() {
     const event = {};
     event.timestamp = new Date().toISOString();
@@ -77,7 +68,6 @@ function eventTemplate() {
         "deployed_at": "2026-03-25T00:00:00.000Z",
         "author": "kevin"
     };
-    event.user_id = getUserId();
     event.current_url = window.location.href;
     event.referrer = document.referrer;
     event.browser = parseBrowser(navigator.userAgent, navigator.userAgentData);
@@ -85,30 +75,30 @@ function eventTemplate() {
 }
 
 function logPageLoad(load_time) {
-  const pageLoad = eventTemplate();
-  pageLoad.event_type = "page_load";
-  pageLoad.metadata = { load_time };
-  logEvent(pageLoad);
+    const pageLoad = eventTemplate();
+    pageLoad.event_type = "page_load";
+    pageLoad.metadata = {load_time};
+    logEvent(pageLoad);
 }
 
 function logError(severity, message) {
-  const errorEvent = eventTemplate();
-  errorEvent.event_type = "error";
-  errorEvent.metadata = { severity, message };
-  logEvent(errorEvent);
+    const errorEvent = eventTemplate();
+    errorEvent.event_type = "error";
+    errorEvent.metadata = {severity, message};
+    logEvent(errorEvent);
 }
 
 function logSurvey(rating, message) {
-  const surveyEvent = eventTemplate();
-  surveyEvent.event_type = "survey";
-  surveyEvent.metadata = { rating, message };
-  logEvent(surveyEvent);
+    const surveyEvent = eventTemplate();
+    surveyEvent.event_type = "survey";
+    surveyEvent.metadata = {rating, message};
+    logEvent(surveyEvent);
 }
 function logClick(element_id, element_class, input_delay) {
-  const clickEvent = eventTemplate();
-  clickEvent.event_type = "click";
-  clickEvent.metadata = { element_id, element_class, input_delay };
-  logEvent(clickEvent);
+    const clickEvent = eventTemplate();
+    clickEvent.event_type = "click";
+    clickEvent.metadata = {element_id, element_class, input_delay};
+    logEvent(clickEvent);
 }
 
 if (typeof window !== 'undefined') {

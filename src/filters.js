@@ -27,7 +27,9 @@ export function filterByEventType(events, eventType) {
  * @returns {Array}
  */
 export function filterByDeployment(events, deploymentId) {
-  return events.filter((e) => e.deployment?.id === deploymentId);
+  return events.filter(
+    (e) => e.deployment?.id === deploymentId
+  );
 }
 
 /**
@@ -65,7 +67,9 @@ export function filterByStatus(issues, status) {
 export function filterByRecency(events, minutes) {
   const cutoff = new Date(Date.now() - minutes * 60 * 1000);
 
-  return events.filter((e) => new Date(e.timestamp) >= cutoff);
+  return events.filter(
+    (e) => new Date(e.timestamp) >= cutoff
+  );
 }
 
 /**
@@ -95,7 +99,7 @@ export function filterByDateRange(events, from, to) {
  * Used by dashboard UI (dropdowns, search, timeline controls).
  *
  * @param {Array} events
- * @param {object} [criteria]
+ * @param {Object} [criteria]
  * @param {string} [criteria.deploymentId]
  * @param {"critical"|"high"|"medium"|"low"|"signal"} [criteria.severity]
  * @param {"error"|"survey"} [criteria.eventType]
@@ -111,18 +115,24 @@ export function applyFilters(events, criteria = {}) {
   if (criteria.deploymentId)
     result = filterByDeployment(result, criteria.deploymentId);
 
-  if (criteria.severity) result = filterBySeverity(result, criteria.severity);
+  if (criteria.severity)
+    result = filterBySeverity(result, criteria.severity);
 
   if (criteria.eventType)
     result = filterByEventType(result, criteria.eventType);
 
-  if (criteria.status) result = filterByStatus(result, criteria.status);
+  if (criteria.status)
+    result = filterByStatus(result, criteria.status);
 
   if (criteria.recentMinutes)
     result = filterByRecency(result, criteria.recentMinutes);
 
   if (criteria.from || criteria.to)
-    result = filterByDateRange(result, criteria.from, criteria.to);
+    result = filterByDateRange(
+      result,
+      criteria.from,
+      criteria.to
+    );
 
   return result;
 }

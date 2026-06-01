@@ -13,54 +13,53 @@ import {
   escapeHtml,
   kvRow,
   summarizeEvent,
-  visualizeStars,
-} from "./helpers.js";
+  visualizeStars
+} from './helpers.js';
 
 /**
  * Populate the issue header (banner, type pill, time, path).
- * @param {object} event
+ * @param {Object} event
  */
 function renderHeader(event) {
-  const banner = document.getElementById("issue-banner");
+  const banner = document.getElementById('issue-banner');
   banner.dataset.level = bannerLevel(event);
 
-  let title = "Signal";
-  if (event.event_type === "error") {
+  let title = 'Signal';
+  if (event.event_type === 'error') {
     title = `${event.metadata.severity.charAt(0).toUpperCase() + event.metadata.severity.slice(1)} error`;
-  } else if (event.event_type === "survey") {
+  } else if (event.event_type === 'survey') {
     title = `User feedback (${event.metadata.rating}/5)`;
-  } else if (event.event_type === "page_load") {
-    title = "Page load";
-  } else if (event.event_type === "click") {
-    title = "Click";
+  } else if (event.event_type === 'page_load') {
+    title = 'Page load';
+  } else if (event.event_type === 'click') {
+    title = 'Click';
   }
   banner.textContent = title;
 
-  document.getElementById("issue-type").textContent = event.event_type;
-  document.getElementById("issue-type").className =
-    `type-pill type-${event.event_type}`;
-  document.getElementById("issue-when").textContent =
+  document.getElementById('issue-type').textContent = event.event_type;
+  document.getElementById('issue-type').className = `type-pill type-${event.event_type}`;
+  document.getElementById('issue-when').textContent =
     `${relativeTime(event.timestamp)} • ${new Date(event.timestamp).toLocaleString()}`;
-  document.getElementById("issue-path").textContent = event.pathname || "—";
-  document.getElementById("issue-id").textContent = event.id;
+  document.getElementById('issue-path').textContent = event.pathname || '—';
+  document.getElementById('issue-id').textContent = event.id;
 }
 
 /**
  * Render the primary body — varies by event type.
- * @param {object} event
+ * @param {Object} event
  */
 function renderPrimary(event) {
-  const box = document.getElementById("issue-primary-body");
-  if (event.event_type === "error") {
+  const box = document.getElementById('issue-primary-body');
+  if (event.event_type === 'error') {
     box.innerHTML = `
-      <div class="issue-headline">${escapeHtml(event.metadata.message || "(no message)")}</div>
+      <div class="issue-headline">${escapeHtml(event.metadata.message || '(no message)')}</div>
       <div class="event-meta">severity: <strong>${escapeHtml(event.metadata.severity)}</strong></div>
     `;
-  } else if (event.event_type === "survey") {
+  } else if (event.event_type === 'survey') {
     const r = Number(event.metadata.rating || 0);
     box.innerHTML = `
       <div class="issue-headline">${visualizeStars(r)} <span class="event-meta">(${r}/5)</span></div>
-      <div class="event-message">${escapeHtml(event.metadata.comment || "(no comment)")}</div>
+      <div class="event-message">${escapeHtml(event.metadata.comment || '(no comment)')}</div>
     `;
   } else {
     box.innerHTML = `<div class="event-meta">No primary detail for this event type.</div>`;
@@ -89,10 +88,10 @@ function renderContext(event) {
 /**
  * Render the Deployment kv-list. Pulls extra fields (author, deployed_at)
  * from the deployments catalog since events only carry id/version/commit.
- * @param {object} event
+ * @param {Object} event
  */
 function renderDeployment(event) {
-  const list = document.getElementById("deployment-list");
+  const list = document.getElementById('deployment-list');
   const dep = event.deployment;
   if (!dep) {
     list.innerHTML = '<li class="empty">No deployment attached.</li>';
@@ -100,28 +99,23 @@ function renderDeployment(event) {
   }
   const full = window.WatchTowerData.getDeployment(dep.id);
   const rows = [
-    kvRow("id", dep.id, { mono: true }),
-    kvRow("version", dep.version, { mono: true }),
-    kvRow("commit", dep.commit_hash, { mono: true }),
+    kvRow('id', dep.id, { mono: true }),
+    kvRow('version', dep.version, { mono: true }),
+    kvRow('commit', dep.commit_hash, { mono: true }),
   ];
   if (full) {
-    rows.push(kvRow("author", full.author));
-    rows.push(
-      kvRow(
-        "deployed",
-        `${relativeTime(full.deployed_at)} (${new Date(full.deployed_at).toLocaleString()})`,
-      ),
-    );
+    rows.push(kvRow('author', full.author));
+    rows.push(kvRow('deployed', `${relativeTime(full.deployed_at)} (${new Date(full.deployed_at).toLocaleString()})`));
   }
-  list.innerHTML = rows.join("");
+  list.innerHTML = rows.join('');
 }
 
 /**
  * Render the related-signals feed.
- * @param {object} event
+ * @param {Object} event
  */
 function renderRelated(event) {
-  const list = document.getElementById("related-list");
+  const list = document.getElementById('related-list');
   const related = window.WatchTowerData.getRelatedEvents(event);
   if (related.length === 0) {
     list.innerHTML = '<li class="empty">No related signals in window.</li>';
@@ -136,32 +130,33 @@ function renderRelated(event) {
             <span class="activity-text">${escapeHtml(summarizeEvent(e))}</span>
             <span class="activity-time">${relativeTime(e.timestamp)}</span>
           </a>
-        </li>`,
+        </li>`
     )
-    .join("");
+    .join('');
 }
 
 /**
  * Render the "not found" empty state when the id is missing or invalid.
  */
 function renderNotFound(id) {
-  const banner = document.getElementById("issue-banner");
-  banner.textContent = "Issue not found";
-  banner.dataset.level = "down";
-  document.getElementById("issue-primary-body").innerHTML =
-    `<div class="event-meta">No event matches id <code>${escapeHtml(id || "(none)")}</code>.</div>`;
+  const banner = document.getElementById('issue-banner');
+  banner.textContent = 'Issue not found';
+  banner.dataset.level = 'down';
+  document.getElementById('issue-primary-body').innerHTML =
+    `<div class="event-meta">No event matches id <code>${escapeHtml(id || '(none)')}</code>.</div>`;
 }
 
-let topbar = document.querySelector(".topbar-meta");
-if (topbar && document.getElementById("issue-banner")) {
+
+let topbar = document.querySelector('.topbar-meta');
+if (topbar && document.getElementById('issue-banner')) {
   topbar.innerHTML = `<a href="index.html" class="back-link">&larr; back to dashboard</a>`;
 }
 
-document.addEventListener("DOMContentLoaded", async () => {
-  if (!document.getElementById("issue-banner")) return;
+document.addEventListener('DOMContentLoaded', async () => {
+  if (!document.getElementById('issue-banner')) return;
 
   await window.WatchTowerData.updateEvents();
-  const id = new URLSearchParams(window.location.search).get("id");
+  const id = new URLSearchParams(window.location.search).get('id');
   const event = id ? window.WatchTowerData.getEvent(id) : null;
 
   if (!event) {
