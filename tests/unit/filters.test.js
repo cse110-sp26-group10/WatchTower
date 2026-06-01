@@ -7,7 +7,7 @@ import {
   filterByRecency,
   filterByDateRange,
   applyFilters,
-} from "../../src/js/filters.js";
+} from "../../src/filters.js";
 
 const now = Date.now();
 const minsAgo = (m) => new Date(now - m * 60 * 1000).toISOString();

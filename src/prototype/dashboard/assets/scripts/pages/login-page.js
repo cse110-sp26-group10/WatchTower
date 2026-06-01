@@ -16,7 +16,7 @@ const MOON_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
 
 /**
  * @class LoginPage
- * @extends HTMLElement
+ * @augments HTMLElement
  * @description Full-screen login page for WatchTower. Mocks authentication
  * and redirects to the dashboard (hash route #/) on successful submit.
  *
