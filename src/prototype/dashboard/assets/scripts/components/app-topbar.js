@@ -21,11 +21,18 @@ export class AppTopbar extends HTMLElement {
     this.render();
     this.setupThemeToggle();
 
+    // Broadcast a custom event across the global DOM when clicked
+    const menuBtn = this.querySelector('#mobile-menu-trigger');
+    menuBtn?.addEventListener('click', () => {
+      document.dispatchEvent(new CustomEvent('watchtower:menu-toggle'));
+    });
+
     if (deploymentScope && typeof deploymentScope.subscribe === 'function') {
       this.unsubscribe = deploymentScope.subscribe(() => {
         this.updateActiveMetadata();
       });
     }
+    this.updateActiveMetadata();
   }
 
   disconnectedCallback() {
@@ -69,47 +76,24 @@ export class AppTopbar extends HTMLElement {
     this.innerHTML = `
       <header class="topbar">
         <div class="topbar-left">
-          <div style="display: flex; align-items: center; gap: 8px; margin-left: 16px;">
-            <label style="font-weight: 600; color: var(--wt-text-2); font-size: 13px;">Deployment:</label>
-
+          <button class="menu-toggle-btn" id="mobile-menu-trigger" aria-label="Toggle navigation menu">☰</button>
+          
+          <a href="#/" class="brand-name" style="display: flex; align-items: center; gap: 0.5rem; text-decoration: none;">
+            <img src="/src/prototype/dashboard/public/logo.svg" alt="WatchTower logo" style="height: 1.75rem; width: auto;">
+            <span style="color: var(--wt-text); font-weight: 700; font-size: 1.15rem;">WatchTower</span>
+          </a>
+          
+          <div style="display: flex; align-items: center; gap: 0.5rem; margin-left: 1rem;">
+            <label style="font-weight: 600; color: var(--wt-text-2); font-size: 0.8125rem;">Deployment:</label>
             <deployment-filter></deployment-filter>
-
-            <span id="header-metadata-strip" style="display: inline-flex; align-items: center; gap: 12px; margin-left: 12px; font-family: monospace; font-size: 12px; color: var(--wt-text-2);">
-            </span>
+            <span id="header-metadata-strip" style="display: inline-flex; align-items: center; gap: 0.75rem; margin-left: 0.75rem; font-family: monospace; font-size: 0.75rem; color: var(--wt-text-2);"></span>
           </div>
         </div>
 
         <div class="topbar-right">
-          <button id="theme-btn" style="
-            display: flex;
-            align-items: center;
-            background: var(--wt-surface-2);
-            border: 1px solid var(--wt-border);
-            border-radius: 999px;
-            padding: 4px;
-            cursor: pointer;
-            gap: 2px;
-          ">
-            <span id="theme-icon-sun" style="
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              width: 32px;
-              height: 32px;
-              border-radius: 50%;
-              transition: background 0.15s ease;
-              color: var(--wt-text-3);
-            ">${SUN_SVG}</span>
-            <span id="theme-icon-moon" style="
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              width: 32px;
-              height: 32px;
-              border-radius: 50%;
-              transition: background 0.15s ease;
-              color: var(--wt-text-3);
-            ">${MOON_SVG}</span>
+          <button id="theme-btn" style="display: flex; align-items: center; background: var(--wt-surface-2); border: 1px solid var(--wt-border); border-radius: 62.4375rem; padding: 0.25rem; cursor: pointer; gap: 0.125rem;">
+            <span id="theme-icon-sun" style="display: flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; border-radius: 50%; transition: background 0.15s ease; color: var(--wt-text-3);">${SUN_SVG}</span>
+            <span id="theme-icon-moon" style="display: flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; border-radius: 50%; transition: background 0.15s ease; color: var(--wt-text-3);">${MOON_SVG}</span>
           </button>
         </div>
       </header>
@@ -121,18 +105,15 @@ export class AppTopbar extends HTMLElement {
     if (!metaContainer) return;
 
     const currentDep = deploymentScope.deployment;
-
     if (!currentDep || deploymentScope.id === 'all') {
       metaContainer.innerHTML = `<span style="color: var(--wt-text-3); font-style: italic;">All active clusters monitored</span>`;
       return;
     }
 
     metaContainer.innerHTML = `
-      <span style="background: var(--wt-surface-2); padding: 2px 6px; border-radius: var(--wt-radius-sm); border: 1px solid var(--wt-border);">id: <b>${currentDep.id}</b></span>
-      <span style="background: var(--wt-surface-2); padding: 2px 6px; border-radius: var(--wt-radius-sm); border: 1px solid var(--wt-border);">version: <b>${currentDep.version}</b></span>
-      <span style="background: var(--wt-surface-2); padding: 2px 6px; border-radius: var(--wt-radius-sm); border: 1px solid var(--wt-border);">commit: <b>${currentDep.commit_hash}</b></span>
-      <span style="background: var(--wt-surface-2); padding: 2px 6px; border-radius: var(--wt-radius-sm); border: 1px solid var(--wt-border);">author: <b>${currentDep.author || 'system'}</b></span>
-      <span style="color: var(--wt-text-3); font-size: 11px; margin-left: 4px;">deployed 45m ago</span>
+      <span style="background: var(--wt-surface-2); padding: 0.125rem 0.375rem; border-radius: var(--wt-radius-sm); border: 1px solid var(--wt-border);">id: <b>${currentDep.id}</b></span>
+      <span style="background: var(--wt-surface-2); padding: 0.125rem 0.375rem; border-radius: var(--wt-radius-sm); border: 1px solid var(--wt-border);">version: <b>${currentDep.version}</b></span>
+      <span style="background: var(--wt-surface-2); padding: 0.125rem 0.375rem; border-radius: var(--wt-radius-sm); border: 1px solid var(--wt-border);">commit: <b>${currentDep.commit_hash}</b></span>
     `;
   }
 }
