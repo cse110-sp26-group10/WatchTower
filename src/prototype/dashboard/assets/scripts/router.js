@@ -1,3 +1,5 @@
+const RENDER_UPDATE_INTERVAL = 10;
+
 /**
  * Creates a simple hash router
  * @param {*} options renders page at path specified by routes in the outlet
@@ -23,6 +25,10 @@ export function createRouter({ routes, outlet }) {
     page.route = route;
     target.replaceChildren(page);
     document.dispatchEvent(new CustomEvent('watchtower:route-change', { detail: route }));
+
+    setInterval(() => {
+      if (page.updatePageData) page.updatePageData();
+    }, RENDER_UPDATE_INTERVAL * 1000);
   }
 
   return {

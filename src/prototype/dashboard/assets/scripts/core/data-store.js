@@ -75,6 +75,92 @@ let UPTIME_LOG = [
   { timestamp: minutesAgo(1),   is_up: true, status: 200,  latency: 134, attempts: [{timestamp: minutesAgo(180), status: 200, latency: 134, error: null}] },
 ];
 
+let PROJECTS = [
+  {
+    id: 'proj_shop',
+    name: 'Drape Storefront',
+    website_url: 'https://drape.example.com',
+    created_at: '2026-05-30T09:00:00.000Z',
+  },
+  {
+    id: 'proj_api',
+    name: 'Core API',
+    website_url: 'https://api.drape.example.com',
+    created_at: '2026-05-29T16:30:00.000Z',
+  },
+];
+
+let PROFILE = {
+  email: "test@gmail.com",
+  created_at: NOW,
+  alert_id: "00000000-0000-0000-0000-000000000000",
+  notify_methods: ["push", "email"]
+};
+
+async function getFromServer(path) {
+  try {
+    const response = await fetch(`http://localhost:8080${path}`, { credentials: "include" });
+    const data = await response.json();
+    console.log("Response:", data);
+    if (!response.ok) {
+      return { data, error: response.status };
+    }
+    return { data };
+  } catch (error) {
+    console.log("Network response failed:", error);
+    return { error };
+  }
+}
+
+async function postToServer(path, body) {
+  try {
+    const response = await fetch(`http://localhost:8080${path}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: (body && JSON.stringify(body)) || undefined,
+        credentials: "include"
+    });
+    const data = await response.json();
+    console.log("Response:", data);
+    if (!response.ok) {
+        return { data, error: response.status };
+    }
+    return { data };
+  } catch (error) {
+    console.log("Network response failed:", error);
+    return { error };
+  }
+}
+
+async function getEventsFromServer() {
+  return await getFromServer("/api/events");
+}
+
+function getDeploymentsFromEvents() {
+  const deploymentIds = new Set();
+  const deployments = [];
+  EVENTS.forEach((event) => {
+    if (deploymentIds.has(event.deployment.id)) return;
+    deploymentIds.add(event.deployment.id);
+    deployments.push(event.deployment);
+  });
+  return deployments;
+}
+
+async function getUptimeLogFromServer() {
+  return await getFromServer("/api/uptime");
+}
+
+async function getProfileFromServer() {
+  return await getFromServer("/profile");
+}
+
+async function getProjectsFromServer() {
+  return await getFromServer("/api/projects");
+}
+
 export const dataStore = {
   getDeployments() {
     return DEPLOYMENTS.slice();
@@ -108,7 +194,109 @@ export const dataStore = {
     return UPTIME_LOG.slice().sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
   },
 
+  getProjects() {
+    return PROJECTS;
+  },
+
+  getProfile() {
+    return PROFILE;
+  },
+
+  async signUp(email, password) {
+    const { error } = await postToServer("/signup", { email, password });
+    if (error) { console.log("Sign up failed:", error); return error; }
+    console.log("Signed up successfully");
+    return null;
+  },
+
+  async logIn(email, password) {
+    const { error } = await postToServer("/login", { email, password });
+    if (error) { console.log("Login failed:", error); return error; }
+    console.log("Logged in successfully");
+    return null;
+  },
+
+  async logOut() {
+    const { error } = await postToServer("/logout");
+    if (error) { console.log("Logout failed:", error); return error; }
+    console.log("Logged out successfully");
+    return null;
+  },
+
+  async refreshSession() {
+    const { error } = await postToServer("/auth/refresh");
+    if (error) { console.log("Session refresh failed:", error); return error; }
+    console.log("Session refreshed successfully");
+    return null;
+  },
+
+  async createProject(name, website_url) {
+    const { error } = await postToServer("/api/projects/create", { name, website_url });
+    if (error) { console.log("Project creation failed:", error); return error; }
+    console.log("Project created successfully");
+    await this.updateProjects();
+    return null;
+  },
+
+  async deleteProject(id) {
+    const { error } = await postToServer("/api/projects/delete", { id });
+    if (error) { console.log("Project deletion failed:", error); return error; }
+    console.log("Project deleted successfully");
+    await this.updateProjects();
+    return null;
+  },
+
+  async updateEvents() {
+    const { data: events, error } = await getEventsFromServer();
+    if (error) {
+      console.log("Event update failed:", error);
+      return error;
+    }
+    EVENTS = events;
+    DEPLOYMENTS = getDeploymentsFromEvents();
+    return null;
+  },
+
+  async updateUptimeLog() {
+    const { data: uptimeLog, error } = await getUptimeLogFromServer();
+    if (error) {
+      console.log("Uptime log update failed:", error);
+      return error;
+    }
+    UPTIME_LOG = uptimeLog;
+    return null;
+  },
+
+  async updateProfile() {
+    const { data: profile, error } = await getProfileFromServer();
+    if (error) {
+      console.log("Profile update failed:", error);
+      return error;
+    }
+    PROFILE = profile;
+    return null;
+  },
+
+  async updateProjects() {
+    const { data: projects, error } = await getProjectsFromServer();
+    if (error) {
+      console.log("Project update failed:", error);
+      return error;
+    }
+    PROJECTS = projects;
+    return null;
+  },
+
   async update() {
     // Kept for structural consistency with router cycles
+    const error1 = await this.updateEvents();
+    if (error1) return error1;
+    const error2 = await this.updateUptimeLog();
+    if (error2) return error2;
+    const error3 = await this.updateProfile();
+    if (error3) return error3;
+    const error4 = await this.updateProjects();
+    if (error4) return error4;
+    return null;
   }
 };

@@ -23,7 +23,7 @@ export const dbHelper = {
         return { user: data.user, error: null };
     },
     async getUserFromToken(accessToken) {
-        const { user: authUser, error: authError } = await dbHelper.getAuthUserFromToken(accessToken);
+        const { user: authUser, error: authError } = await this.getAuthUserFromToken(accessToken);
         if (authError) return { user: null, authUser: null, error: authError };
         const { data: user, error } = await supabase.from("users").select("*").eq("auth_id", authUser.id).limit(1).maybeSingle();
         if (error) { console.error("Query failed:", error); return { user: null, authUser: null, error: error }; }
@@ -118,7 +118,7 @@ export const dbHelper = {
         return null;
     },
     async refreshSession(refreshToken) {
-        const { data, error } = await supabase.auth.refreshSession({ refresh_token: refreshToken });
+        const { data, error } = await newClient().auth.refreshSession({ refresh_token: refreshToken });
         const altMessage = "Invalid credentials";
         if (error || !data || !data.session) { console.error("Session refresh failed:", error || altMessage); return { data: null, error: error || altMessage }; }
         console.log("Session refreshed successfully");

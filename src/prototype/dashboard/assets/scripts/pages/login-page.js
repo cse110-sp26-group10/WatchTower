@@ -1,3 +1,5 @@
+import { dataStore } from '../core/data-store.js';
+
 const SUN_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
   <circle cx="12" cy="12" r="5"/>
   <line x1="12" y1="1" x2="12" y2="3"/>
@@ -463,12 +465,12 @@ export class LoginPage extends HTMLElement {
       submitBtn.querySelector('.login-submit-label').textContent = 'Signing in…';
       submitBtn.querySelector('.login-submit-spinner').hidden = false;
 
-      setTimeout(() => {
+      setTimeout(async () => {
         // Mock: any non-empty credentials pass
         // Replace with: const ok = await authService.login(username, password);
-        const mockSuccess = true;
+        const error = await dataStore.logIn(username, password);
 
-        if (mockSuccess) {
+        if (!error) {
           localStorage.setItem('wt-auth', '1');
           window.location.reload();
         } else {
