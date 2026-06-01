@@ -10,6 +10,7 @@ const scripts = [
 scripts.forEach((src) => {
     const scriptName = src.split('/').at(-1);
     const script = document.createElement('script');
+    script.setAttribute("data-apikey", document.currentScript.getAttribute("data-apikey"));
     script.type = 'module';
     script.src = `${baseUrl}/${src}`;
     script.onload = () => console.log(`WatchTower: ${scriptName} loaded`);

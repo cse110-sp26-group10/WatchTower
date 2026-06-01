@@ -39,7 +39,7 @@ export default [
   },
   // Node globals — server
   {
-    files: ['src/prototype/server/**/*.js'],
+    files: ['src/prototype/server/**/*.js', 'src/prototype/server/**/*.mjs'],
     languageOptions: { globals: globals.node },
   },
   // Unit test files — Vitest globals
@@ -63,7 +63,7 @@ export default [
   // E2E test files
   {
     files: ['tests/e2e/**/*.js'],
-    languageOptions: { globals: { ...globals.node } },
+    languageOptions: { globals: { ...globals.node, ...globals.browser } },
     rules: { 'jsdoc/require-jsdoc': 'off' },
   },
 ];
