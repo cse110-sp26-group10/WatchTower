@@ -63,7 +63,7 @@ export default [
   // E2E test files
   {
     files: ['tests/e2e/**/*.js'],
-    languageOptions: { globals: { ...globals.node } },
+    languageOptions: { globals: { ...globals.node, ...globals.browser } },
     rules: { 'jsdoc/require-jsdoc': 'off' },
   },
 ];
