@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseBrowser } from '../../src/prototype/tracker/assets/tracker.js';
+import { parseBrowser } from '../../src/app/tracker/assets/tracker.js';
 
 const CHROME_UA  = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
 const EDGE_UA    = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36 Edg/124.0.0.0';

@@ -21,8 +21,8 @@ export default [
   // Browser globals — dashboard, tracker, shared JS utilities, and test-app
   {
     files: [
-      'src/prototype/dashboard/**/*.js',
-      'src/prototype/tracker/**/*.js',
+      'src/app/dashboard/**/*.js',
+      'src/app/tracker/**/*.js',
       'src/js/**/*.js',
       'src/test-app/**/*.js',
     ],
@@ -39,7 +39,7 @@ export default [
   },
   // Node globals — server
   {
-    files: ['src/prototype/server/**/*.js', 'src/prototype/server/**/*.mjs'],
+    files: ['src/app/server/**/*.js', 'src/app/server/**/*.mjs'],
     languageOptions: { globals: globals.node },
   },
   // Unit test files — Vitest globals

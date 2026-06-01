@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest';
-import Event from '../../src/prototype/server/assets/Event.js';
+import Event from '../../src/app/server/assets/Event.js';
 
 const FIXED_NOW = '2026-05-19T12:00:00.000Z';
 const VALID_UUID = '550e8400-e29b-41d4-a716-446655440000';
