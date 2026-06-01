@@ -74,9 +74,8 @@ beforeEach(async () => {
   });
   mockProjectUsers([]);
 
-  ({ notify, notifyDowntime, notifyError } = await import(
-    "../../src/prototype/server/assets/notify.js"
-  ));
+  ({ notify, notifyDowntime, notifyError } =
+    await import("../../src/prototype/server/assets/notify.js"));
 });
 
 afterEach(() => {
