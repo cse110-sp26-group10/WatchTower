@@ -33,9 +33,7 @@ export function parseBrowser(ua, uaData) {
   return { name: ua.slice(0, 50) || 'Unknown', version: '' };
 }
 
-const apiKey = typeof document !== 'undefined' && document.currentScript
-    ? document.currentScript.getAttribute("data-apikey")
-    : null;
+const apiKey = window.__WATCHTOWER_CONFIG__?.apiKey || null;
 
 async function logEvent(event) {
     if (!originalFetch) return;

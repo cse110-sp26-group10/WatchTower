@@ -78,7 +78,7 @@ export const dbHelper = {
             event_type: e.event_type, timestamp: e.timestamp, created_at: e.created_at,
             deployment: e.deployment, ip: e.ip, project_id: e.project_id,
             current_url: e.current_url, host: e.host, pathname: e.pathname,
-            referrer: e.referrer, referring_domain: e.referring_domain,
+            referrer: e.referrer, referring_domain: e.referring_domain, browser: e.browser,
             metadata: e.metadata,
         });
         if (error) { console.error("Event logging failed:", error); return error; }

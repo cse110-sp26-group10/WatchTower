@@ -7,7 +7,7 @@ DECLARE
   v_email TEXT := 'hyanglin@ucsd.edu';
   v_encrypted_password TEXT := extensions.crypt('password123', extensions.gen_salt('bf'));
   v_project_name TEXT := 'project123';
-  v_website_url TEXT := 'https://cse110-sp26-group10.github.io/WatchTower/src/test-app/';
+  v_website_url TEXT := 'http://127.0.0.1:5500/src/test-app/'; -- 'https://cse110-sp26-group10.github.io/WatchTower/src/test-app/';
   v_user_id INT;
   v_project_id INT;
   v_project_api_key UUID := 'b23b3210-3597-45ad-8484-14936a967760';
