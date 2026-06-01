@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from '@playwright/test';
 
 test.describe('Dashboard', () => {
   test.beforeEach(async ({ page }) => {
@@ -29,9 +29,9 @@ test.describe('Dashboard', () => {
     await expect(page.locator('#home-click-paths')).toBeVisible();
   });
 
-  test("deployment filter dropdown is populated", async ({ page }) => {
-    await page.goto("/");
-    const options = page.locator("#deployment-filter option");
+  test('deployment filter dropdown is populated', async ({ page }) => {
+    await page.goto('/');
+    const options = page.locator('#deployment-filter option');
     const count = await options.count();
     expect(count).toBeGreaterThan(1);
   });
