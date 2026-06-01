@@ -429,3 +429,97 @@ body {
   white-space: nowrap;
   border: 0;
 }
+
+/* ==========================================================================
+   UNIVERSAL COLLAPSIBLE SIDEBAR SYSTEM (ALL VIEWPORTS)
+   ========================================================================== */
+
+/* 1. Global Menu Button - Visible Everywhere Now */
+.menu-toggle-btn {
+  display: inline-flex;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--wt-text);
+  cursor: pointer;
+  padding: 0.25rem;
+  margin-right: 0.5rem;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 2. Base Shell Flex-Grid Alignment */
+.app-container {
+  display: grid;
+  /* Columns adjust automatically based on whether the child sidebar is active or flat */
+  grid-template-columns: auto 1fr; 
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* 3. The Sidebar Sliding Frame Container */
+.sidebar {
+  display: block;
+  width: 13.75rem; /* 220px */
+  background-color: var(--wt-surface);
+  border-right: 1px solid var(--wt-border);
+  padding: 1.5rem 0.75rem;
+  
+  /* Smoothly shift layouts over when collapsed */
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), 
+              width 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              padding 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 4. The Global Collapsed State Profile */
+.sidebar.is-collapsed {
+  width: 0rem;
+  padding-left: 0rem;
+  padding-right: 0rem;
+  overflow: hidden;
+  border-right: 0px solid transparent;
+}
+
+/* 5. Responsive Shroud Backdrop for Smaller Touchscreens */
+.sidebar-backdrop {
+  position: fixed;
+  top: 3.5rem;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(2px);
+  z-index: 998;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+/* Responsive overlay behaviors underneath 900px */
+@media (max-width: 56.25rem) {
+  .app-container {
+    grid-template-columns: 1fr; /* Drop side-by-side grid stacking grid columns */
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 3.5rem;
+    left: 0;
+    bottom: 0;
+    width: 15rem;
+    z-index: 999;
+    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.15);
+    transform: translateX(-100%);
+  }
+
+  /* Reverse behavior logic for small screens: drawer is hidden by default and opens on click */
+  .sidebar.is-open {
+    transform: translateX(0);
+  }
+
+  .sidebar-backdrop.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
