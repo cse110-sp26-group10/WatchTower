@@ -92,7 +92,7 @@ body {
 /* ── Modern Workspace Flex Grid Shell Setup ────────────────────────────── */
 .app-container {
   display: grid;
-  grid-template-columns: 13.75rem 1fr; /* 220px */
+  grid-template-columns: auto 1fr; /* sidebar column shrinks to 0 when collapsed */
   position: relative;
   min-height: 100vh;
   width: 100%;
@@ -534,7 +534,7 @@ body {
 /* 2560 x 1440 (large monitor) responsiveness */
 @media (width >= 120rem) {
   .app-container {
-    grid-template-columns: 16rem 1fr;
+    grid-template-columns: auto 1fr;
   }
 
   .sidebar {
