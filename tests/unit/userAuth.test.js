@@ -7,7 +7,6 @@ const mockAuth = {
   signOut: vi.fn(),
   refreshSession: vi.fn(),
 };
-let lastFromBuilder = null;
 function chain(result) {
   const promise = Promise.resolve(result);
   const builder = Object.assign(promise, {
@@ -21,7 +20,6 @@ function chain(result) {
     single: vi.fn(() => Promise.resolve(result)),
     maybeSingle: vi.fn(() => Promise.resolve(result)),
   });
-  lastFromBuilder = builder;
   return builder;
 }
 const mockSupabase = {
@@ -88,7 +86,6 @@ const uptimeCheck = {
 };
 beforeEach(() => {
   vi.clearAllMocks();
-  lastFromBuilder = null;
   mockSupabase._lastTable = null;
   mockFrom(() => chain({ data: null, error: null }));
 });
