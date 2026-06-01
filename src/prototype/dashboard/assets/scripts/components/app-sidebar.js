@@ -9,27 +9,31 @@ const LINKS = [
 export class AppSidebar extends HTMLElement {
   connectedCallback() {
     this.render();
-    this.onRouteChange = (event) => this.setActive(event.detail.path);
+    
+    // Listen for layout changes across the app router
+    this.onRouteChange = (event) => {
+      this.setActive(event.detail.path);
+      this.closeMobileMenu(); 
+    };
     document.addEventListener('watchtower:route-change', this.onRouteChange);
+
+    // Listen for the hamburger menu action dispatched from the topbar
+    this.onToggleMenu = () => this.handleMenuToggleAction();
+    document.addEventListener('watchtower:menu-toggle', this.onToggleMenu);
   }
 
   disconnectedCallback() {
     document.removeEventListener('watchtower:route-change', this.onRouteChange);
+    document.removeEventListener('watchtower:menu-toggle', this.onToggleMenu);
   }
 
   render() {
     const nav = document.createElement('nav');
     nav.className = 'sidebar';
+    nav.id = 'app-sidebar-nav';
     nav.setAttribute('aria-label', 'Dashboard sections');
 
-    // Brand logo at the top of the sidebar
-    const brand = document.createElement('a');
-    brand.href = '#/';
-    brand.className = 'sidebar-brand';
-    brand.innerHTML = `
-      <img src="/src/prototype/dashboard/public/logo.svg" alt="WatchTower logo" style="height: 32px; width: auto;">
-      <span style="color: var(--wt-info); font-size: 1.15rem; font-weight: 700;">WatchTower</span>
-    `;
+    nav.classList.add('is-collapsed');
 
     const list = document.createElement('ul');
     list.className = 'sidebar-list';
@@ -45,16 +49,48 @@ export class AppSidebar extends HTMLElement {
       list.append(item);
     }
 
-    nav.append(brand, list);
-    this.replaceChildren(nav);
+    nav.append(list);
+
+    // Mobile background click-to-close shroud overlay
+    const backdrop = document.createElement('div');
+    backdrop.className = 'sidebar-backdrop';
+    backdrop.id = 'sidebar-shroud';
+    backdrop.addEventListener('click', () => this.closeMobileMenu());
+
+    this.replaceChildren(nav, backdrop);
     this.setActive(window.location.hash.slice(1) || '/');
+  }
+
+  handleMenuToggleAction() {
+    const nav = this.querySelector('#app-sidebar-nav');
+    const backdrop = this.querySelector('#sidebar-shroud');
+    if (!nav) return;
+
+    // Check if we are currently running on desktop view or small viewport mobile view
+    const isMobileViewport = window.innerWidth <= 900;
+
+    if (isMobileViewport) {
+      nav.classList.toggle('is-open');
+      backdrop?.classList.toggle('is-open');
+    } else {
+      // Regular sizing viewport toggle profile
+      nav.classList.toggle('is-collapsed');
+    }
+  }
+
+  closeMobileMenu() {
+    const nav = this.querySelector('#app-sidebar-nav');
+    const backdrop = this.querySelector('#sidebar-shroud');
+    if (nav) {
+      nav.classList.remove('is-open');
+      backdrop?.classList.remove('is-open');
+    }
   }
 
   setActive(path) {
     this.querySelectorAll('.sidebar-link').forEach((link) => {
       const active = link.dataset.route === path;
       link.classList.toggle('is-active', active);
-      // aria-current="page" tells screen readers which link is the current page
       if (active) {
         link.setAttribute('aria-current', 'page');
       } else {
