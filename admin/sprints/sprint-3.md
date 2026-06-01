@@ -64,22 +64,22 @@
 ### Stand-up 2 — 05/29/2026
 | Name | Did | Doing | Blockers |
 |------|-----|-------|----------|
-| Nicole Sutedja | | | |
-| Kaley Chung | | | |
-| Jensen Guo | | | |
-| Prakhar Shah | | | |
-| Bethany Miyamoto | | | |
-| Kevin Wang | | | |
-| Han Yang-Lin | | | |
-| Aron Wu | | | |
-| Benedict Luis | | | |
-| Evan Marriott | | | |
+| Nicole Sutedja | assigned tasks, help provide feedback & implemented frontend, started wireframe for user login | create user login page | None |
+| Kaley Chung | Asked questions/ research about project responsiveness | Check for screen sizes and devices | Midterms |
+| Jensen Guo | Implementing frontend, writing code comments | Finish implemented frontend | None |
+| Prakhar Shah | Added design-breif.md and updated cse135-research.md | help out other teams | Hackathon |
+| Bethany Miyamoto | made new branch and created new dashboard with dark/light mode and relative units | finish the rest of the pages | None |
+| Kevin Wang | implement the backend for ntfy | implement the email notification | others due |
+| Han Yang-Lin | Updated database structure and implemented user login and project creation | Discuss project creation/removal process and implement them, and refactor code to be more organized | None |
+| Aron Wu | Added tests for tracker.js | Add tests for user login | None |
+| Benedict Luis | Set up and tested the backend locally with Supabase/Docker. Verified /api/events, /api/uptime, and /api/log work without user_id. Fixed merge conflicts, lint/formatting issues, and updated unit/E2E tests to match the current backend/dashboard | work on the testing for the user login | midterm and going out of town of Sat |
+| Evan Marriott | read through feedback doc in depth and started planning changes | implement changes and improve PR structure | None |
 
 ### Stand-up 3 — 05/31/2026
 | Name | Did | Doing | Blockers |
 |------|-----|-------|----------|
 | Nicole Sutedja | | | |
-| Kaley Chung | | | |
+| Kaley Chung | Fix the mobile responsiveness | Fix the large monitor responsiveness | Quizzes, midterms, finals |
 | Jensen Guo | | | |
 | Prakhar Shah | | | |
 | Bethany Miyamoto | | | |
@@ -87,7 +87,7 @@
 | Han Yang-Lin | | | |
 | Aron Wu | | | |
 | Benedict Luis | | | |
-| Evan Marriott | | | |
+| Evan Marriott | added more errors to test app | continue to work on repo structure | Finals coming up |
 
 ---
 ## Decisions Made
