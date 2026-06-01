@@ -139,7 +139,7 @@ export async function notify(user, payload) {
  * @param {Object} uptimeCheck The failing UptimeCheck.
  * @returns {Promise<void>}
  */
-export async function notifyDowntime(project, uptimeCheck) {
+export async function notifyDowntime(project, _uptimeCheck) {
     const users = await getProjectUsers(project.id);
     await Promise.allSettled(users.map((user) => notify(user, {
         title: `${project.name} is down`,

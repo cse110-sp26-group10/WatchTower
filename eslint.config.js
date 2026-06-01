@@ -39,7 +39,7 @@ export default [
   },
   // Node globals — server
   {
-    files: ['src/prototype/server/**/*.js'],
+    files: ['src/prototype/server/**/*.js', 'src/prototype/server/**/*.mjs'],
     languageOptions: { globals: globals.node },
   },
   // Unit test files — Vitest globals
