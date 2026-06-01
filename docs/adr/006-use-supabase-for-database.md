@@ -21,11 +21,13 @@ How we adopted it:
 * The Node server accesses data through `@supabase/supabase-js` (not the `pg` driver), using the **service_role** key server-side.
 * **Row-Level Security is enabled** on all tables, so only the service_role key can read or write until dashboard auth and policies are added.
 * Schema lives in `supabase/migrations/` with seed data in `supabase/seed.sql`, managed by the Supabase CLI. The old `init-db.js` is removed.
+* **Supabase Auth provides user login/signup** out of the box. The server uses its email/password auth for sessions instead of us building and maintaining a separate auth service, and our `users` table links to `auth.users` via `auth_id`.
 
 ### Consequences
 
 * Good, because every developer gets an identical local stack with one command, eliminating database drift.
 * Good, because the schema is versioned and reviewable as migration files in git.
 * Good, because switching between local and remote is only an `.env` change.
-* Good, because it opens a native path to auth, storage, and realtime.
+* Good, because its built-in authentication system gives us user login/signup without building or maintaining a separate auth service, which we now rely on for sessions.
+* Good, because it opens a native path to storage and realtime as well.
 * Neutral, because remote schema changes must go through the migration and PR workflow, with no ad-hoc `supabase db push`.
