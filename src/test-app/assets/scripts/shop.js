@@ -38,6 +38,16 @@ function setCategory(category) {
   renderProducts();
 }
 
+// ReferenceError: calling a function that was never defined
+function triggerReferenceError() {
+  undeclaredShopFunction(); // eslint-disable-line no-undef
+}
+
+// Unhandled Promise rejection — captured by window.unhandledrejection
+function triggerUnhandledRejection() {
+  Promise.reject(new Error('WatchTower test — unhandled promise rejection from shop page'));
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   renderFilters();
   renderProducts();

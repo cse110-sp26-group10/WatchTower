@@ -47,4 +47,14 @@ function handleRemove(productId, size) {
   renderCart();
 }
 
+// URIError: malformed URI sequence
+function triggerURIError() {
+  decodeURIComponent('%');
+}
+
+// Unhandled Promise rejection — captured by window.unhandledrejection
+function triggerUnhandledRejection() {
+  Promise.reject(new Error('WatchTower test — unhandled promise rejection from cart page'));
+}
+
 document.addEventListener('DOMContentLoaded', renderCart);
