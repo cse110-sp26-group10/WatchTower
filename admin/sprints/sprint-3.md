@@ -78,15 +78,15 @@
 ### Stand-up 3 — 05/31/2026
 | Name | Did | Doing | Blockers |
 |------|-----|-------|----------|
-| Nicole Sutedja | | | |
+| Nicole Sutedja | helped finish most of frontend wherever needed, implemented login, signup, projects page | write sprint 4 and tasks | Finals |
 | Kaley Chung | Fix the mobile responsiveness | Fix the large monitor responsiveness | Quizzes, midterms, finals |
 | Jensen Guo | | | |
 | Prakhar Shah | | | |
 | Bethany Miyamoto | | | |
-| Kevin Wang | | | |
+| Kevin Wang | the email and ntfy notification backend | connect the frontend and backend | other ddls |
 | Han Yang-Lin | | | |
 | Aron Wu | | | |
-| Benedict Luis | | | |
+| Benedict Luis | Finished aligning tests after the dashboard prototype merge. Updated Event.js and unit/E2E tests, kept Evan’s auth/home setup, added hash route and login gate coverage, pushed fix/tests-align-main and opened the PR for aliign event validation and dashboard tests | Watch CI and fix any failures. Coordinate with Aron on the separate feat/testing-ci PR if needed. Start login/auth tests once Han’s frontend-backend auth flow is stable | Family urgency and Finals |
 | Evan Marriott | added more errors to test app | continue to work on repo structure | Finals coming up |
 
 ---
