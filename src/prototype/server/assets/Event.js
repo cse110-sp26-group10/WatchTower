@@ -4,7 +4,7 @@ const EVENT_FIELDS = new Set([
     "created_at",
     "deployment",
     "ip",
-    "user_id",
+    "project_id",
     "current_url",
     "host",
     "pathname",
@@ -80,11 +80,9 @@ function validateDeployment(event) {
     return true;
 }
 
-function validateUser(event) {
-    let userId = event.user_id;
-    if (typeof userId !== "string") return false;
-    if (!UUID_REGEX.test(userId)) return false;
-    return true;
+function validateUserId(event) {
+    const userId = event.user_id;
+    return typeof userId === "string" && UUID_REGEX.test(userId);
 }
 
 function validateURL(event) {
@@ -150,7 +148,7 @@ export default class Event {
         if (!validateEventType(event)) return null;
         if (!validateTimestamp(event)) return null;
         if (!validateDeployment(event)) return null;
-        if (!validateUser(event)) return null;
+        if (!validateUserId(event)) return null;
         if (!validateURL(event)) return null;
         if (!validateReferrer(event)) return null;
         if (!validateBrowser(event)) return null;

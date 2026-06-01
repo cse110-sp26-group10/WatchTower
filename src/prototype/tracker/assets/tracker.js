@@ -33,12 +33,17 @@ export function parseBrowser(ua, uaData) {
   return { name: ua.slice(0, 50) || 'Unknown', version: '' };
 }
 
+const apiKey = typeof document !== 'undefined' && document.currentScript
+    ? document.currentScript.getAttribute("data-apikey")
+    : null;
+
 async function logEvent(event) {
     if (!originalFetch) return;
     try {
-        const response = await originalFetch("http://localhost:8080", {
+        const response = await originalFetch(`http://localhost:8080/api/log`, {
             method: "POST",
             headers: {
+                "Authorization": `Bearer ${apiKey}`,
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(event)
@@ -53,15 +58,6 @@ async function logEvent(event) {
     }
 }
 
-function getUserId() {
-    let userId = localStorage.getItem("watchtower_user_id");
-    if (userId === null) {
-        userId = crypto.randomUUID(); // Generate new user_id
-        localStorage.setItem("watchtower_user_id", userId);
-    }
-    return userId;
-}
-
 function eventTemplate() {
     const event = {};
     event.timestamp = new Date().toISOString();
@@ -72,7 +68,6 @@ function eventTemplate() {
         "deployed_at": "2026-03-25T00:00:00.000Z",
         "author": "kevin"
     };
-    event.user_id = getUserId();
     event.current_url = window.location.href;
     event.referrer = document.referrer;
     event.browser = parseBrowser(navigator.userAgent, navigator.userAgentData);

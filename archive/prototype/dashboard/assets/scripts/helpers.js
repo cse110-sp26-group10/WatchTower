@@ -138,3 +138,15 @@ export function kvRow(key, value, opts = {}) {
   const cls = opts.mono ? 'dep-val mono' : 'dep-val';
   return `<li class="kv-row"><span class="dep-key">${escapeHtml(key)}</span><span class="${cls}">${escapeHtml(value)}</span></li>`;
 }
+
+
+export function ratingTone(rating) {
+  if (rating <= 2) return 'rating-low';
+  if (rating >= 4) return 'rating-high';
+  return 'rating-mid';
+}
+
+export function visualizeStars(rating) {
+  const filled = Math.max(0, Math.min(5, Number(rating || 0)));
+  return '★★★★★'.slice(0, filled) + '☆☆☆☆☆'.slice(0, 5 - filled);
+}
