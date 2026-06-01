@@ -1,3 +1,5 @@
+import { dataStore } from '../core/data-store.js';
+
 const LINKS = [
   ['#/', 'Overview', '/'],
   ['#/projects', 'Projects', '/projects'],
@@ -51,6 +53,14 @@ export class AppSidebar extends HTMLElement {
 
     nav.append(list);
 
+    // Logout button, pinned to the bottom of the sidebar
+    const logoutBtn = document.createElement('button');
+    logoutBtn.type = 'button';
+    logoutBtn.className = 'sidebar-logout';
+    logoutBtn.textContent = 'Log out';
+    logoutBtn.addEventListener('click', () => this.handleLogout(logoutBtn));
+    nav.append(logoutBtn);
+
     // Mobile background click-to-close shroud overlay
     const backdrop = document.createElement('div');
     backdrop.className = 'sidebar-backdrop';
@@ -76,6 +86,14 @@ export class AppSidebar extends HTMLElement {
       // Regular sizing viewport toggle profile
       nav.classList.toggle('is-collapsed');
     }
+  }
+
+  async handleLogout(btn) {
+    btn.disabled = true;
+    // Clear server session (cookies) then the client-side auth flag.
+    await dataStore.logOut();
+    localStorage.removeItem('wt-auth');
+    window.location.reload();
   }
 
   closeMobileMenu() {

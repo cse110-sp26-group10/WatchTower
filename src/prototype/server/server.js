@@ -21,6 +21,8 @@ const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const ALLOWED_ORIGINS = new Set([
     "http://localhost:5500",
     "http://127.0.0.1:5500",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
     "https://cse110-sp26-group10.github.io/WatchTower/src/test-app/",
 ]);
 
