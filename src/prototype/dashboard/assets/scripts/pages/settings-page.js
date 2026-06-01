@@ -23,12 +23,25 @@ export class SettingsPage extends HTMLElement {
 
   render() {
     this.className = 'dashboard-viewport';
-    const selected = new Set(dataStore.getProfile()?.notify_methods || []);
+    const profile = dataStore.getProfile() || {};
+    const selected = new Set(profile.notify_methods || []);
+    const alertId = profile.alert_id || '';
 
     this.innerHTML = `
       <div class="settings-card">
         <h1 class="settings-title">Notification settings</h1>
         <p class="settings-subtitle">Choose how you want to be notified about alerts.</p>
+
+        ${alertId ? `
+          <div class="settings-ntfy">
+            <span class="settings-ntfy-label">Your ntfy topic</span>
+            <div class="settings-ntfy-row">
+              <code class="settings-ntfy-topic" id="settings-ntfy-topic">${alertId}</code>
+              <button class="settings-ntfy-copy" id="settings-ntfy-copy" type="button">Copy</button>
+            </div>
+            <p class="settings-ntfy-hint">Subscribe to this topic in the ntfy app to receive push alerts.</p>
+          </div>
+        ` : ''}
 
         <fieldset class="settings-methods">
           <legend class="sr-only">Notification methods</legend>
@@ -82,6 +95,61 @@ export class SettingsPage extends HTMLElement {
           margin: 0.25rem 0 1.25rem;
           font-size: 0.875rem;
           color: var(--wt-text-2);
+        }
+
+        .settings-ntfy {
+          margin-bottom: 1.25rem;
+          padding: 0.875rem 1rem;
+          border: 1px solid var(--wt-border);
+          border-radius: var(--wt-radius-md);
+          background-color: var(--wt-surface-2);
+        }
+
+        .settings-ntfy-label {
+          display: block;
+          font-size: 0.8125rem;
+          font-weight: 500;
+          color: var(--wt-text-2);
+          margin-bottom: 0.5rem;
+        }
+
+        .settings-ntfy-row {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+
+        .settings-ntfy-topic {
+          flex: 1;
+          min-width: 0;
+          overflow-wrap: anywhere;
+          font-family: var(--font-mono, monospace);
+          font-size: 0.8125rem;
+          color: var(--wt-text);
+        }
+
+        .settings-ntfy-copy {
+          flex-shrink: 0;
+          padding: 0.375rem 0.75rem;
+          border: 1px solid var(--wt-border);
+          border-radius: var(--wt-radius-md);
+          background: transparent;
+          color: var(--wt-text-2);
+          font: inherit;
+          font-size: 0.8125rem;
+          cursor: pointer;
+          transition: all 0.15s ease;
+        }
+
+        .settings-ntfy-copy:hover {
+          background-color: var(--color-active-bg);
+          color: var(--color-active-text);
+        }
+
+        .settings-ntfy-hint {
+          margin: 0.5rem 0 0;
+          font-size: 0.8125rem;
+          color: var(--wt-text-3);
         }
 
         .settings-methods {
@@ -161,6 +229,19 @@ export class SettingsPage extends HTMLElement {
   }
 
   bindEvents() {
+    const copyBtn = this.querySelector('#settings-ntfy-copy');
+    copyBtn?.addEventListener('click', async () => {
+      const topic = this.querySelector('#settings-ntfy-topic')?.textContent || '';
+      try {
+        await navigator.clipboard.writeText(topic);
+        copyBtn.textContent = 'Copied';
+        setTimeout(() => { copyBtn.textContent = 'Copy'; }, 1500);
+      } catch {
+        copyBtn.textContent = 'Copy failed';
+        setTimeout(() => { copyBtn.textContent = 'Copy'; }, 1500);
+      }
+    });
+
     const saveBtn = this.querySelector('#settings-save');
     const statusEl = this.querySelector('#settings-status');
     const labelEl = saveBtn.querySelector('.settings-save-label');
