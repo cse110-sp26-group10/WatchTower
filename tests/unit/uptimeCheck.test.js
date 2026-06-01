@@ -25,7 +25,7 @@ describe("attemptSuccess", () => {
   it("Handles non-number status", () => {
     expect(attemptSuccess({ status: "200" })).toBe(false);
   });
-  it("Handles attempt with status beyond upper bound", () => {
+  it("Handles attempt  with status beyond upper bound", () => {
     expect(attemptSuccess({ status: 600 })).toBe(false);
   });
   it("Handles attempt with status less than lower bound", () => {
@@ -81,13 +81,13 @@ describe("UptimeCheckAttempt", () => {
 describe("UptimeCheck", () => {
   it("Preserves the attempts array", () => {
     const attempts = [mkAttempt(0, 503), mkAttempt(1000, 200)];
-    const check = new UptimeCheck("https://example.com", attempts);
+    const check = new UptimeCheck(1, "https://example.com", attempts);
     expect(check.attempts).toBe(attempts);
     expect(check.attempts).toHaveLength(2);
   });
   it("Marks check as up for a single successful attempt", () => {
     const attempts = [mkAttempt(0, 200)];
-    const check = new UptimeCheck("https://example.com", attempts);
+    const check = new UptimeCheck(1, "https://example.com", attempts);
     expect(check.is_up).toBe(true);
     expect(check.status).toBe(200);
     expect(check.timestamp).toBe(attempts[0].timestamp);
@@ -96,7 +96,7 @@ describe("UptimeCheck", () => {
   });
   it("Marks check as down for a single failed attempt", () => {
     const attempts = [mkAttempt(0, 503)];
-    const check = new UptimeCheck("https://example.com", attempts);
+    const check = new UptimeCheck(1, "https://example.com", attempts);
     expect(check.is_up).toBe(false);
     expect(check.status).toBe(503);
     expect(check.timestamp).toBe(attempts[0].timestamp);
@@ -104,7 +104,7 @@ describe("UptimeCheck", () => {
   });
   it("Marks check as up when last attempt of multiple succeeds", () => {
     const attempts = [mkAttempt(0, 503), mkAttempt(1000, 200)];
-    const check = new UptimeCheck("https://example.com", attempts);
+    const check = new UptimeCheck(1, "https://example.com", attempts);
     expect(check.is_up).toBe(true);
     expect(check.status).toBe(200);
     expect(check.timestamp).toBe(attempts[0].timestamp);
@@ -112,7 +112,7 @@ describe("UptimeCheck", () => {
   });
   it("Marks check as down when last attempt fails after earlier success", () => {
     const attempts = [mkAttempt(0, 200), mkAttempt(1000, 503)];
-    const check = new UptimeCheck("https://example.com", attempts);
+    const check = new UptimeCheck(1, "https://example.com", attempts);
     expect(check.is_up).toBe(false);
     expect(check.status).toBe(503);
     expect(check.timestamp).toBe(attempts[0].timestamp);
@@ -123,7 +123,7 @@ describe("UptimeCheck", () => {
       { ...mkAttempt(0, 503), latency: 50 },
       { ...mkAttempt(5000, 200), latency: 250 },
     ];
-    const check = new UptimeCheck("https://example.com", attempts);
+    const check = new UptimeCheck(1, "https://example.com", attempts);
     expect(check.timestamp).toBe(attempts[0].timestamp);
     expect(check.status).toBe(200);
     expect(check.latency).toBe(250);
@@ -133,9 +133,10 @@ describe("UptimeCheck", () => {
       mkAttempt(0, 200),
       mkAttempt(1000, null, new Error("network error")),
     ];
-    const check = new UptimeCheck("https://example.com", attempts);
+    const check = new UptimeCheck(1, "https://example.com", attempts);
     expect(check.is_up).toBe(false);
     expect(check.status).toBe(null);
     expect(check.attempts[1].error).toBeInstanceOf(Error);
   });
 });
+
