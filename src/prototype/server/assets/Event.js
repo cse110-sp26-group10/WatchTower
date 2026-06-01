@@ -10,7 +10,6 @@ const EVENT_FIELDS = new Set([
     "pathname",
     "referrer",
     "referring_domain",
-    "browser",
     "metadata"
 ]);
 const DEPLOYMENT_FIELDS = new Set([
@@ -20,7 +19,6 @@ const DEPLOYMENT_FIELDS = new Set([
     "deployed_at",
     "author"
 ]);
-const BROWSER_FIELDS = new Set(["name", "version"]);
 const METADATA_FIELDS = {
     "page_load": new Set(["load_time"]),
     "error": new Set(["severity", "message"]),
@@ -28,7 +26,6 @@ const METADATA_FIELDS = {
     "click": new Set(["element_id", "element_class", "input_delay"])
 };
 const MAX_CLOCK_SKEW_SECONDS = 300;
-const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 /**
  * Converts a JSON string into an Object. Return null if the JSON string is invalid.
@@ -80,11 +77,6 @@ function validateDeployment(event) {
     return true;
 }
 
-function validateUserId(event) {
-    const userId = event.user_id;
-    return typeof userId === "string" && UUID_REGEX.test(userId);
-}
-
 function validateURL(event) {
     let currentURL = event.current_url;
     if (typeof currentURL !== "string") return false;
@@ -96,14 +88,6 @@ function validateReferrer(event) {
     let referrer = event.referrer;
     if (typeof referrer !== "string") return false;
     if (referrer !== "" && !URL.canParse(referrer)) return false;
-    return true;
-}
-
-function validateBrowser(event) {
-    let browser = event.browser;
-    if (typeof browser !== "object" || browser === null || Array.isArray(browser)) return false;
-    if (typeof browser.name !== "string") return false;
-    if (typeof browser.version !== "string") return false;
     return true;
 }
 
@@ -148,10 +132,8 @@ export default class Event {
         if (!validateEventType(event)) return null;
         if (!validateTimestamp(event)) return null;
         if (!validateDeployment(event)) return null;
-        if (!validateUserId(event)) return null;
         if (!validateURL(event)) return null;
         if (!validateReferrer(event)) return null;
-        if (!validateBrowser(event)) return null;
         if (!validateMetadata(event)) return null;
         event.created_at = new Date().toISOString();
         let urlObject = new URL(event.current_url);
@@ -162,7 +144,6 @@ export default class Event {
         } else {
             event.referring_domain = "";
         }
-        cleanupExtraFields(event.browser, BROWSER_FIELDS);
         cleanupExtraFields(event.deployment, DEPLOYMENT_FIELDS);
         cleanupExtraFields(event.metadata, METADATA_FIELDS[event.event_type]);
         cleanupExtraFields(event, EVENT_FIELDS);

@@ -17,7 +17,7 @@ export default defineConfig({
     command: 'npx serve src/prototype/dashboard -p 3000 --no-clipboard',
     port: 3000,
     reuseExistingServer: !process.env.CI,
-    timeout: 10000,
+    timeout: 30000,
   },
   reporter: process.env.CI ? 'github' : 'list',
 });
