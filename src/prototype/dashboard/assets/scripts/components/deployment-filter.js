@@ -1,5 +1,5 @@
-import { dataStore } from '../core/data-store.js';
-import { deploymentScope } from '../core/deployment-scope.js';
+import { dataStore } from "../core/data-store.js";
+import { deploymentScope } from "../core/deployment-scope.js";
 
 export class DeploymentFilter extends HTMLElement {
   connectedCallback() {
@@ -23,11 +23,11 @@ export class DeploymentFilter extends HTMLElement {
 
   render() {
     // 1. Create the select dropdown menu
-    const select = document.createElement('select');
-    select.id = 'deployment-filter';
-    select.className = 'filter-select';
-    select.setAttribute('aria-label', 'Filter by deployment');
-    
+    const select = document.createElement("select");
+    select.id = "deployment-filter";
+    select.className = "filter-select";
+    select.setAttribute("aria-label", "Filter by deployment");
+
     select.style = `
       padding: 4px 8px;
       font-size: 13px;
@@ -43,41 +43,42 @@ export class DeploymentFilter extends HTMLElement {
     this.selectElement = select;
 
     // 3. Add default item
-    const allOption = document.createElement('option');
-    allOption.value = 'all';
-    allOption.textContent = 'All deployments';
+    const allOption = document.createElement("option");
+    allOption.value = "all";
+    allOption.textContent = "All deployments";
     select.append(allOption);
 
     // 4. Populate list from data store array
     const deployments = dataStore.getDeployments() || [];
     for (const deployment of deployments) {
-      const option = document.createElement('option');
+      const option = document.createElement("option");
       option.value = deployment.id;
       // Keep dropdown names beautifully clean
-      option.textContent = deployment.name || `${deployment.version} (${deployment.commit_hash})`;
+      option.textContent =
+        deployment.name || `${deployment.version} (${deployment.commit_hash})`;
       select.append(option);
     }
 
     // 5. Change update cycle execution loop
-    select.addEventListener('change', () => {
-      if (typeof deploymentScope.set === 'function') {
+    select.addEventListener("change", () => {
+      if (typeof deploymentScope.set === "function") {
         deploymentScope.set(select.value);
       }
     });
 
     // 6. Complete cleanup: clear out everything and append ONLY the dropdown element
-    this.innerHTML = ''; 
+    this.innerHTML = "";
     this.append(select);
-    
+
     // Initial sync alignment step
     this.syncSelectValue();
   }
 
   syncSelectValue() {
     if (!this.selectElement) return;
-    const currentId = deploymentScope.id || 'all';
+    const currentId = deploymentScope.id || "all";
     this.selectElement.value = currentId;
   }
 }
 
-customElements.define('deployment-filter', DeploymentFilter);
+customElements.define("deployment-filter", DeploymentFilter);
