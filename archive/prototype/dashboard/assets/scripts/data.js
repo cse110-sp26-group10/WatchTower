@@ -4,7 +4,7 @@
  * Events conform to the trimmed log shape:
  *   { event_type, timestamp, created_at,
  *     deployment: { id, version, commit_hash },
- *     ip, pathname,
+ *     ip, pathname, browser: { name, version },
  *     metadata: { severity, message, rating, comment, pageUrl } }
  */
 
@@ -37,8 +37,9 @@ let __eventCounter = 0;
  * @param {number} p.minsAgo
  * @param {string} p.pathname
  * @param {Object} [p.meta] partial metadata override
+ * @param {Object} [p.browser] browser info { name, version }
  */
-function makeEvent({ deployment_id, event_type, minsAgo, pathname, meta }) {
+function makeEvent({ deployment_id, event_type, minsAgo, pathname, meta, browser }) {
   const d = deploymentById(deployment_id);
   __eventCounter += 1;
   return {
@@ -49,6 +50,7 @@ function makeEvent({ deployment_id, event_type, minsAgo, pathname, meta }) {
     deployment: d ? { id: d.id, version: d.version, commit_hash: d.commit_hash } : null,
     ip: '192.0.2.14',
     pathname,
+    browser: browser || { name: 'Chrome', version: '124' },
     metadata: {
       severity: 'signal',
       message: '',
@@ -62,8 +64,8 @@ function makeEvent({ deployment_id, event_type, minsAgo, pathname, meta }) {
 
 let EVENTS = [
   // ---- Errors ----
-  makeEvent({ deployment_id: 'dep_8f2c', event_type: 'error', minsAgo: 2,  pathname: '/checkout',   meta: { severity: 'critical', message: 'TypeError: cannot read property "id" of undefined' } }),
-  makeEvent({ deployment_id: 'dep_8f2c', event_type: 'error', minsAgo: 11, pathname: '/api/orders', meta: { severity: 'critical', message: '500 Internal Server Error on POST /api/orders' } }),
+  makeEvent({ deployment_id: 'dep_8f2c', event_type: 'error', minsAgo: 2,  pathname: '/checkout',   meta: { severity: 'critical', message: 'TypeError: cannot read property "id" of undefined' }, browser: { name: 'Safari', version: '17' } }),
+  makeEvent({ deployment_id: 'dep_8f2c', event_type: 'error', minsAgo: 11, pathname: '/api/orders', meta: { severity: 'critical', message: '500 Internal Server Error on POST /api/orders' }, browser: { name: 'Firefox', version: '125' } }),
   makeEvent({ deployment_id: 'dep_7e1b', event_type: 'error', minsAgo: 34, pathname: '/profile',    meta: { severity: 'warning',  message: 'Image asset failed to load: avatar.png' } }),
 
   // ---- Page loads ----
