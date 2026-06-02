@@ -56,8 +56,8 @@ function validateTimestamp(event) {
   if (isNaN(date)) return false;
   if (date.toISOString() !== timestamp) return false;
   let now = new Date();
-  if (date <= now - MAX_CLOCK_SKEW_SECONDS * 1000) return false; // Timestamp too far back
-  if (date > now) return false; // Timestamp in the future
+  if (date <= now - MAX_CLOCK_SKEW_SECONDS * 1000) return false;
+  if (date > now) return false;
   return true;
 }
 
@@ -72,7 +72,7 @@ function validateDeployment(event) {
   if (isNaN(date)) return false;
   if (date.toISOString() !== deployment.deployed_at) return false;
   let now = new Date();
-  if (date > now) return false; // Timestamp in the future
+  if (date > now) return false;
   if (typeof deployment.author !== "string") return false;
   return true;
 }
