@@ -259,6 +259,12 @@ export class ProjectsPage extends HTMLElement {
           font-size: 0.75rem;
         }
 
+        .project-card-actions {
+          display: flex;
+          gap: 0.5rem;
+          width: 100%;
+        }
+
         .project-remove {
           align-self: flex-start;
           border: 1px solid var(--wt-border);
@@ -275,6 +281,30 @@ export class ProjectsPage extends HTMLElement {
         .project-remove:hover {
           color: var(--wt-danger);
           border-color: var(--wt-danger);
+        }
+
+        .project-copy-key {
+          align-self: flex-start;
+          border: 1px solid var(--wt-border);
+          border-radius: var(--wt-radius-sm);
+          background: var(--wt-surface);
+          color: var(--wt-text-2);
+          cursor: pointer;
+          font: inherit;
+          font-size: 0.75rem;
+          font-weight: 700;
+          padding: 0.35rem 0.55rem;
+        }
+
+        .copy-success {
+          background-color: var(--color-active);
+          color: #fff;
+          border-color: var(--color-active);
+        }
+
+        .project-copy-key:not(.copy-success):hover {
+          color: var(--color-active);
+          border-color: var(--color-active);
         }
 
         .projects-empty {
@@ -296,11 +326,31 @@ export class ProjectsPage extends HTMLElement {
     });
 
     this.querySelector('#projects-list')?.addEventListener('click', async (event) => {
-      const button = event.target.closest('[data-remove-project]');
-      if (!button) return;
-      const error = await dataStore.deleteProject(Number.parseInt(button.dataset.removeProject));
-      if (error) return;
-      this.updatePageData();
+      const removeButton = event.target.closest('[data-remove-project]');
+      if (removeButton) {
+        const error = await dataStore.deleteProject(Number.parseInt(removeButton.dataset.removeProject));
+        if (error) return;
+        this.updatePageData();
+        return;
+      }
+      const copyButton = event.target.closest('[data-copy-key]');
+      if (copyButton) {
+        clearTimeout(copyButton.dataset.timeoutId);
+        try {
+          await navigator.clipboard.writeText(copyButton.dataset.copyKey);
+          console.log("API key successfully copied");
+          copyButton.textContent = "Copied!";
+          copyButton.classList.add("copy-success");
+          copyButton.dataset.timeoutId = setTimeout(() => {
+            delete copyButton.dataset.timeoutId;
+            copyButton.textContent = copyButton.dataset.default;
+            copyButton.classList.remove("copy-success");
+          }, 2 * 1000);
+        } catch (error) {
+          console.log("Failed to copy API key:", error);
+        }
+        return;
+      }
     });
   }
 
@@ -367,7 +417,10 @@ export class ProjectsPage extends HTMLElement {
         </div>
         <a class="project-url" href="${url}" target="_blank" rel="noreferrer">${url}</a>
         <div class="project-meta">Added ${created_at}</div>
-        <button class="project-remove" type="button" data-remove-project="${project.id}">Remove</button>
+        <div class="project-card-actions">
+          <button class="project-remove" type="button" data-remove-project="${project.id}">Remove</button>
+          <button class="project-copy-key" type="button" data-copy-key="${project.api_key}" data-default="Copy API Key">Copy API Key</button>
+        </div>
       </article>
     `;
     }).join('');
