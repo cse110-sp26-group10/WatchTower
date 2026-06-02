@@ -175,6 +175,24 @@ export class UptimeCard extends HTMLElement {
       }
     }
 
+    // Update the Project dropdown button text label
+    if (showProject) {
+      const projectBtnLabel = this.querySelector('.uptime-project-dropdown .uptime-filter-label');
+      if (projectBtnLabel) {
+        const currentProjectLabel = this._projectId === ALL_PROJECTS_ID
+          ? 'All projects'
+          : (projectOptions.find(p => p.id === this._projectId)?.label ?? 'All projects');
+        projectBtnLabel.textContent = currentProjectLabel;
+      }
+    }
+
+    // Update the Time Window dropdown button text label
+    const timeDropdown = this.querySelector('.uptime-filter-container:not(.uptime-project-dropdown)');
+    const timeBtnLabel = timeDropdown?.querySelector('.uptime-filter-label');
+    if (timeBtnLabel) {
+      timeBtnLabel.textContent = TIME_WINDOWS[this._windowIndex].label;
+    }
+
     this._renderBody(uptime, projectOptions, showProject);
   }
 
