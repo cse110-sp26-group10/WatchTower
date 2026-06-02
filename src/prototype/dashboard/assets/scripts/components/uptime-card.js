@@ -13,15 +13,15 @@ export class UptimeCard extends HTMLElement {
     this.replaceChildren();
 
     if (!uptime) {
-      const empty = document.createElement('div');
-      empty.className = 'uptime-empty';
-      empty.textContent = 'No uptime checks tracked.';
+      const empty = document.createElement("div");
+      empty.className = "uptime-empty";
+      empty.textContent = "No uptime checks tracked.";
       this.append(empty, this.styles());
       return;
     }
 
-    const card = document.createElement('section');
-    card.className = 'uptime-card';
+    const card = document.createElement("section");
+    card.className = "uptime-card";
     card.innerHTML = `
       <div class="uptime-panel-header">
         <h2>Uptime</h2>
@@ -33,21 +33,25 @@ export class UptimeCard extends HTMLElement {
           <h3>${uptime.name}</h3>
           <p>${uptime.category} <span aria-hidden="true">•</span> ${uptime.url}</p>
         </div>
-        <span class="uptime-status ${uptime.isHealthy ? 'is-healthy' : 'is-down'}">
+        <span class="uptime-status ${uptime.isHealthy ? "is-healthy" : "is-down"}">
           <span class="uptime-status-dot"></span>
-          ${uptime.isHealthy ? 'Healthy' : 'Down'}
+          ${uptime.isHealthy ? "Healthy" : "Down"}
         </span>
       </div>
 
       <div class="uptime-latency">~${uptime.latency}ms</div>
 
       <div class="uptime-bars" aria-label="${uptime.uptimePercent}% uptime over the last 9 hours">
-        ${uptime.checks.map((check) => `
+        ${uptime.checks
+          .map(
+            (check) => `
           <span
-            class="uptime-bar ${check.is_up ? 'is-up' : 'is-down'}"
-            title="${check.is_up ? 'Up' : 'Down'} - ${check.status || 'unknown'}"
+            class="uptime-bar ${check.is_up ? "is-up" : "is-down"}"
+            title="${check.is_up ? "Up" : "Down"} - ${check.status || "unknown"}"
           ></span>
-        `).join('')}
+        `,
+          )
+          .join("")}
       </div>
 
       <div class="uptime-range">
@@ -60,7 +64,7 @@ export class UptimeCard extends HTMLElement {
   }
 
   styles() {
-    const style = document.createElement('style');
+    const style = document.createElement("style");
     style.textContent = `
       :host {
         display: block;
@@ -215,4 +219,4 @@ export class UptimeCard extends HTMLElement {
   }
 }
 
-customElements.define('uptime-card', UptimeCard);
+customElements.define("uptime-card", UptimeCard);

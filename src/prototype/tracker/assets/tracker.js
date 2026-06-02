@@ -1,5 +1,5 @@
 const originalWarn = console.warn;
-const originalFetch = typeof window !== 'undefined' ? window.fetch : undefined;
+const originalFetch = typeof window !== "undefined" ? window.fetch : undefined;
 
 /**
  * Detects the browser name and major version from the user agent.
@@ -14,128 +14,134 @@ export function parseBrowser(ua, uaData) {
   if (uaData?.brands?.length) {
     // findLast picks the most-specific real name (e.g. "Google Chrome" not "Chromium")
     // Chrome's brands array orders generic names first, specific names last.
-    const real = uaData.brands.findLast(b => !b.brand.includes('Not'));
+    const real = uaData.brands.findLast((b) => !b.brand.includes("Not"));
     if (real) return { name: real.brand, version: real.version };
   }
   // Tier 2: UA string regex
   const patterns = [
-    { name: 'Edge',    re: /Edg\/(\d+)/ },
-    { name: 'Opera',   re: /OPR\/(\d+)/ },
-    { name: 'Chrome',  re: /Chrome\/(\d+)/ },
-    { name: 'Firefox', re: /Firefox\/(\d+)/ },
-    { name: 'Safari',  re: /Version\/(\d+).*Safari/ },
+    { name: "Edge", re: /Edg\/(\d+)/ },
+    { name: "Opera", re: /OPR\/(\d+)/ },
+    { name: "Chrome", re: /Chrome\/(\d+)/ },
+    { name: "Firefox", re: /Firefox\/(\d+)/ },
+    { name: "Safari", re: /Version\/(\d+).*Safari/ },
   ];
   for (const { name, re } of patterns) {
     const m = ua.match(re);
     if (m) return { name, version: m[1] };
   }
   // Tier 3: raw UA string truncated
-  return { name: ua.slice(0, 50) || 'Unknown', version: '' };
+  return { name: ua.slice(0, 50) || "Unknown", version: "" };
 }
 
-const apiKey = typeof document !== 'undefined' && document.currentScript
+const apiKey =
+  typeof document !== "undefined" && document.currentScript
     ? document.currentScript.getAttribute("data-apikey")
     : null;
 
 async function logEvent(event) {
-    if (!originalFetch) return;
-    try {
-        const response = await originalFetch(`http://localhost:8080/api/log`, {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${apiKey}`,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(event)
-        });
-        if (!response.ok) {
-            throw new Error("Network response failed");
-        }
-        const data = await response.json();
-        console.log("Response:", data);
-    } catch (error) {
-        console.log("Logging failed:", error);
+  if (!originalFetch) return;
+  try {
+    const response = await originalFetch(`http://localhost:8080/api/log`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(event),
+    });
+    if (!response.ok) {
+      throw new Error("Network response failed");
     }
+    const data = await response.json();
+    console.log("Response:", data);
+  } catch (error) {
+    console.log("Logging failed:", error);
+  }
 }
 
 function eventTemplate() {
-    const event = {};
-    event.timestamp = new Date().toISOString();
-    event.deployment = (window.WatchTower = {}).deployment = { // Mock data
-        "id": "dep_abcd",
-        "version": "0.0.0",
-        "commit_hash": "a1b2c3d",
-        "deployed_at": "2026-03-25T00:00:00.000Z",
-        "author": "kevin"
-    };
-    event.current_url = window.location.href;
-    event.referrer = document.referrer;
-    event.browser = parseBrowser(navigator.userAgent, navigator.userAgentData);
-    return event;
+  const event = {};
+  event.timestamp = new Date().toISOString();
+  event.deployment = (window.WatchTower = {}).deployment = {
+    // Mock data
+    id: "dep_abcd",
+    version: "0.0.0",
+    commit_hash: "a1b2c3d",
+    deployed_at: "2026-03-25T00:00:00.000Z",
+    author: "kevin",
+  };
+  event.current_url = window.location.href;
+  event.referrer = document.referrer;
+  event.browser = parseBrowser(navigator.userAgent, navigator.userAgentData);
+  return event;
 }
 
 function logPageLoad(load_time) {
-    const pageLoad = eventTemplate();
-    pageLoad.event_type = "page_load";
-    pageLoad.metadata = {load_time};
-    logEvent(pageLoad);
+  const pageLoad = eventTemplate();
+  pageLoad.event_type = "page_load";
+  pageLoad.metadata = { load_time };
+  logEvent(pageLoad);
 }
 
 function logError(severity, message) {
-    const errorEvent = eventTemplate();
-    errorEvent.event_type = "error";
-    errorEvent.metadata = {severity, message};
-    logEvent(errorEvent);
+  const errorEvent = eventTemplate();
+  errorEvent.event_type = "error";
+  errorEvent.metadata = { severity, message };
+  logEvent(errorEvent);
 }
 
 function logSurvey(rating, message) {
-    const surveyEvent = eventTemplate();
-    surveyEvent.event_type = "survey";
-    surveyEvent.metadata = {rating, message};
-    logEvent(surveyEvent);
+  const surveyEvent = eventTemplate();
+  surveyEvent.event_type = "survey";
+  surveyEvent.metadata = { rating, message };
+  logEvent(surveyEvent);
 }
 function logClick(element_id, element_class, input_delay) {
-    const clickEvent = eventTemplate();
-    clickEvent.event_type = "click";
-    clickEvent.metadata = {element_id, element_class, input_delay};
-    logEvent(clickEvent);
+  const clickEvent = eventTemplate();
+  clickEvent.event_type = "click";
+  clickEvent.metadata = { element_id, element_class, input_delay };
+  logEvent(clickEvent);
 }
 
-if (typeof window !== 'undefined') {
-    window.logSurvey = logSurvey;
+if (typeof window !== "undefined") {
+  window.logSurvey = logSurvey;
 
-    const loadTimeObserver = new PerformanceObserver((list) => {
-        list.getEntries().forEach((entry) => {
-            if (entry.loadEventEnd > 0) {
-                logPageLoad(entry.loadEventEnd - entry.startTime);
-            }
-        });
+  const loadTimeObserver = new PerformanceObserver((list) => {
+    list.getEntries().forEach((entry) => {
+      if (entry.loadEventEnd > 0) {
+        logPageLoad(entry.loadEventEnd - entry.startTime);
+      }
     });
-    loadTimeObserver.observe({ type: "navigation", buffered: true });
+  });
+  loadTimeObserver.observe({ type: "navigation", buffered: true });
 
-    window.addEventListener("error", (event) => {
-        logError("critical", event.message);
-    });
+  window.addEventListener("error", (event) => {
+    logError("critical", event.message);
+  });
 
-    console.warn = function(...args) {
-        originalWarn.apply(console, args);
-        logError("warning", args[0]);
-    };
+  console.warn = function (...args) {
+    originalWarn.apply(console, args);
+    logError("warning", args[0]);
+  };
 
-    window.addEventListener("unhandledrejection", (event) => {
-        logError("critical", event.reason.message);
-    });
+  window.addEventListener("unhandledrejection", (event) => {
+    logError("critical", event.reason.message);
+  });
 
-    window.fetch = async function(...args) {
-        const response = await originalFetch(...args);
-        if (!response.ok) {
-            const method = args[1]?.method ?? "GET";
-            logError("critical", `${method} ${response.url} ${response.status}`);
-        }
-        return response;
-    };
+  window.fetch = async function (...args) {
+    const response = await originalFetch(...args);
+    if (!response.ok) {
+      const method = args[1]?.method ?? "GET";
+      logError("critical", `${method} ${response.url} ${response.status}`);
+    }
+    return response;
+  };
 
-    window.addEventListener("click", (event) => {
-        logClick(event.target.id, event.target.className.toString(), performance.now() - event.timeStamp);
-    });
+  window.addEventListener("click", (event) => {
+    logClick(
+      event.target.id,
+      event.target.className.toString(),
+      performance.now() - event.timeStamp,
+    );
+  });
 }

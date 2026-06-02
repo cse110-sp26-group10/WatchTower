@@ -40,4 +40,4 @@ export class DashboardStyles extends HTMLElement {
   }
 }
 
-customElements.define('dashboard-styles', DashboardStyles);
+customElements.define("dashboard-styles", DashboardStyles);

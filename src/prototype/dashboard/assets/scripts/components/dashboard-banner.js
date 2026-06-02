@@ -16,4 +16,4 @@ export class DashboardBanner extends HTMLElement {
   }
 }
 
-customElements.define('dashboard-banner', DashboardBanner);
+customElements.define("dashboard-banner", DashboardBanner);

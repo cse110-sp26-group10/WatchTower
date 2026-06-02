@@ -1,4 +1,4 @@
-import { deployments } from './mockData.js';
+import { deployments } from "./mockData.js";
 
 const signals = [];
 
@@ -10,22 +10,25 @@ const signals = [];
  * @returns {Object} The stored signal.
  */
 export function submitFeedback(rating, comment, pathname) {
-    const deployment = deployments[0] ?? {};
-    const message = comment !== null && comment !== undefined
-        ? comment
-        : `${rating}-star rating`;
-    const signal = {
-        event_type: 'survey',
-        pathname: pathname ?? (typeof window !== 'undefined' ? window.location.pathname : '/'),
-        deployment,
-        metadata: {
-            rating,
-            comment: message,
-            message,
-        },
-    };
-    signals.push(signal);
-    return signal;
+  const deployment = deployments[0] ?? {};
+  const message =
+    comment !== null && comment !== undefined
+      ? comment
+      : `${rating}-star rating`;
+  const signal = {
+    event_type: "survey",
+    pathname:
+      pathname ??
+      (typeof window !== "undefined" ? window.location.pathname : "/"),
+    deployment,
+    metadata: {
+      rating,
+      comment: message,
+      message,
+    },
+  };
+  signals.push(signal);
+  return signal;
 }
 
 /**
@@ -33,7 +36,7 @@ export function submitFeedback(rating, comment, pathname) {
  * @returns {Object[]}
  */
 export function getFeedbackSignals() {
-    return signals;
+  return signals;
 }
 
 /**
@@ -42,5 +45,5 @@ export function getFeedbackSignals() {
  * @returns {Object[]}
  */
 export function getUpsetFeedback(threshold = 2) {
-    return signals.filter((s) => s.metadata.rating <= threshold);
+  return signals.filter((s) => s.metadata.rating <= threshold);
 }

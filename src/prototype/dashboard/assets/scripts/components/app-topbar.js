@@ -1,4 +1,4 @@
-import { deploymentScope } from '../core/deployment-scope.js';
+import { deploymentScope } from "../core/deployment-scope.js";
 
 const SUN_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
   <circle cx="12" cy="12" r="5"/>
@@ -22,12 +22,12 @@ export class AppTopbar extends HTMLElement {
     this.setupThemeToggle();
 
     // Broadcast a custom event across the global DOM when clicked
-    const menuBtn = this.querySelector('#mobile-menu-trigger');
-    menuBtn?.addEventListener('click', () => {
-      document.dispatchEvent(new CustomEvent('watchtower:menu-toggle'));
+    const menuBtn = this.querySelector("#mobile-menu-trigger");
+    menuBtn?.addEventListener("click", () => {
+      document.dispatchEvent(new CustomEvent("watchtower:menu-toggle"));
     });
 
-    if (deploymentScope && typeof deploymentScope.subscribe === 'function') {
+    if (deploymentScope && typeof deploymentScope.subscribe === "function") {
       this.unsubscribe = deploymentScope.subscribe(() => {
         this.updateActiveMetadata();
       });
@@ -40,35 +40,37 @@ export class AppTopbar extends HTMLElement {
   }
 
   setupThemeToggle() {
-    const themeBtn = this.querySelector('#theme-btn');
+    const themeBtn = this.querySelector("#theme-btn");
     if (!themeBtn) return;
 
     const updateToggleUI = (theme) => {
-      const sun = this.querySelector('#theme-icon-sun');
-      const moon = this.querySelector('#theme-icon-moon');
+      const sun = this.querySelector("#theme-icon-sun");
+      const moon = this.querySelector("#theme-icon-moon");
       if (!sun || !moon) return;
 
-      if (theme === 'dark') {
-        moon.style.background = 'var(--wt-surface)';
-        moon.style.color = 'var(--wt-text)';
-        sun.style.background = 'transparent';
-        sun.style.color = 'var(--wt-text-3)';
+      if (theme === "dark") {
+        moon.style.background = "var(--wt-surface)";
+        moon.style.color = "var(--wt-text)";
+        sun.style.background = "transparent";
+        sun.style.color = "var(--wt-text-3)";
       } else {
-        sun.style.background = 'var(--wt-surface)';
-        sun.style.color = 'var(--wt-text)';
-        moon.style.background = 'transparent';
-        moon.style.color = 'var(--wt-text-3)';
+        sun.style.background = "var(--wt-surface)";
+        sun.style.color = "var(--wt-text)";
+        moon.style.background = "transparent";
+        moon.style.color = "var(--wt-text-3)";
       }
     };
 
-    themeBtn.addEventListener('click', () => {
-      const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
-      const next = currentTheme === 'dark' ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-theme', next);
+    themeBtn.addEventListener("click", () => {
+      const currentTheme =
+        document.documentElement.getAttribute("data-theme") || "light";
+      const next = currentTheme === "dark" ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", next);
       updateToggleUI(next);
     });
 
-    const initialTheme = document.documentElement.getAttribute('data-theme') || 'light';
+    const initialTheme =
+      document.documentElement.getAttribute("data-theme") || "light";
     updateToggleUI(initialTheme);
   }
 
@@ -101,11 +103,11 @@ export class AppTopbar extends HTMLElement {
   }
 
   updateActiveMetadata() {
-    const metaContainer = this.querySelector('#header-metadata-strip');
+    const metaContainer = this.querySelector("#header-metadata-strip");
     if (!metaContainer) return;
 
     const currentDep = deploymentScope.deployment;
-    if (!currentDep || deploymentScope.id === 'all') {
+    if (!currentDep || deploymentScope.id === "all") {
       metaContainer.innerHTML = `<span style="color: var(--wt-text-3); font-style: italic;">All active clusters monitored</span>`;
       return;
     }
@@ -118,4 +120,4 @@ export class AppTopbar extends HTMLElement {
   }
 }
 
-customElements.define('app-topbar', AppTopbar);
+customElements.define("app-topbar", AppTopbar);
