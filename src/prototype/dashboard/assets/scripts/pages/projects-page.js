@@ -1,23 +1,23 @@
-const STORAGE_KEY = 'wt-projects';
+const STORAGE_KEY = "wt-projects";
 
 const DEFAULT_PROJECTS = [
   {
-    id: 'proj_shop',
-    name: 'Drape Storefront',
-    url: 'https://drape.example.com',
-    createdAt: '2026-05-30T09:00:00.000Z',
+    id: "proj_shop",
+    name: "Drape Storefront",
+    url: "https://drape.example.com",
+    createdAt: "2026-05-30T09:00:00.000Z",
   },
   {
-    id: 'proj_api',
-    name: 'Core API',
-    url: 'https://api.drape.example.com',
-    createdAt: '2026-05-29T16:30:00.000Z',
+    id: "proj_api",
+    name: "Core API",
+    url: "https://api.drape.example.com",
+    createdAt: "2026-05-29T16:30:00.000Z",
   },
 ];
 
 function loadProjects() {
   try {
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
     return Array.isArray(saved) ? saved : DEFAULT_PROJECTS;
   } catch {
     return DEFAULT_PROJECTS;
@@ -30,27 +30,31 @@ function saveProjects(projects) {
 
 function normalizeUrl(value) {
   const trimmed = value.trim();
-  if (!trimmed) return '';
+  if (!trimmed) return "";
   if (/^https?:\/\//i.test(trimmed)) return trimmed;
   return `https://${trimmed}`;
 }
 
 function formatDate(value) {
   return new Intl.DateTimeFormat(undefined, {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
+    month: "short",
+    day: "numeric",
+    year: "numeric",
   }).format(new Date(value));
 }
 
 function escapeHtml(value) {
-  return String(value).replace(/[&<>"']/g, (char) => ({
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#39;',
-  })[char]);
+  return String(value).replace(
+    /[&<>"']/g,
+    (char) =>
+      ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;",
+      })[char],
+  );
 }
 
 export class ProjectsPage extends HTMLElement {
@@ -62,7 +66,7 @@ export class ProjectsPage extends HTMLElement {
   }
 
   render() {
-    this.className = 'dashboard-viewport';
+    this.className = "dashboard-viewport";
     this.innerHTML = `
       <section class="projects-header">
         <div>
@@ -313,37 +317,39 @@ export class ProjectsPage extends HTMLElement {
   }
 
   bindEvents() {
-    const form = this.querySelector('#project-form');
-    form?.addEventListener('submit', (event) => {
+    const form = this.querySelector("#project-form");
+    form?.addEventListener("submit", (event) => {
       event.preventDefault();
       this.addProject();
     });
 
-    this.querySelector('#projects-list')?.addEventListener('click', (event) => {
-      const button = event.target.closest('[data-remove-project]');
+    this.querySelector("#projects-list")?.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-remove-project]");
       if (!button) return;
-      this.projects = this.projects.filter((project) => project.id !== button.dataset.removeProject);
+      this.projects = this.projects.filter(
+        (project) => project.id !== button.dataset.removeProject,
+      );
       saveProjects(this.projects);
       this.updateProjectList();
     });
   }
 
   addProject() {
-    const nameInput = this.querySelector('#project-name');
-    const urlInput = this.querySelector('#project-url');
-    const errorEl = this.querySelector('#project-error');
+    const nameInput = this.querySelector("#project-name");
+    const urlInput = this.querySelector("#project-url");
+    const errorEl = this.querySelector("#project-error");
     const name = nameInput.value.trim();
     const url = normalizeUrl(urlInput.value);
 
-    nameInput.classList.remove('is-invalid');
-    urlInput.classList.remove('is-invalid');
+    nameInput.classList.remove("is-invalid");
+    urlInput.classList.remove("is-invalid");
     errorEl.hidden = true;
-    errorEl.textContent = '';
+    errorEl.textContent = "";
 
     if (!name || !url) {
-      if (!name) nameInput.classList.add('is-invalid');
-      if (!url) urlInput.classList.add('is-invalid');
-      errorEl.textContent = 'Please add a project name and URL.';
+      if (!name) nameInput.classList.add("is-invalid");
+      if (!url) urlInput.classList.add("is-invalid");
+      errorEl.textContent = "Please add a project name and URL.";
       errorEl.hidden = false;
       return;
     }
@@ -351,8 +357,8 @@ export class ProjectsPage extends HTMLElement {
     try {
       new URL(url);
     } catch {
-      urlInput.classList.add('is-invalid');
-      errorEl.textContent = 'Please enter a valid URL.';
+      urlInput.classList.add("is-invalid");
+      errorEl.textContent = "Please enter a valid URL.";
       errorEl.hidden = false;
       return;
     }
@@ -367,26 +373,28 @@ export class ProjectsPage extends HTMLElement {
     this.projects = [project, ...this.projects];
     saveProjects(this.projects);
     this.updateProjectList();
-    this.querySelector('#project-form').reset();
+    this.querySelector("#project-form").reset();
     nameInput.focus();
   }
 
   updateProjectList() {
-    const list = this.querySelector('#projects-list');
-    const count = this.querySelector('#project-count');
-    count.textContent = `${this.projects.length} ${this.projects.length === 1 ? 'project' : 'projects'}`;
+    const list = this.querySelector("#projects-list");
+    const count = this.querySelector("#project-count");
+    count.textContent = `${this.projects.length} ${this.projects.length === 1 ? "project" : "projects"}`;
 
     if (!this.projects.length) {
-      list.innerHTML = '<div class="projects-empty">No projects yet. Add your first app or website to start monitoring.</div>';
+      list.innerHTML =
+        '<div class="projects-empty">No projects yet. Add your first app or website to start monitoring.</div>';
       return;
     }
 
-    list.innerHTML = this.projects.map((project) => {
-      const name = escapeHtml(project.name);
-      const url = escapeHtml(project.url);
-      const createdAt = escapeHtml(formatDate(project.createdAt));
+    list.innerHTML = this.projects
+      .map((project) => {
+        const name = escapeHtml(project.name);
+        const url = escapeHtml(project.url);
+        const createdAt = escapeHtml(formatDate(project.createdAt));
 
-      return `
+        return `
       <article class="project-card">
         <div class="project-card-header">
           <h3>${name}</h3>
@@ -396,8 +404,9 @@ export class ProjectsPage extends HTMLElement {
         <button class="project-remove" type="button" data-remove-project="${project.id}">Remove</button>
       </article>
     `;
-    }).join('');
+      })
+      .join("");
   }
 }
 
-customElements.define('projects-page', ProjectsPage);
+customElements.define("projects-page", ProjectsPage);

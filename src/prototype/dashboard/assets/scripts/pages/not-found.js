@@ -1,4 +1,4 @@
-import { deploymentScope } from '../core/deployment-scope.js';
+import { deploymentScope } from "../core/deployment-scope.js";
 
 export class PageNotFound extends HTMLElement {
   connectedCallback() {
@@ -10,18 +10,16 @@ export class PageNotFound extends HTMLElement {
   }
 
   render() {
+    const page = document.createElement("div");
+    page.className = "page-stack";
 
-
-    const page = document.createElement('div');
-    page.className = 'page-stack';
-
-    const summary = document.createElement('section');
-    summary.className = 'panel';
-    summary.textContent = 'Page Not Found';
+    const summary = document.createElement("section");
+    summary.className = "panel";
+    summary.textContent = "Page Not Found";
 
     page.append(summary);
     this.replaceChildren(page);
   }
 }
 
-customElements.define('not-found-page', PageNotFound);
+customElements.define("not-found-page", PageNotFound);

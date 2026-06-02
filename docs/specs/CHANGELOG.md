@@ -1,6 +1,27 @@
 # Changelog
 All team members must document any notable changes to the WatchTower project in this file and use [Semantic Versioning](https://semver.org/): `MAJOR.MINOR.PATCH`
 
+## [0.2.1] - 2026-05-27
+
+### Added
+- Added dependency checking to the CI pipeline.
+- Added code formatting checks to the CI pipeline.
+- Added unit tests for uptime check behavior.
+- Added user-facing error message support.
+
+### Changed
+- Refactored parts of the frontend code into more modular functions.
+- Updated Twilio-related information in the README.
+- Refactored website monitoring logic to use user-based input instead of only URL-based input.
+
+### Fixed
+- Fixed issues related to uptime check testing and behavior.
+- Fixed outdated Twilio documentation after implementation changes.
+
+### Removed
+- Removed Twilio from the current implementation.
+- Removed `init-db.js` and the `db:init` command.
+
 ## [0.2.0] - 2026-05-23
 
 ### Added

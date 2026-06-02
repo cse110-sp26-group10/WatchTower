@@ -6,30 +6,32 @@
 export function createRouter({ routes, outlet }) {
   function getRoute() {
     const hash = window.location.hash.slice(1);
-    const [path = '/', query = ''] = hash.split('?');
+    const [path = "/", query = ""] = hash.split("?");
     return {
-      path: path || '/',
+      path: path || "/",
       params: new URLSearchParams(query),
     };
   }
 
   function render() {
     const route = getRoute();
-    const Page = routes[route.path] || routes['/'];
+    const Page = routes[route.path] || routes["/"];
     const target = outlet();
     if (!target || !Page) return;
 
     const page = new Page();
     page.route = route;
     target.replaceChildren(page);
-    document.dispatchEvent(new CustomEvent('watchtower:route-change', { detail: route }));
+    document.dispatchEvent(
+      new CustomEvent("watchtower:route-change", { detail: route }),
+    );
   }
 
   return {
     start() {
-      window.addEventListener('hashchange', render);
+      window.addEventListener("hashchange", render);
       if (!window.location.hash) {
-        window.location.hash = '#/';
+        window.location.hash = "#/";
         return;
       }
       render();

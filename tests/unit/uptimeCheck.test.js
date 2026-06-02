@@ -139,4 +139,3 @@ describe("UptimeCheck", () => {
     expect(check.attempts[1].error).toBeInstanceOf(Error);
   });
 });
-

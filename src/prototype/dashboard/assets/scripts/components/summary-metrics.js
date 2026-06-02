@@ -6,10 +6,13 @@ export class SummaryMetrics extends HTMLElement {
 
   set metrics(value) {
     this.items = [
-      { label: 'Errors', value: value?.errors || 0, state: 'danger' },
-      { label: 'Avg Load Time', value: value?.pageLoads ? `${value.avgLatency}ms` : '-' },
-      { label: 'Page Loads', value: value?.pageLoads || 0 },
-      { label: 'Clicks', value: value?.clicks || 0 },
+      { label: "Errors", value: value?.errors || 0, state: "danger" },
+      {
+        label: "Avg Load Time",
+        value: value?.pageLoads ? `${value.avgLatency}ms` : "-",
+      },
+      { label: "Page Loads", value: value?.pageLoads || 0 },
+      { label: "Clicks", value: value?.clicks || 0 },
     ];
   }
 
@@ -21,20 +24,23 @@ export class SummaryMetrics extends HTMLElement {
     const items = this._items || [];
     this.replaceChildren();
 
-    const grid = document.createElement('section');
-    grid.className = 'metrics-summary-grid';
+    const grid = document.createElement("section");
+    grid.className = "metrics-summary-grid";
 
     for (const item of items) {
-      const card = document.createElement('div');
-      card.className = item.state === 'danger' ? 'metric-card-tile danger-state' : 'metric-card-tile';
+      const card = document.createElement("div");
+      card.className =
+        item.state === "danger"
+          ? "metric-card-tile danger-state"
+          : "metric-card-tile";
 
-      const title = document.createElement('span');
-      title.className = 'metric-card-title';
+      const title = document.createElement("span");
+      title.className = "metric-card-title";
       title.textContent = item.label;
 
-      const value = document.createElement('span');
-      value.className = 'metric-card-value';
-      if (item.state === 'warning') value.style.color = 'var(--wt-warning)';
+      const value = document.createElement("span");
+      value.className = "metric-card-value";
+      if (item.state === "warning") value.style.color = "var(--wt-warning)";
       value.textContent = item.value;
 
       card.append(title, value);
@@ -45,4 +51,4 @@ export class SummaryMetrics extends HTMLElement {
   }
 }
 
-customElements.define('summary-metrics', SummaryMetrics);
+customElements.define("summary-metrics", SummaryMetrics);
