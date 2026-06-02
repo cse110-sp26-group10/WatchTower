@@ -345,7 +345,7 @@ export class ProjectsPage extends HTMLElement {
             delete copyButton.dataset.timeoutId;
             copyButton.textContent = copyButton.dataset.default;
             copyButton.classList.remove("copy-success");
-          }, 2 * 1000);
+          }, 1500);
         } catch (error) {
           console.log("Failed to copy API key:", error);
         }
