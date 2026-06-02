@@ -59,7 +59,7 @@
 | Benedict Luis | | | |
 | Evan Marriott | | | |
 
-### Stand-up 2 — MM/DD/YYYY
+### Stand-up 2 — MM/DD/yYYY
 
 | Name | Did | Doing | Blockers |
 |------|-----|-------|----------|
