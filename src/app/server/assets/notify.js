@@ -7,6 +7,13 @@ const NTFY_BASE_URL = process.env.NTFY_BASE_URL || "https://ntfy.sh";
 const MAX_TRIES = 3;
 const RETRY_INTERVAL = 5; // seconds
 
+// Suppress repeat notifications for identical errors. An error is "identical"
+// when its project + severity + message + path match. After notifying, further
+// matches are skipped until the cooldown elapses. State is in-memory, so it
+// resets on server restart.
+const ERROR_NOTIFY_COOLDOWN = 10 * 60 * 1000; // 10 minutes, in ms
+const errorNotifyCooldowns = new Map(); // key -> last-notified timestamp (ms)
+
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 /**
@@ -158,6 +165,13 @@ export async function notifyError(event) {
     if (!event || event.event_type !== "error") return;
     const severity = event.metadata && event.metadata.severity;
     const detail = (event.metadata && event.metadata.message) || "An error was reported.";
+
+    // Skip if an identical error was already notified within the cooldown window.
+    if (isErrorOnCooldown(event, severity, detail)) {
+        console.log("Error notification suppressed (cooldown):", detail);
+        return;
+    }
+
     const users = await getProjectUsers(event.project_id);
     await Promise.allSettled(users.map((user) => notify(user, {
         title: `Error on ${event.host}`,
@@ -165,6 +179,32 @@ export async function notifyError(event) {
         priority: severity === "high" ? "high" : "default",
         tags: ["rotating_light"]
     })));
+}
+
+/**
+ * Tracks per-error cooldowns to avoid notifying repeatedly for identical errors.
+ * Returns true if an identical error (same project + severity + message + path)
+ * was notified within ERROR_NOTIFY_COOLDOWN; otherwise records the current time
+ * and returns false so the caller proceeds to notify.
+ * @param {Object} event A logged error event row.
+ * @param {string} [severity] The error severity from metadata.
+ * @param {string} message The error message used as part of the identity key.
+ * @returns {boolean} Whether the notification should be suppressed.
+ */
+function isErrorOnCooldown(event, severity, message) {
+    const now = Date.now();
+    const key = `${event.project_id}|${severity || ""}|${message}|${event.pathname || ""}`;
+
+    const last = errorNotifyCooldowns.get(key);
+    if (last !== undefined && now - last < ERROR_NOTIFY_COOLDOWN) return true;
+
+    errorNotifyCooldowns.set(key, now);
+
+    // Opportunistically drop expired entries so the map doesn't grow unbounded.
+    for (const [k, ts] of errorNotifyCooldowns) {
+        if (now - ts >= ERROR_NOTIFY_COOLDOWN) errorNotifyCooldowns.delete(k);
+    }
+    return false;
 }
 
 /**
