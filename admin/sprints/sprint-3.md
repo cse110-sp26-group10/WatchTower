@@ -35,7 +35,7 @@
 | T06 | Implement screen/display size tracking for error events | Evan Marriott | 🔲 Not Started | Capture whether error occurred on phone vs. desktop |
 | T07 | Add more error types to the test app | Evan Marriott | 🔲 Not Started | Targeting today or tomorrow |
 | T08 | Update & close completed GitHub Issues; add new issues for this sprint | Evan Marriott | 🔲 Not Started | 11 issues currently open; some may already be complete |
-| T09 | Add dependency checking, changelog check, and code formatting to CI pipeline | Aron Wu, Benedict Luis | 🔲 Not Started | Implement on testing branch first, then open PR |
+| T09 | Add dependency checking, changelog check, and code formatting to CI pipeline | Aron Wu, Benedict Luis | ✅ Done | Merged to `main` via PR #83; changelog still process-only (no CI job) |
 | T10 | Write new tests for recently added features | Aron Wu, Benedict Luis | 🔲 Not Started | Continue from previous sprint's testing work |
 | T11 | Test dashboard responsiveness across multiple screen sizes | Prakhar Shah, Kaley Chung | 🔲 Not Started | Find tool referenced by Audreya in Slack/meeting notes |
 | T12 | Accessibility: zoom to 200%, ARIA live regions, proper image alt tags | Prakhar Shah | 🔲 Not Started | 4–5 user stories cover these requirements |
