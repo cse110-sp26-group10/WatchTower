@@ -72,10 +72,10 @@ export class HomePage extends HTMLElement {
   }
 
   cacheElements() {
-    this.metrics = this.querySelector('summary-metrics');
+    this.metrics    = this.querySelector('summary-metrics');
     this.uptimeCard = this.querySelector('#home-uptime');
-    this.errorList = this.querySelector('#home-errors');
-    this.loadPaths = this.querySelector('#home-load-paths');
+    this.errorList  = this.querySelector('#home-errors');
+    this.loadPaths  = this.querySelector('#home-load-paths');
     this.clickPaths = this.querySelector('#home-click-paths');
     this.activityList = this.querySelector('#home-activity');
     this.errorModal = this.querySelector('#home-error-modal');
@@ -84,12 +84,17 @@ export class HomePage extends HTMLElement {
   updatePageData() {
     const data = getHomeDashboardData();
 
-    this.metrics.items = data.metrics;
-    this.uptimeCard.uptime = data.uptime;
-    this.errorList.errors = data.errors;
-    this.loadPaths.pathCounts = data.loadPaths;
+    this.metrics.items      = data.metrics;
+    this.errorList.errors   = data.errors;
+    this.loadPaths.pathCounts  = data.loadPaths;
     this.clickPaths.pathCounts = data.clickPaths;
-    this.activityList.events = data.events;
+    this.activityList.events   = data.events;
+
+    // Feed the uptime card the raw log + projects list so its
+    // project and time-window dropdowns can filter independently.
+    // The card only shows the project dropdown when 2+ projects exist.
+    this.uptimeCard.projects   = data.projects;
+    this.uptimeCard.uptimeLog  = data.rawUptimeLog;
   }
 
   openErrorModal(errorId) {

@@ -324,15 +324,17 @@ body {
 
 .metric-card-tile.danger-state .metric-card-value { color: var(--wt-danger); }
 
-/* Double Column Masonry System Sections */
 .dashboard-double-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.25rem;                        /* 20px */
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
 }
 
-@media (width <= 68.75rem) {         /* 1100px */
-  .dashboard-double-row { grid-template-columns: 1fr; }
+/* Allow both items to sit side-by-side at 50% width, 
+   but collapse gracefully when they hit minimum thresholds */
+.dashboard-double-row > * {
+  flex: 1 1 calc(32rem - 1.25rem);
+  min-width: 0;
 }
 
 /* Workspace Clean Cards */

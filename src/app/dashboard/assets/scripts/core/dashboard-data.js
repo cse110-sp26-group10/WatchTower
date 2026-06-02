@@ -92,11 +92,20 @@ export function getErrorSeverityCounts(errors) {
 
 /**
  * Build the data model used by the home dashboard.
+ *
+ * Now exposes:
+ *   - rawUptimeLog  → the unprocessed uptime_log rows for the uptime-card filter dropdowns
+ *   - projects      → [{ id, name, website_url }] for the project filter dropdown labels
+ *   - uptime        → legacy pre-processed summary (kept for backward compat)
  */
 export function getHomeDashboardData(deploymentId = getCurrentDeploymentId()) {
   const events = getScopedEvents(deploymentId);
   const { errors, pageLoads, clicks, surveys } = splitEventsByType(events);
-  const uptimeLog = dataStore.getUptimeLog();
+  const uptimeLog = dataStore.getUptimeLog() || [];
+
+  // Projects: dataStore.getProjects() should return [{ id, name, website_url }, ...]
+  // Falls back gracefully to [] if the method doesn't exist yet.
+  const projects = dataStore.getProjects?.() || [];
 
   return {
     events,
@@ -104,7 +113,14 @@ export function getHomeDashboardData(deploymentId = getCurrentDeploymentId()) {
     pageLoads,
     clicks,
     surveys,
+
+    // Raw log + projects list — consumed by uptime-card's filter dropdowns
+    rawUptimeLog: uptimeLog,
+    projects,
+
+    // Legacy pre-processed summary — kept so any code still reading .uptime keeps working
     uptime: buildUptimeSummary(uptimeLog),
+
     loadPaths: groupEventsByPath(pageLoads),
     clickPaths: groupEventsByPath(clicks),
     metrics: [
@@ -118,6 +134,7 @@ export function getHomeDashboardData(deploymentId = getCurrentDeploymentId()) {
 
 /**
  * Build a compact uptime summary for the overview timeline card.
+ * Kept for backward compatibility — uptime-card now prefers rawUptimeLog.
  */
 function buildUptimeSummary(log) {
   const sorted = sortEventsByTimestamp(log).reverse();
@@ -144,7 +161,7 @@ function expandUptimeTimeline(log) {
   if (!log.length) return [];
 
   const pattern = log.flatMap((entry) => {
-    const repeats = entry.is_up ? 1 : 1; // 5 : 2
+    const repeats = entry.is_up ? 1 : 1;
     return Array.from({ length: repeats }, () => ({
       is_up: entry.is_up,
       latency: entry.latency,
@@ -155,7 +172,7 @@ function expandUptimeTimeline(log) {
 
   while (pattern.length < 48) {
     pattern.unshift({
-      ...pattern[pattern.length % log.length] // , is_up: pattern.length % 11 === 0 ? false : pattern[pattern.length % log.length].is_up,
+      ...pattern[pattern.length % log.length],
     });
   }
 
