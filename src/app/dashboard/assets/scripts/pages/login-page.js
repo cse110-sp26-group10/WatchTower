@@ -108,14 +108,14 @@ export class LoginPage extends HTMLElement {
               <div class="login-form" id="login-form" novalidate>
 
                 <div class="login-field">
-                  <label class="sr-only" for="login-username">Username or Email</label>
+                  <label class="sr-only" for="login-email">Email</label>
                   <input
                     class="login-input"
                     type="text"
-                    id="login-username"
-                    name="username"
-                    placeholder="Username or Email"
-                    autocomplete="username"
+                    id="login-email"
+                    name="email"
+                    placeholder="Email"
+                    autocomplete="email"
                     required
                   />
                 </div>
@@ -453,7 +453,7 @@ export class LoginPage extends HTMLElement {
     const form      = this.querySelector('#login-form');
     const submitBtn = this.querySelector('#login-submit');
     const errorEl   = this.querySelector('#login-error');
-    const usernameInput = this.querySelector('#login-username');
+    const emailInput = this.querySelector('#login-email');
     const passwordInput = this.querySelector('#login-password');
     const passwordToggle = this.querySelector('#login-password-toggle');
     const themeBtn  = this.querySelector('#login-theme-toggle');
@@ -505,16 +505,16 @@ export class LoginPage extends HTMLElement {
       // Clear previous errors
       errorEl.hidden = true;
       errorEl.textContent = '';
-      usernameInput.classList.remove('is-invalid');
+      emailInput.classList.remove('is-invalid');
       passwordInput.classList.remove('is-invalid');
 
-      const username = usernameInput.value.trim();
+      const email = emailInput.value.trim();
       const password = passwordInput.value;
 
       // Basic client-side validation
       let valid = true;
-      if (!username) {
-        usernameInput.classList.add('is-invalid');
+      if (!email) {
+        emailInput.classList.add('is-invalid');
         valid = false;
       }
       if (!password) {
@@ -533,8 +533,8 @@ export class LoginPage extends HTMLElement {
 
       setTimeout(async () => {
         // Mock: any non-empty credentials pass
-        // Replace with: const ok = await authService.login(username, password);
-        const error = await dataStore.logIn(username, password);
+        // Replace with: const ok = await authService.login(email, password);
+        const error = await dataStore.logIn(email, password);
 
         if (!error) {
           localStorage.setItem('wt-auth', '1');
@@ -544,7 +544,7 @@ export class LoginPage extends HTMLElement {
           submitBtn.querySelector('.login-submit-label').textContent = 'Sign In';
           submitBtn.querySelector('.login-submit-spinner').hidden = true;
 
-          errorEl.textContent = 'Invalid username or password.';
+          errorEl.textContent = 'Invalid email or password.';
           errorEl.hidden = false;
           passwordInput.classList.add('is-invalid');
           passwordInput.focus();
