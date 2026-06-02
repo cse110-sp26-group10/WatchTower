@@ -62,8 +62,8 @@
 | Jensen Guo | | | |
 | Han Yang-Lin | | | |
 | Kevin Wang | | | |
-| Benedict Luis | Pulled latest `main`; ran full CI parity on `feat/testing-ci` (lint, audit, Prettier, 162 unit, 11 E2E — all pass) | Open/refresh PR to `main`, changelog CI job with Aron | None |
-| Aron Wu | CI jobs on `feat/testing-ci`: dependency + Prettier checks | Review PR merge; rebase onto latest `main` | None |
+| Benedict Luis | | | |
+| Aron Wu | | | |
 | Kaley Chung | | | |
 | Prakhar Shah | | | |
 | Bethany Miyamoto | | | |
