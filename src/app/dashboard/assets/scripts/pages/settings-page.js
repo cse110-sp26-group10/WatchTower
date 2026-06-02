@@ -4,6 +4,7 @@ const METHODS = [
   ['push', 'Push notifications', 'Browser/device push alerts.'],
   ['email', 'Email', 'Alerts sent to your account email.'],
 ];
+const NTFY_PREFIX = "WatchTower/";
 
 /**
  * @class SettingsPage
@@ -36,7 +37,7 @@ export class SettingsPage extends HTMLElement {
           <div class="settings-ntfy">
             <span class="settings-ntfy-label">Your ntfy topic</span>
             <div class="settings-ntfy-row">
-              <code class="settings-ntfy-topic" id="settings-ntfy-topic">${alertId}</code>
+              <code class="settings-ntfy-topic" id="settings-ntfy-topic">${NTFY_PREFIX + alertId}</code>
               <button class="settings-ntfy-copy" id="settings-ntfy-copy" type="button">Copy</button>
             </div>
             <p class="settings-ntfy-hint">Subscribe to this topic in the ntfy app to receive push alerts.</p>

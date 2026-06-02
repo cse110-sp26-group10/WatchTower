@@ -11,7 +11,7 @@
 import { notify } from "./assets/notify.js";
 import { supabase } from "./assets/db.js";
 
-const topic = process.argv[2] || "WatchTower_test";
+const topic = process.argv[2] || "test";
 const SEEDED_AUTH_ID = "43ec5a9a-74bb-460a-b368-4767846455e0";
 const TEST_EMAIL = "xuw040@ucsd.edu";
 

@@ -4,6 +4,7 @@ import nodemailer from "nodemailer";
 
 // Public ntfy server by default. Override with NTFY_BASE_URL to self-host.
 const NTFY_BASE_URL = process.env.NTFY_BASE_URL || "https://ntfy.sh";
+const NTFY_PREFIX = "WatchTower/";
 const MAX_TRIES = 3;
 const RETRY_INTERVAL = 5; // seconds
 
@@ -50,7 +51,7 @@ async function publishNtfy(topic, { title, message, priority = "default", tags =
         "X-Priority": String(priority)
     };
     if (tags.length) headers["X-Tags"] = tags.join(",");
-    const response = await fetch(`${NTFY_BASE_URL}/${encodeURIComponent(topic)}`, {
+    const response = await fetch(`${NTFY_BASE_URL}/${encodeURIComponent(NTFY_PREFIX + topic)}`, {
         method: "POST",
         headers,
         body: message
