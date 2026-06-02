@@ -18,7 +18,8 @@ export class ErrorList extends HTMLElement {
       return;
     }
 
-    for (const error of this._errors) {
+    for (const group of this.groupErrors(this._errors)) {
+      const { error, count } = group;
       const row = document.createElement('button');
       row.className = 'interactive-data-row error-click-target-btn';
       row.type = 'button';
@@ -46,15 +47,61 @@ export class ErrorList extends HTMLElement {
       path.className = 'row-secondary-text';
       path.textContent = `Path: ${error.pathname || '-'}`;
 
+      details.append(message, path);
+      left.append(severity, details);
+      row.append(left);
+
+      // Right-side group: occurrence count (when stacked) + latest timestamp
+      const right = document.createElement('div');
+      right.style.display = 'flex';
+      right.style.alignItems = 'center';
+      right.style.gap = '8px';
+
+      if (count > 1) {
+        const countBadge = document.createElement('span');
+        countBadge.style.background = 'var(--wt-surface)';
+        countBadge.style.color = 'var(--wt-text)';
+        countBadge.style.fontWeight = '700';
+        countBadge.style.fontSize = '11px';
+        countBadge.style.padding = '2px 6px';
+        countBadge.style.borderRadius = 'var(--wt-radius-sm)';
+        countBadge.style.border = '1px solid var(--wt-border)';
+        countBadge.textContent = `×${count}`;
+        countBadge.title = `${count} occurrences`;
+        right.append(countBadge);
+      }
+
       const timestamp = document.createElement('span');
       timestamp.className = 'row-right-timestamp';
       timestamp.textContent = relativeTime(error.timestamp);
+      right.append(timestamp);
 
-      details.append(message, path);
-      left.append(severity, details);
-      row.append(left, timestamp);
+      row.append(right);
       this.append(row);
     }
+  }
+
+  // Collapse identical errors (same severity + message + path) into one row,
+  // keeping the most recent occurrence as the representative and counting the rest.
+  groupErrors(errors) {
+    const groups = new Map();
+    for (const error of errors) {
+      const severity = error.metadata?.severity?.toLowerCase() || 'critical';
+      const message = error.metadata?.message || 'Error Event';
+      const key = `${severity}|${message}|${error.pathname || '-'}`;
+
+      const existing = groups.get(key);
+      if (!existing) {
+        groups.set(key, { error, count: 1 });
+      } else {
+        existing.count += 1;
+        // Keep whichever occurrence is newest as the representative.
+        if (new Date(error.timestamp) > new Date(existing.error.timestamp)) {
+          existing.error = error;
+        }
+      }
+    }
+    return [...groups.values()];
   }
 
   appendEmptyState(message) {
