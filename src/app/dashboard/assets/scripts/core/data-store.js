@@ -2,6 +2,8 @@
 // PORTED PROTOTYPE DATA ENGINE — SELF CONTAINED MOCK ENVIRONMENT
 // ==========================================================================
 
+const SERVER_URL = "http://localhost:8080";
+
 const NOW = Date.now();
 const minutesAgo = (m) => new Date(NOW - m * 60 * 1000).toISOString();
 
@@ -99,7 +101,7 @@ let PROFILE = {
 
 async function getFromServer(path) {
   try {
-    const response = await fetch(`http://localhost:8080${path}`, { credentials: "include" });
+    const response = await fetch(`${SERVER_URL}${path}`, { credentials: "include" });
     const data = await response.json();
     console.log("Response:", data);
     if (!response.ok) {
@@ -114,7 +116,7 @@ async function getFromServer(path) {
 
 async function postToServer(path, body) {
   try {
-    const response = await fetch(`http://localhost:8080${path}`, {
+    const response = await fetch(`${SERVER_URL}${path}`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
