@@ -25,12 +25,6 @@ export class AppTopbar extends HTMLElement {
     this.render();
     this.setupThemeToggle();
 
-    // Broadcast a custom event across the global DOM when clicked
-    const menuBtn = this.querySelector('#mobile-menu-trigger');
-    menuBtn?.addEventListener('click', () => {
-      document.dispatchEvent(new CustomEvent('watchtower:menu-toggle'));
-    });
-
     if (deploymentScope && typeof deploymentScope.subscribe === 'function') {
       this.unsubscribe = deploymentScope.subscribe(() => {
         this.updateActiveMetadata();
@@ -80,8 +74,6 @@ export class AppTopbar extends HTMLElement {
     this.innerHTML = `
       <header class="topbar">
         <div class="topbar-left">
-          <button class="menu-toggle-btn" id="mobile-menu-trigger" aria-label="Toggle navigation menu">☰</button>
-          
           <a href="#/" class="brand-name" style="display: flex; align-items: center; gap: 0.5rem; text-decoration: none;">
             <img src="/src/app/dashboard/public/logo.svg" alt="WatchTower logo" style="height: 1.75rem; width: auto;">
             <span style="color: var(--wt-text); font-weight: 700; font-size: 1.15rem;">WatchTower</span>
@@ -104,6 +96,7 @@ export class AppTopbar extends HTMLElement {
             <span id="theme-icon-sun" style="display: flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; border-radius: 50%; transition: background 0.15s ease; color: var(--wt-text-3);">${SUN_SVG}</span>
             <span id="theme-icon-moon" style="display: flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; border-radius: 50%; transition: background 0.15s ease; color: var(--wt-text-3);">${MOON_SVG}</span>
           </button>
+          </a>
         </div>
       </header>
     `;

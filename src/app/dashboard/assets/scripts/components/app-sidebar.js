@@ -82,10 +82,13 @@ export class AppSidebar extends HTMLElement {
     const isMobileViewport = window.innerWidth <= 900;
 
     if (isMobileViewport) {
-      nav.classList.toggle('is-open');
-      backdrop?.classList.toggle('is-open');
+      nav.classList.remove('is-collapsed');
+      const isOpen = nav.classList.toggle('is-open');
+      backdrop?.classList.toggle('is-open', isOpen);
     } else {
       // Regular sizing viewport toggle profile
+      nav.classList.remove('is-open');
+      backdrop?.classList.remove('is-open');
       nav.classList.toggle('is-collapsed');
     }
   }

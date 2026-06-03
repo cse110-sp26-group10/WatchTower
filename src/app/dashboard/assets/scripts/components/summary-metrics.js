@@ -29,7 +29,10 @@ export class SummaryMetrics extends HTMLElement {
 
     for (const item of items) {
       const card = document.createElement('div');
-      card.className = item.state === 'danger' ? 'metric-card-tile danger-state' : 'metric-card-tile';
+      const classes = ['metric-card-tile'];
+      if (item.state === 'danger') classes.push('danger-state');
+      if (/errors?/i.test(item.label)) classes.push('error-metric');
+      card.className = classes.join(' ');
 
       const title = document.createElement('span');
       title.className = 'metric-card-title';

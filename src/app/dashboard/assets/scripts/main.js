@@ -65,6 +65,11 @@ window.addEventListener('DOMContentLoaded', async () => {
   const appShell = document.getElementById('app-shell');
   appShell.innerHTML = `
     <div class="app-container">
+      <button class="menu-toggle-btn" id="app-menu-trigger" aria-label="Toggle navigation menu">
+        <span class="menu-toggle-line" aria-hidden="true"></span>
+        <span class="menu-toggle-line" aria-hidden="true"></span>
+        <span class="menu-toggle-line" aria-hidden="true"></span>
+      </button>
       <app-sidebar></app-sidebar>
       <div class="main-content">
         <app-topbar></app-topbar>
@@ -72,6 +77,10 @@ window.addEventListener('DOMContentLoaded', async () => {
       </div>
     </div>
   `;
+
+  document.getElementById('app-menu-trigger')?.addEventListener('click', () => {
+    document.dispatchEvent(new CustomEvent('watchtower:menu-toggle'));
+  });
 
   const router = createRouter({
     routes: {
