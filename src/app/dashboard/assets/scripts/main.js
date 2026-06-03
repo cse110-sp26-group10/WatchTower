@@ -10,7 +10,6 @@ import './components/app-sidebar.js';
 import { createRouter } from './router.js';
 import { HomePage } from './pages/home-page.js';
 import { IssuePage } from './pages/issue-page.js';
-import { PageNotFound } from './pages/not-found.js';
 import { ErrorsPage } from './pages/errors-page.js';
 import { FeedbackPage } from './pages/feedback-page.js';
 import { ActivityPage } from './pages/activity-page.js';
@@ -82,7 +81,6 @@ window.addEventListener('DOMContentLoaded', async () => {
       '/activity': ActivityPage,
       '/settings': SettingsPage,
       '/issue': IssuePage,
-      '/notfound': PageNotFound,
     },
     outlet: () => document.getElementById('app-outlet'),
   });
