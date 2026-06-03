@@ -2,6 +2,7 @@ import { dataStore } from './core/data-store.js';
 //import { deploymentScope } from './core/deployment-scope.js';
 
 // Shared shell components
+import './components/project-filter.js';
 import './components/deployment-filter.js';
 import './components/app-topbar.js';
 import './components/app-sidebar.js';

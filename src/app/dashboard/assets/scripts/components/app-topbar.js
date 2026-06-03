@@ -83,6 +83,11 @@ export class AppTopbar extends HTMLElement {
             <img src="/src/app/dashboard/public/logo.svg" alt="WatchTower logo" style="height: 1.75rem; width: auto;">
             <span style="color: var(--wt-text); font-weight: 700; font-size: 1.15rem;">WatchTower</span>
           </a>
+
+          <div style="display: flex; align-items: center; gap: 0.5rem; margin-left: 1rem;">
+            <label style="font-weight: 600; color: var(--wt-text-2); font-size: 0.8125rem;">Project:</label>
+            <project-filter></project-filter>
+          </div>
           
           <div style="display: flex; align-items: center; gap: 0.5rem; margin-left: 1rem;">
             <label style="font-weight: 600; color: var(--wt-text-2); font-size: 0.8125rem;">Deployment:</label>
@@ -114,7 +119,6 @@ export class AppTopbar extends HTMLElement {
     metaContainer.innerHTML = `
       <span style="background: var(--wt-surface-2); padding: 0.125rem 0.375rem; border-radius: var(--wt-radius-sm); border: 1px solid var(--wt-border);">version: <b>${currentDep.version}</b></span>
       <span style="background: var(--wt-surface-2); padding: 0.125rem 0.375rem; border-radius: var(--wt-radius-sm); border: 1px solid var(--wt-border);">commit: <b>${currentDep.commit_hash}</b></span>
-      <span style="background: var(--wt-surface-2); padding: 0.125rem 0.375rem; border-radius: var(--wt-radius-sm); border: 1px solid var(--wt-border);">author: <b>${currentDep.author}</b></span>
       <span style="background: var(--wt-surface-2); padding: 0.125rem 0.375rem; border-radius: var(--wt-radius-sm); border: 1px solid var(--wt-border);">deployed: <b>${relativeTime(currentDep.deployed_at)}</b></span>
     `;
   }

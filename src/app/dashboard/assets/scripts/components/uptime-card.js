@@ -1,3 +1,5 @@
+import { projectScope } from '../core/project-scope.js';
+
 const TIME_WINDOWS = [
   { label: 'Last 2 hours',  hours: 2   },
   { label: 'Last 6 hours',  hours: 6   },
@@ -7,7 +9,7 @@ const TIME_WINDOWS = [
 ];
 
 const DEFAULT_WINDOW_INDEX = 2;
-const ALL_PROJECTS_ID      = '__all__';
+const ALL_PROJECTS_ID      = 'all';
 
 export class UptimeCard extends HTMLElement {
   constructor() {
@@ -46,9 +48,13 @@ export class UptimeCard extends HTMLElement {
 
   connectedCallback() {
     this._fullRender();
+    if (projectScope && typeof projectScope.subscribe === 'function') {
+      this.projectUnsubscribe = projectScope.subscribe(() => { this._projectId = String(projectScope.id); this._updateData(); });
+    }
   }
 
   disconnectedCallback() {
+    this.projectUnsubscribe?.();
     this._shellBuilt = false;
   }
 
@@ -78,6 +84,10 @@ export class UptimeCard extends HTMLElement {
       return inWindow && inProject;
     });
 
+    if (this._projectId === ALL_PROJECTS_ID) { // Don't show data if "All projects" is selected
+      filtered = [];
+    }
+
     if (!filtered.length) return null;
     filtered.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
     const latest  = filtered[filtered.length - 1];
@@ -93,7 +103,7 @@ export class UptimeCard extends HTMLElement {
       url = 'Multiple endpoints';
     } else {
       const proj = this._projects.find(p => String(p.id) === String(latest.project_id));
-      if (proj?.name) { name = proj.name; } else { try { name = new URL(url).hostname; } catch {} }
+      if (proj?.name) { name = proj.name; } else { try { name = new URL(url).hostname; } catch { console.log("Invalid URL"); } }
     }
 
     const MAX_BARS = 48;
@@ -140,9 +150,6 @@ export class UptimeCard extends HTMLElement {
     dropdowns.className = 'uptime-dropdowns';
     dropdowns.id = 'uptime-dropdowns';
 
-    if (showProject) {
-      dropdowns.append(this._buildProjectDropdown(projectOptions));
-    }
     dropdowns.append(this._buildTimeDropdown());
     filterBar.append(dropdowns);
     wrapper.append(filterBar);
@@ -165,32 +172,22 @@ export class UptimeCard extends HTMLElement {
     const badge = this.querySelector('#uptime-pct-badge');
     if (badge) badge.textContent = uptime ? `${uptime.uptimePercent}% online` : '';
 
-    const dropdownsEl = this.querySelector('#uptime-dropdowns');
-    if (dropdownsEl) {
-      const existingProject = dropdownsEl.querySelector('.uptime-project-dropdown');
-      if (showProject && !existingProject) {
-        dropdownsEl.prepend(this._buildProjectDropdown(projectOptions));
-      } else if (!showProject && existingProject) {
-        existingProject.remove();
-      }
-    }
-
-    // Update the Project dropdown button text label
-    if (showProject) {
-      const projectBtnLabel = this.querySelector('.uptime-project-dropdown .uptime-filter-label');
-      if (projectBtnLabel) {
-        const currentProjectLabel = this._projectId === ALL_PROJECTS_ID
-          ? 'All projects'
-          : (projectOptions.find(p => p.id === this._projectId)?.label ?? 'All projects');
-        projectBtnLabel.textContent = currentProjectLabel;
-      }
-    }
-
     // Update the Time Window dropdown button text label
-    const timeDropdown = this.querySelector('.uptime-filter-container:not(.uptime-project-dropdown)');
+    const timeDropdown = this.querySelector('.uptime-filter-container');
     const timeBtnLabel = timeDropdown?.querySelector('.uptime-filter-label');
+    const timeDropdownItems = timeDropdown?.querySelectorAll('.uptime-filter-menu li');
     if (timeBtnLabel) {
       timeBtnLabel.textContent = TIME_WINDOWS[this._windowIndex].label;
+    }
+    if (timeDropdownItems) {
+      for (const item of timeDropdownItems) {
+        const windowIndex = TIME_WINDOWS.findIndex(tw => tw.label === item.innerText);
+        if (windowIndex > -1 && windowIndex === this._windowIndex) {
+          item.classList.add("is-selected");
+        } else {
+          item.classList.remove("is-selected");
+        }
+      }
     }
 
     this._renderBody(uptime, projectOptions, showProject);
@@ -204,7 +201,11 @@ export class UptimeCard extends HTMLElement {
     if (!uptime) {
       const empty = document.createElement('div');
       empty.className = 'uptime-empty';
-      empty.textContent = 'No uptime data for this window.';
+      if (this._projectId !== ALL_PROJECTS_ID) {
+        empty.textContent = 'No uptime data for this window.';
+      } else {
+        empty.textContent = 'Select a project to see uptime data.';
+      }
       body.append(empty);
       return;
     }
@@ -250,24 +251,6 @@ export class UptimeCard extends HTMLElement {
     range.className = 'uptime-range';
     range.innerHTML = `<span>${uptime.rangeStartLabel}</span><span>${uptime.rangeEndLabel}</span>`;
     body.append(range);
-  }
-
-  _buildProjectDropdown(projectOptions) {
-    const currentLabel = this._projectId === ALL_PROJECTS_ID
-      ? 'All projects'
-      : (projectOptions.find(p => p.id === this._projectId)?.label ?? 'All projects');
-
-    const container = this._buildDropdown({
-      currentLabel,
-      items: [{ id: ALL_PROJECTS_ID, label: 'All projects' }, ...projectOptions],
-      selectedId: this._projectId,
-      onSelect: (id) => {
-        this._projectId = id;
-        this._updateData();
-      },
-    });
-    container.classList.add('uptime-project-dropdown');
-    return container;
   }
 
   _buildTimeDropdown() {

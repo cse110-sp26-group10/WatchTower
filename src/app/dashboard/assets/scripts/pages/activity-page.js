@@ -1,3 +1,4 @@
+import { projectScope } from '../core/project-scope.js';
 import { deploymentScope } from '../core/deployment-scope.js';
 import { getActivityDashboardData } from '../core/dashboard-data.js';
 import '../components/activity-list.js';
@@ -14,15 +15,18 @@ export class ActivityPage extends HTMLElement {
   connectedCallback() {
     this.render();
     this.cacheElements();
-    if (deploymentScope && typeof deploymentScope.subscribe === 'function') {
-      this.unsubscribe = deploymentScope.subscribe(() => this.updatePageData());
-    } else {
-      this.updatePageData();
+    if (projectScope && typeof projectScope.subscribe === 'function') {
+      this.projectUnsubscribe = projectScope.subscribe(() => this.updatePageData());
     }
+    if (deploymentScope && typeof deploymentScope.subscribe === 'function') {
+      this.deploymentUnsubscribe = deploymentScope.subscribe(() => this.updatePageData());
+    }
+    this.updatePageData();
   }
 
   disconnectedCallback() {
-    this.unsubscribe?.();
+    this.projectUnsubscribe?.();
+    this.deploymentUnsubscribe?.();
   }
 
   render() {

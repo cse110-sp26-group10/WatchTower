@@ -1,6 +1,17 @@
 import { dataStore } from './data-store.js';
+import { projectScope } from './project-scope.js';
 import { deploymentScope } from './deployment-scope.js';
 import { relativeTime } from './formatters.js';
+
+/**
+ * Return the currently selected project id.
+ */
+export function getCurrentProjectId() {
+  if (!projectScope) return 'all';
+  if (projectScope.id) return projectScope.id;
+  if (projectScope.project?.id) return projectScope.project.id;
+  return 'all';
+}
 
 /**
  * Return the currently selected deployment id.
@@ -15,11 +26,14 @@ export function getCurrentDeploymentId() {
 /**
  * Return events filtered to the selected deployment scope.
  */
-export function getScopedEvents(deploymentId = getCurrentDeploymentId()) {
+export function getScopedEvents(deploymentId = getCurrentDeploymentId(), projectId = getCurrentProjectId()) {
   const events = dataStore.getEvents() || [];
-  const scopedEvents = (!deploymentId || deploymentId === 'all')
+  const projectScopedEvents = (!projectId || projectId === 'all')
     ? events
-    : events.filter((event) => event.deployment?.id === deploymentId);
+    : events.filter((event) => event.project_id === projectId);
+  const scopedEvents = (!deploymentId || deploymentId === 'all')
+    ? projectScopedEvents
+    : projectScopedEvents.filter((event) => event.deployment?.id === deploymentId);
 
   return sortEventsByTimestamp(scopedEvents);
 }
@@ -27,9 +41,9 @@ export function getScopedEvents(deploymentId = getCurrentDeploymentId()) {
 /**
  * Find one event by id.
  */
-export function getEventById(eventId, deploymentId = getCurrentDeploymentId()) {
+export function getEventById(eventId, deploymentId = getCurrentDeploymentId(), projectId = getCurrentProjectId()) {
   if (!eventId) return null;
-  return getScopedEvents(deploymentId).find((event) => event.id === eventId) || null;
+  return getScopedEvents(deploymentId, projectId).find((event) => event.id === eventId) || null;
 }
 
 /**
@@ -98,8 +112,8 @@ export function getErrorSeverityCounts(errors) {
  *   - projects      → [{ id, name, website_url }] for the project filter dropdown labels
  *   - uptime        → legacy pre-processed summary (kept for backward compat)
  */
-export function getHomeDashboardData(deploymentId = getCurrentDeploymentId()) {
-  const events = getScopedEvents(deploymentId);
+export function getHomeDashboardData(deploymentId = getCurrentDeploymentId(), projectId = getCurrentProjectId()) {
+  const events = getScopedEvents(deploymentId, projectId);
   const { errors, pageLoads, clicks, surveys } = splitEventsByType(events);
   const uptimeLog = dataStore.getUptimeLog() || [];
 
@@ -142,10 +156,10 @@ function buildUptimeSummary(log) {
   const checks = expandUptimeTimeline(sorted);
   const upCount = checks.filter((check) => check.is_up).length;
   const uptimePercent = checks.length ? Math.round((upCount / checks.length) * 100) : 0;
-  const currentDeployment = deploymentScope?.deployment || dataStore.getDeployments()[0];
+  const currentProject = projectScope?.project;
 
   return {
-    name: currentDeployment?.name || 'Drape App',
+    name: currentProject?.name || 'N/A',
     category: 'Production',
     url: 'drape.example.com',
     isHealthy: latest?.is_up !== false,
@@ -182,8 +196,8 @@ function expandUptimeTimeline(log) {
 /**
  * Build the data model used by the errors dashboard.
  */
-export function getErrorsDashboardData(deploymentId = getCurrentDeploymentId()) {
-  const events = getScopedEvents(deploymentId);
+export function getErrorsDashboardData(deploymentId = getCurrentDeploymentId(), projectId = getCurrentProjectId()) {
+  const events = getScopedEvents(deploymentId, projectId);
   const { errors } = splitEventsByType(events);
   const severityCounts = getErrorSeverityCounts(errors);
 
@@ -200,8 +214,8 @@ export function getErrorsDashboardData(deploymentId = getCurrentDeploymentId()) 
 /**
  * Build the data model used by the feedback dashboard.
  */
-export function getFeedbackDashboardData(deploymentId = getCurrentDeploymentId()) {
-  const events = getScopedEvents(deploymentId);
+export function getFeedbackDashboardData(deploymentId = getCurrentDeploymentId(), projectId = getCurrentProjectId()) {
+  const events = getScopedEvents(deploymentId, projectId);
   const { surveys } = splitEventsByType(events);
   const ratings = surveys
     .map((survey) => Number(survey.metadata?.rating || 0))
@@ -224,8 +238,8 @@ export function getFeedbackDashboardData(deploymentId = getCurrentDeploymentId()
 /**
  * Build the data model used by the activity dashboard.
  */
-export function getActivityDashboardData(deploymentId = getCurrentDeploymentId()) {
-  const events = getScopedEvents(deploymentId);
+export function getActivityDashboardData(deploymentId = getCurrentDeploymentId(), projectId = getCurrentProjectId()) {
+  const events = getScopedEvents(deploymentId, projectId);
   const { pageLoads, clicks } = splitEventsByType(events);
 
   return {

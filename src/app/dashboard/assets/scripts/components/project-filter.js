@@ -1,17 +1,33 @@
 import { dataStore } from '../core/data-store.js';
-import { deploymentScope } from '../core/deployment-scope.js';
+import { projectScope } from '../core/project-scope.js';
 
 const ALL_ID = "all";
 
-export class DeploymentFilter extends HTMLElement {
+export class ProjectFilter extends HTMLElement {
   connectedCallback() {
     // 1. Initial render build
     this.render();
 
     // 2. Safely follow state changes
-    this.unsubscribe = deploymentScope.subscribe(() => {
+    this.unsubscribe = projectScope.subscribe(() => {
       // If options haven't populated yet, force a full options redraw
       if (this.selectElement && this.selectElement.options.length <= 1) {
+        this.render();
+      } else {
+        this.syncSelectValue();
+      }
+    });
+
+    document.addEventListener("watchtower:data-update", () => {
+      const projects = new Set(dataStore.getProjects().map(project => project.id)).add(ALL_ID);
+      const options = new Set(Array.from(this.selectElement.options).map(select => isNaN(select.value) ? select.value : Number(select.value)));
+      if (projects.size === options.size && projects.isSubsetOf(options)) { // If the two sets are identical (no change occurred)
+        return;
+      }
+      if (!projects.has(projectScope.id)) { // Selected project no longer exists
+        projectScope.set(ALL_ID);
+      }
+      if (this.selectElement) {
         this.render();
       } else {
         this.syncSelectValue();
@@ -26,9 +42,9 @@ export class DeploymentFilter extends HTMLElement {
   render() {
     // 1. Create the select dropdown menu
     const select = document.createElement('select');
-    select.id = 'deployment-filter';
+    select.id = 'project-filter';
     select.className = 'filter-select';
-    select.setAttribute('aria-label', 'Filter by deployment');
+    select.setAttribute('aria-label', 'Filter by project');
     
     select.style = `
       padding: 4px 8px;
@@ -47,23 +63,23 @@ export class DeploymentFilter extends HTMLElement {
     // 3. Add default item
     const allOption = document.createElement('option');
     allOption.value = ALL_ID;
-    allOption.textContent = 'All deployments';
+    allOption.textContent = 'All projects';
     select.append(allOption);
 
     // 4. Populate list from data store array
-    const deployments = dataStore.getDeployments() || [];
-    for (const deployment of deployments) {
+    const projects = dataStore.getProjects() || [];
+    for (const project of projects) {
       const option = document.createElement('option');
-      option.value = deployment.id;
+      option.value = project.id;
       // Keep dropdown names beautifully clean
-      option.textContent = deployment.id;
+      option.textContent = `${project.name} (${project.id})`;
       select.append(option);
     }
 
     // 5. Change update cycle execution loop
     select.addEventListener('change', () => {
-      if (typeof deploymentScope.set === 'function') {
-        deploymentScope.set(select.value);
+      if (typeof projectScope.set === 'function') {
+        projectScope.set(isNaN(select.value) ? select.value : Number(select.value));
       }
     });
 
@@ -77,9 +93,9 @@ export class DeploymentFilter extends HTMLElement {
 
   syncSelectValue() {
     if (!this.selectElement) return;
-    const currentId = deploymentScope.id || ALL_ID;
+    const currentId = projectScope.id || ALL_ID;
     this.selectElement.value = currentId;
   }
 }
 
-customElements.define('deployment-filter', DeploymentFilter);
+customElements.define('project-filter', ProjectFilter);
