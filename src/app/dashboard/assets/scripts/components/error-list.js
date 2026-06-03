@@ -1,5 +1,8 @@
 import { relativeTime } from '../core/formatters.js';
 
+/**
+ * Component that lists errors, grouping identical ones
+ */
 export class ErrorList extends HTMLElement {
   set errors(value) {
     this._errors = Array.isArray(value) ? value : [];

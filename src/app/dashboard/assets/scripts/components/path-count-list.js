@@ -1,3 +1,6 @@
+/**
+ * Component that lists the visits to each path on a tracked app
+ */
 export class PathCountList extends HTMLElement {
   static get observedAttributes() {
     return ['empty-message'];

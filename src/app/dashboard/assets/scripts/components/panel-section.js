@@ -1,3 +1,6 @@
+/**
+ * Component that creates a section for another component
+ */
 export class PanelSection extends HTMLElement {
   connectedCallback() {
     this.render();

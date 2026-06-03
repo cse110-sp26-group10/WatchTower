@@ -1,3 +1,6 @@
+/**
+ * Component banner that indicates overall system status.
+ */
 export class DashboardBanner extends HTMLElement {
   connectedCallback() {
     this.render();

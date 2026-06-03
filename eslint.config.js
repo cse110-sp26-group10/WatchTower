@@ -4,6 +4,11 @@ import jsdoc from 'eslint-plugin-jsdoc';
 
 export default [
   js.configs.recommended,
+  {
+    ignores: [
+      'src/prototype/**'
+    ]
+  },
   // All source JS
   {
     files: ['src/**/*.js'],

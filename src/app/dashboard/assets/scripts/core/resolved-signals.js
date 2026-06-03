@@ -17,6 +17,9 @@ function loadMap(key) {
   }
 }
 
+/**
+ * Keeps track of signals manually resolved by the user, removing them from the display
+ */
 export const resolvedSignals = {
   isResolved(event) {
     const ids = loadSet(RESOLVED_IDS_KEY);

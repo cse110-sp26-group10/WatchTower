@@ -1,3 +1,6 @@
+/**
+ * Error detail card. Displays when a specific error is clicked
+ */
 export class ErrorDetailModal extends HTMLElement {
   connectedCallback() {
     this.render();

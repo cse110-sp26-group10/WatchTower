@@ -1,3 +1,6 @@
+/**
+ * Component that lists recent activity, such as page loads, clicks, and errors.
+ */
 export class ActivityList extends HTMLElement {
   set events(value) {
     this._events = Array.isArray(value) ? value : [];

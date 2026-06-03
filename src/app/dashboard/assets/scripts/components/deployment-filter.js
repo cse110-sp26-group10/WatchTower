@@ -3,6 +3,9 @@ import { deploymentScope } from '../core/deployment-scope.js';
 
 const ALL_ID = "all";
 
+/**
+ * Deployment select dropdown menu
+ */
 export class DeploymentFilter extends HTMLElement {
   connectedCallback() {
     // 1. Initial render build

@@ -9,6 +9,9 @@ function notify() {
   }
 }
 
+/**
+ * Keeps track of the current selected deployment
+ */
 export const deploymentScope = {
   get id() {
     return activeDeploymentId;

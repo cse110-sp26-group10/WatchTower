@@ -1,3 +1,6 @@
+/**
+ * Styles for the dashboard
+ */
 export class DashboardStyles extends HTMLElement {
   connectedCallback() {
     this.innerHTML = `

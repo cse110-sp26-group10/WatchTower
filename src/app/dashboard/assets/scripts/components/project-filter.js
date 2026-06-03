@@ -3,6 +3,9 @@ import { projectScope } from '../core/project-scope.js';
 
 const ALL_ID = "all";
 
+/**
+ * Component that filters displayed values by project
+ */
 export class ProjectFilter extends HTMLElement {
   connectedCallback() {
     // 1. Initial render build

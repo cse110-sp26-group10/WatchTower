@@ -9,6 +9,9 @@ const LINKS = [
   ['#/settings', 'Settings', '/settings'],
 ];
 
+/**
+ * App sidebar used for page navigation
+ */
 export class AppSidebar extends HTMLElement {
   connectedCallback() {
     this.render();

@@ -11,6 +11,9 @@ const TIME_WINDOWS = [
 const DEFAULT_WINDOW_INDEX = 2;
 const ALL_PROJECTS_ID      = 'all';
 
+/**
+ * Component that displays uptime data for a selected timeframe
+ */
 export class UptimeCard extends HTMLElement {
   constructor() {
     super();

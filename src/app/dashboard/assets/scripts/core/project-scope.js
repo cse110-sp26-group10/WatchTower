@@ -9,6 +9,9 @@ function notify() {
   }
 }
 
+/**
+ * Keeps track of the current selected project
+ */
 export const projectScope = {
   get id() {
     return activeProjectId;

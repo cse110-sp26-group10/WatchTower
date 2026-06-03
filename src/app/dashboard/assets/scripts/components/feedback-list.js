@@ -1,5 +1,8 @@
 import { starsForRating } from '../core/formatters.js';
 
+/**
+ * Component that lists feedback, grouping identical ones
+ */
 export class FeedbackList extends HTMLElement {
   set surveys(value) {
     this._surveys = Array.isArray(value) ? value : [];

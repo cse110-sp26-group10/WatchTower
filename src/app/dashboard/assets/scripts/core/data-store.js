@@ -1,7 +1,9 @@
-// ==========================================================================
-// PORTED PROTOTYPE DATA ENGINE — SELF CONTAINED MOCK ENVIRONMENT
-// ==========================================================================
+/**
+ * Pulls data from the backend server and stores it, so that it can be displayed on the frontend.
+ * If no backend is found, example mock data is displayed.
+ */
 
+//MOCK DATA BEGIN
 const SERVER_URL = "http://localhost:8080";
 
 const NOW = Date.now();
@@ -100,6 +102,8 @@ let PROFILE = {
   alert_id: "00000000-0000-0000-0000-000000000000",
   notify_methods: ["push", "email"]
 };
+
+//MOCK DATA END
 
 async function getFromServer(path) {
   try {

@@ -1,3 +1,6 @@
+/**
+ * Component that summarizes errors, load time, page loads, and clicks
+ */
 export class SummaryMetrics extends HTMLElement {
   set items(value) {
     this._items = Array.isArray(value) ? value : [];

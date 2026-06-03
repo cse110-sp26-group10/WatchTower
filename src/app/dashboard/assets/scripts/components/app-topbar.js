@@ -17,6 +17,9 @@ const MOON_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
   <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
 </svg>`;
 
+/**
+ * App topbar. Has selectors for project and deployment information, as well as light/dark mode
+ */
 export class AppTopbar extends HTMLElement {
   connectedCallback() {
     this.render();
