@@ -39,7 +39,7 @@ export class FeedbackList extends HTMLElement {
       comment.className = 'row-primary-text';
       comment.style.fontStyle = 'italic';
       comment.style.fontWeight = '500';
-      comment.textContent = `"${survey.metadata?.comment || 'No text comment provided.'}"`;
+      comment.textContent = `"${survey.metadata?.message || 'No text comment provided.'}"`;
 
       details.append(stars, comment);
       left.append(details);

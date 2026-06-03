@@ -32,7 +32,6 @@ function makeEvent({ deployment_id, event_type, minsAgo, pathname, meta }) {
       severity: 'signal',
       message: '',
       rating: null,
-      comment: null,
       pageUrl: `https://demo.watchtower.local${pathname}`,
       ...(meta || {}),
     },
@@ -54,10 +53,10 @@ let EVENTS = [
   makeEvent({ deployment_id: 'dep_6c0a', event_type: 'page_load', minsAgo: 22, pathname: '/checkout', meta: { load_time: 2640 } }),
 
   // ---- Surveys ----
-  makeEvent({ deployment_id: 'dep_8f2c', event_type: 'survey', minsAgo: 4,  pathname: '/checkout', meta: { rating: 2, comment: 'Checkout button felt unresponsive.' } }),
-  makeEvent({ deployment_id: 'dep_7e1b', event_type: 'survey', minsAgo: 18, pathname: '/',         meta: { rating: 5, comment: 'Fast and easy, thanks!' } }),
-  makeEvent({ deployment_id: 'dep_7e1b', event_type: 'survey', minsAgo: 40, pathname: '/checkout', meta: { rating: 1, comment: 'Crashed when I tried to pay.' } }),
-  makeEvent({ deployment_id: 'dep_6c0a', event_type: 'survey', minsAgo: 55, pathname: '/profile',  meta: { rating: 4, comment: '' } }),
+  makeEvent({ deployment_id: 'dep_8f2c', event_type: 'survey', minsAgo: 4,  pathname: '/checkout', meta: { rating: 2, message: 'Checkout button felt unresponsive.' } }),
+  makeEvent({ deployment_id: 'dep_7e1b', event_type: 'survey', minsAgo: 18, pathname: '/',         meta: { rating: 5, message: 'Fast and easy, thanks!' } }),
+  makeEvent({ deployment_id: 'dep_7e1b', event_type: 'survey', minsAgo: 40, pathname: '/checkout', meta: { rating: 1, message: 'Crashed when I tried to pay.' } }),
+  makeEvent({ deployment_id: 'dep_6c0a', event_type: 'survey', minsAgo: 55, pathname: '/profile',  meta: { rating: 4, message: '' } }),
 
   // ---- Clicks ----
   makeEvent({ deployment_id: 'dep_8f2c', event_type: 'click', minsAgo: 1,  pathname: '/checkout' }),
