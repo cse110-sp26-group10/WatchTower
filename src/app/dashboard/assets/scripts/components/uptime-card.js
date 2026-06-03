@@ -556,7 +556,6 @@ _styles() {
       .uptime-meta-row {
         display: flex;
         justify-content: flex-end;
-        margin-bottom: -0.25rem;
       }
 
       .uptime-latency {
@@ -572,6 +571,7 @@ _styles() {
         gap: 0.2rem;
         min-height: 1.75rem;
         align-items: end;
+        margin: 0.6rem 0;
       }
 
       .uptime-bar {
