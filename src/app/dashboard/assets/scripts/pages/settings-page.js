@@ -82,7 +82,7 @@ export class SettingsPage extends HTMLElement {
           max-width: 32rem;
           background-color: var(--wt-surface);
           border: 1px solid var(--wt-border);
-          border-radius: var(--wt-radius-md);
+          border-radius: 0;
           padding: 1.5rem;
         }
 
@@ -102,7 +102,7 @@ export class SettingsPage extends HTMLElement {
           margin-bottom: 1.25rem;
           padding: 0.875rem 1rem;
           border: 1px solid var(--wt-border);
-          border-radius: var(--wt-radius-md);
+          border-radius: 0;
           background-color: var(--wt-surface-2);
         }
 
@@ -168,7 +168,7 @@ export class SettingsPage extends HTMLElement {
           gap: 0.75rem;
           padding: 0.875rem 1rem;
           border: 1px solid var(--wt-border);
-          border-radius: var(--wt-radius-md);
+          border-radius: 0;
           background-color: var(--wt-surface-2);
           cursor: pointer;
           transition: border-color 0.15s, box-shadow 0.15s;

@@ -382,7 +382,7 @@ _styles() {
       .uptime-card {
         background: var(--wt-surface);
         border: 0.0625rem solid var(--wt-border);
-        border-radius: var(--wt-radius-md);
+        border-radius: 0;
         padding: 1.25rem;
         display: flex;
         flex-direction: column;

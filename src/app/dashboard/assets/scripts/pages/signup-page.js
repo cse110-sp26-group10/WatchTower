@@ -225,7 +225,7 @@ export class SignUpPage extends HTMLElement {
         .login-card {
           background-color: var(--wt-surface);
           border: 1px solid var(--wt-border);
-          border-radius: var(--wt-radius-md);
+          border-radius: 0;
           padding: 2.5rem 2rem;
           width: 100%;
           max-width: 22rem;

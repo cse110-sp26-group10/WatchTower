@@ -119,7 +119,7 @@ export class ProjectsPage extends HTMLElement {
         .projects-list-wrap {
           background: var(--wt-surface);
           border: 1px solid var(--wt-border);
-          border-radius: var(--wt-radius-md);
+          border-radius: 0;
           padding: 1rem;
         }
 
@@ -222,7 +222,7 @@ export class ProjectsPage extends HTMLElement {
           flex-direction: column;
           gap: 0.75rem;
           border: 1px solid var(--wt-border);
-          border-radius: var(--wt-radius-md);
+          border-radius: 0;
           background: var(--wt-surface-2);
           padding: 1rem;
         }
@@ -309,7 +309,7 @@ export class ProjectsPage extends HTMLElement {
 
         .projects-empty {
           border: 1px dashed var(--wt-border);
-          border-radius: var(--wt-radius-md);
+          border-radius: 0;
           color: var(--wt-text-2);
           padding: 1rem;
           text-align: center;

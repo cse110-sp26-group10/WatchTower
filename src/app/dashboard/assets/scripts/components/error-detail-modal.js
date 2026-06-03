@@ -23,7 +23,7 @@ export class ErrorDetailModal extends HTMLElement {
           <div style="display: flex; flex-direction: column; gap: 14px; padding-top: 8px;">
             <div>
               <span style="font-size: 11px; text-transform: uppercase; color: var(--wt-text-3); font-weight: 600; display: block; margin-bottom: 4px;">Error Message</span>
-              <div id="modal-error-message" style="background-color: var(--wt-surface-2); color: var(--wt-text); padding: 12px; border-radius: var(--wt-radius-md); font-family: monospace; font-size: 13px; border: 1px solid var(--wt-border); white-space: pre-wrap; word-break: break-all;"></div>
+              <div id="modal-error-message" style="background-color: var(--wt-surface-2); color: var(--wt-text); padding: 12px; border-radius: 0; font-family: monospace; font-size: 13px; border: 1px solid var(--wt-border); white-space: pre-wrap; word-break: break-all;"></div>
             </div>
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
