@@ -605,6 +605,14 @@ body {
   pointer-events: none;
 }
 
+.sidebar-link,
+.sidebar-settings-link {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem; /* ~10px, adjust to taste */
+}
+
+
 /* Responsive overlay behaviors underneath 900px */
 @media (width <= 56.25rem) {
   .app-container {
