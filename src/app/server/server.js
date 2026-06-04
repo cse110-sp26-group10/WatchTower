@@ -18,12 +18,10 @@ const NOTIFY_METHODS = new Set(["push", "email"]); // valid notification channel
 const UUID_REGEX =
     /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const ALLOWED_ORIGINS = new Set([
-    "http://localhost:5500",
-    "http://127.0.0.1:5500",
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-    "https://cse110-sp26-group10.github.io/WatchTower/src/test-app/",
+const ALLOWED_HOSTNAMES = new Set([
+    "localhost",
+    "127.0.0.1",
+    "cse110-sp26-group10.github.io",
 ]);
 
 function isUUID(uuid) {
@@ -172,17 +170,13 @@ const server = http.createServer(async (req, res) => {
     res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
     res.setHeader("Access-Control-Allow-Credentials", "true");
 
-    const requestUrl = new URL(
-        req.url,
-        `http://${req.headers.host || `localhost:${PORT}`}`,
-    );
+    const requestUrl = new URL(req.url, "http://localhost");
     const requestPath = requestUrl.pathname;
-    // const searchParams = requestUrl.searchParams; // Not currently in use
 
     // Allow requests with credentials to work when they are sent from an allowed origin
-    const origin = req.headers.origin;
-    if (ALLOWED_ORIGINS.has(origin))
-        res.setHeader("Access-Control-Allow-Origin", origin);
+    const originUrl = req.headers.origin && URL.canParse(req.headers.origin) ? new URL(req.headers.origin) : null;
+    if (originUrl && ALLOWED_HOSTNAMES.has(originUrl.hostname))
+        res.setHeader("Access-Control-Allow-Origin", originUrl.origin);
 
     if (req.method === "OPTIONS") {
         res.writeHead(204);
@@ -258,7 +252,7 @@ const server = http.createServer(async (req, res) => {
                         return;
                     }
                     if (
-                        new URL(project.website_url).hostname !== new URL(origin).hostname
+                        new URL(project.website_url).hostname !== originUrl?.hostname
                     ) {
                         unauthorizedRequest(res);
                         console.error(
