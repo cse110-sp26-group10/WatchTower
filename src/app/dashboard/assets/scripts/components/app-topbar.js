@@ -37,11 +37,6 @@ export class AppTopbar extends HTMLElement {
             <span class="menu-toggle-line"></span>
           </button>
 
-          <a href="#/" class="brand-name" style="display: flex; align-items: center; gap: 0.5rem; text-decoration: none;">
-            <img src="/src/app/dashboard/public/logo.svg" alt="WatchTower logo" style="height: 1.75rem; width: auto;">
-            <span style="color: var(--wt-text); font-weight: 700; font-size: 1.15rem;">WatchTower</span>
-          </a>
-
           <div style="display: flex; align-items: center; gap: 0.5rem; margin-left: 1rem;">
             <label style="font-weight: 600; color: var(--wt-text-2); font-size: 0.8125rem;">Project:</label>
             <project-filter></project-filter>

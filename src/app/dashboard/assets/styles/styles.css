@@ -130,7 +130,7 @@ body {
 }
 
 .app-container:has(.sidebar.is-collapsed) .topbar {
-  padding-left: 4rem;
+  padding-left: 1.5rem; /* reset — collapse button now lives inside sidebar */
 }
 
 .topbar-left {
@@ -176,39 +176,138 @@ body {
 .sidebar {
   display: flex;
   flex-direction: column;
-  width: 13.75rem; /* 220px */
+  width: 13.75rem; /* 220px expanded */
   background-color: var(--wt-surface);
   border-right: 1px solid var(--wt-border);
-  padding: 4.5rem 0.75rem 1.5rem;
+  padding: 0 0 1.5rem; /* top padding handled by brand-wrap */
   height: 100%;
   position: sticky;
   top: 0;
   align-self: start;
   max-height: 100vh;
   overflow-y: auto;
+  overflow-x: hidden;
   transition:
-    transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
-    width 0.25s cubic-bezier(0.4, 0, 0.2, 1),
-    padding 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    width 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+    padding 0.28s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* ── Brand header inside sidebar ────────────────────────────────────────── */
+.sidebar-brand-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0 0.75rem;
+  min-height: var(--wt-topbar-height);
+  border-bottom: 1px solid var(--wt-border);
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+/* ── Collapse toggle button — always visible, always clickable ──────────── */
+/* It sits FIRST in the DOM so it's never clipped by overflow:hidden on collapse */
+.sidebar-collapse-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--wt-radius-sm);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--wt-text-3);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  padding: 0;
+  /* Never disable — this is the only way to re-open the sidebar */
+  pointer-events: auto !important;
+  opacity: 1 !important;
+}
+
+.sidebar-collapse-btn:hover {
+  background: var(--wt-surface-2);
+  color: var(--wt-text);
+  border-color: var(--wt-border);
+}
+
+.sidebar-brand-link {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  text-decoration: none;
+  color: var(--wt-text);
+  font-weight: 700;
+  font-size: 1.0625rem;
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+}
+
+.sidebar-brand-logo {
+  flex-shrink: 0;
+  display: block;
+}
+
+.sidebar-brand-name {
+  white-space: nowrap;
+  overflow: hidden;
+  opacity: 1;
+  max-width: 10rem;
+  transition:
+    opacity 0.2s ease,
+    max-width 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Nav list ───────────────────────────────────────────────────────────── */
 .sidebar-list {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem; /* 4px */
-  margin: 1.25rem 0 0; /* 20px */
-  padding: 0;
+  gap: 0.125rem;
+  margin: 0.75rem 0 0;
+  padding: 0 0.5rem;
   list-style: none;
+  flex: 1;
 }
 
+/* ── Nav links — always flex, icon + label ──────────────────────────────── */
 .sidebar-link {
-  display: block;
-  padding: 0.625rem 1rem; /* 10px 16px */
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.5rem 0.625rem;
   border-radius: var(--wt-radius-md);
   color: var(--wt-text-2);
   font-weight: 500;
+  font-size: 0.9375rem;
   text-decoration: none;
-  transition: all 0.15s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  /* padding transitions make the icon glide to center as sidebar closes */
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease,
+    padding 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+    justify-content 0s;
+  min-width: 0;
+}
+
+.sidebar-link-icon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.sidebar-label,
+.sidebar-settings-label {
+  opacity: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 12rem;
+  transition:
+    opacity 0.2s ease,
+    max-width 0.28s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .sidebar-link.is-active,
@@ -226,17 +325,25 @@ body {
   font-size: 1rem;
 }
 
+/* ── Settings link ──────────────────────────────────────────────────────── */
 .sidebar-settings-link {
-  margin-top: auto;
   display: flex;
   align-items: center;
   gap: 0.625rem;
-  padding: 0.625rem 1rem;
+  padding: 0.5rem 0.625rem;
+  margin: 0.5rem 0.5rem 0;
   border-radius: var(--wt-radius-md);
   color: var(--wt-text-2);
   font-weight: 500;
+  font-size: 0.9375rem;
   text-decoration: none;
-  transition: all 0.15s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease,
+    padding 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+    margin 0.28s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .sidebar-settings-link:hover,
@@ -513,6 +620,7 @@ body {
    UNIVERSAL COLLAPSIBLE SIDEBAR SYSTEM (ALL VIEWPORTS)
    ========================================================================== */
 
+/* Mobile hamburger button — hidden on desktop, collapse is in-sidebar */
 .menu-toggle-btn {
   appearance: none;
   position: fixed;
@@ -548,26 +656,10 @@ body {
     opacity 0.2s ease;
 }
 
-/* Desktop: always show a directional chevron, never the hamburger */
+/* Desktop: hide the floating hamburger — collapse lives inside sidebar now */
 @media (width > 56.25rem) {
-  .menu-toggle-line {
+  .menu-toggle-btn {
     display: none;
-  }
-
-  /* Left chevron = sidebar is open, click will collapse */
-  .menu-toggle-btn::before {
-    content: "‹";
-    font-size: 1.4rem;
-    font-weight: 400;
-    line-height: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  /* Right chevron = sidebar is collapsed, click will expand */
-  .app-container:has(.sidebar.is-collapsed) .menu-toggle-btn::before {
-    content: "›";
   }
 }
 
@@ -586,37 +678,77 @@ body {
   }
 }
 
-/* 2. The Global Collapsed State Profile */
+/* ── Collapsed state: icon-only rail (not hidden) ───────────────────────── */
 .sidebar.is-collapsed {
-  width: 0;
+  width: 3.25rem; /* 52px — icons remain visible and clickable */
   padding-left: 0;
   padding-right: 0;
   overflow: hidden;
-  border-right: 0 solid transparent;
+  border-right: 1px solid var(--wt-border);
 }
 
-/* 3. Responsive Shroud Backdrop for Smaller Touchscreens */
+.sidebar.is-collapsed .sidebar-brand-wrap {
+  padding: 0 0.375rem;
+  justify-content: center;
+  gap: 0;
+}
+
+/* Brand name fades out — button is intentionally NOT listed here */
+.sidebar.is-collapsed .sidebar-brand-name {
+  opacity: 0;
+  max-width: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Brand link shrinks away smoothly */
+.sidebar.is-collapsed .sidebar-brand-link {
+  flex: 0;
+  max-width: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.sidebar.is-collapsed .sidebar-list,
+.sidebar.is-collapsed .sidebar-settings-link {
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+}
+
+.sidebar.is-collapsed .sidebar-link {
+  /* Equal padding on both sides centers the icon without justify-content snap */
+  padding: 0.5rem 0.75rem;
+  justify-content: flex-start;
+}
+
+.sidebar.is-collapsed .sidebar-settings-link {
+  margin: 0.5rem 0.25rem 0;
+  padding: 0.5rem 0.75rem;
+  justify-content: flex-start;
+}
+
+.sidebar.is-collapsed .sidebar-label,
+.sidebar.is-collapsed .sidebar-settings-label {
+  opacity: 0;
+  max-width: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* ── Responsive shroud backdrop ─────────────────────────────────────────── */
 .sidebar-backdrop {
   position: fixed;
-  inset: var(--wt-topbar-height) 0 0;
+  inset: 0;
   background: transparent;
   z-index: 998;
   opacity: 0;
   pointer-events: none;
 }
 
-.sidebar-link,
-.sidebar-settings-link {
-  display: flex;
-  align-items: center;
-  gap: 0.625rem; /* ~10px, adjust to taste */
-}
-
-
-/* Responsive overlay behaviors underneath 900px */
+/* ── Mobile overlay behaviors (≤900px) ──────────────────────────────────── */
 @media (width <= 56.25rem) {
   .app-container {
-    grid-template-columns: 1fr; /* Drop side-by-side grid stacking grid columns */
+    grid-template-columns: 1fr;
   }
 
   .topbar {
@@ -625,25 +757,60 @@ body {
 
   .sidebar {
     position: fixed;
-    top: var(--wt-topbar-height);
+    top: 0;
     left: 0;
     bottom: 0;
     width: 15rem;
-    padding: 1.5rem 0.75rem;
+    padding: 0 0 1.5rem;
     z-index: 999;
     box-shadow: 4px 0 15px rgb(0 0 0 / 15%);
     transform: translateX(-100%);
   }
 
+  /* On mobile, collapsed just means drawer is closed */
   .sidebar.is-collapsed {
     width: 15rem;
-    padding: 1.5rem 0.75rem;
-    border-right: 1px solid var(--wt-border);
+    transform: translateX(-100%);
   }
 
-  /* Reverse behavior logic for small screens: drawer is hidden by default and opens on click */
+  /* Restore full styles when drawer is open on mobile */
   .sidebar.is-open {
     transform: translateX(0);
+    width: 15rem;
+  }
+
+  .sidebar.is-open .sidebar-brand-name,
+  .sidebar.is-open .sidebar-collapse-btn {
+    opacity: 1;
+    pointer-events: auto;
+    width: auto;
+  }
+
+  .sidebar.is-open .sidebar-list {
+    padding: 0 0.5rem;
+  }
+
+  .sidebar.is-open .sidebar-link {
+    padding: 0.5rem 0.625rem;
+    justify-content: flex-start;
+  }
+
+  .sidebar.is-open .sidebar-settings-link {
+    margin: 0.5rem 0.5rem 0;
+    justify-content: flex-start;
+    padding: 0.5rem 0.625rem;
+  }
+
+  .sidebar.is-open .sidebar-label,
+  .sidebar.is-open .sidebar-settings-label {
+    opacity: 1;
+    width: auto;
+    pointer-events: auto;
+  }
+
+  /* Hide in-sidebar collapse btn on mobile (hamburger handles it) */
+  .sidebar-collapse-btn {
+    display: none;
   }
 
   .sidebar-backdrop.is-open {
@@ -652,7 +819,7 @@ body {
   }
 }
 
-/* 2560 x 1440 (large monitor) responsiveness */
+/* ── 2560×1440 large monitor ─────────────────────────────────────────────── */
 @media (width >= 120rem) {
   .app-container {
     grid-template-columns: auto 1fr;
@@ -663,8 +830,12 @@ body {
     position: sticky;
     transform: none;
     top: 0;
-    padding: 4.5rem 0.75rem 1.5rem;
+    padding: 0 0 1.5rem;
     overflow: auto hidden;
+  }
+
+  .sidebar.is-collapsed {
+    width: 3.5rem;
   }
 
   .sidebar-brand {
@@ -672,8 +843,8 @@ body {
   }
 
   .sidebar-link {
-    font-size: 1.2rem;
-    padding: 0.75rem 1rem;
+    font-size: 1.1rem;
+    padding: 0.65rem 0.75rem;
   }
 
   .main-content {
