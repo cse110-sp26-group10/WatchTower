@@ -431,6 +431,39 @@ body {
   font-weight: 600;
 }
 
+.ts-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.ts-axis {
+  stroke: var(--wt-border);
+  stroke-width: 1;
+}
+
+.ts-bar {
+  fill: var(--wt-info);
+}
+
+.ts-line {
+  fill: none;
+  stroke: var(--wt-info);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.ts-dot {
+  fill: var(--wt-info);
+}
+
+.ts-label {
+  fill: var(--wt-text-3);
+  font-family: var(--font-sans);
+  font-size: 11px;
+}
+
 .metric-card-value {
   font-size: 2rem;
   font-weight: 700;

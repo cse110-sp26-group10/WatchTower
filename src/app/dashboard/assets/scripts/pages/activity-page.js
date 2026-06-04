@@ -5,6 +5,7 @@ import "../components/activity-list.js";
 import "../components/panel-section.js";
 import "../components/path-count-list.js";
 import "../components/summary-metrics.js";
+import "../components/time-series-chart.js";
 
 export class ActivityPage extends HTMLElement {
   set route(value) {
@@ -38,6 +39,16 @@ export class ActivityPage extends HTMLElement {
       <summary-metrics></summary-metrics>
 
       <section class="dashboard-double-row is-spaced">
+        <panel-section heading="Activity Over Time" subheading="all events bucketed by time">
+          <time-series-chart id="activity-timeline" variant="bar" empty-message="No activity tracked"></time-series-chart>
+        </panel-section>
+
+        <panel-section heading="Avg Load Time Trend" subheading="average page-load latency over time">
+          <time-series-chart id="activity-loadtrend" variant="line" unit="ms" empty-message="No page loads tracked"></time-series-chart>
+        </panel-section>
+      </section>
+
+      <section class="dashboard-double-row is-spaced">
         <panel-section heading="Page Loads" subheading="grouped by path">
           <path-count-list id="activity-load-paths" empty-message="No page loads tracked"></path-count-list>
         </panel-section>
@@ -56,6 +67,8 @@ export class ActivityPage extends HTMLElement {
 
   cacheElements() {
     this.metrics = this.querySelector("summary-metrics");
+    this.timeline = this.querySelector("#activity-timeline");
+    this.loadTrend = this.querySelector("#activity-loadtrend");
     this.loadPaths = this.querySelector("#activity-load-paths");
     this.clickPaths = this.querySelector("#activity-click-paths");
     this.activityList = this.querySelector("#activity-events");
@@ -64,6 +77,8 @@ export class ActivityPage extends HTMLElement {
   updatePageData() {
     const data = getActivityDashboardData();
     this.metrics.items = data.metrics;
+    this.timeline.series = data.activityOverTime;
+    this.loadTrend.series = data.loadTimeTrend;
     this.loadPaths.pathCounts = data.loadPaths;
     this.clickPaths.pathCounts = data.clickPaths;
     this.activityList.events = data.events;

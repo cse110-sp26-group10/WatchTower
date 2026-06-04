@@ -107,6 +107,73 @@ export function groupEventsByPath(events) {
   }, {});
 }
 
+const ACTIVITY_BUCKET_COUNT = 12;
+const ONE_DAY_MS = 86400000;
+
+/**
+ * Format a bucket's start time. Uses a date label for ranges spanning more
+ * than a couple of days, otherwise a clock time.
+ */
+function formatBucketLabel(time, spanMs) {
+  const date = new Date(time);
+  if (spanMs > 2 * ONE_DAY_MS) {
+    return date.toLocaleDateString([], { month: "short", day: "numeric" });
+  }
+  return date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+}
+
+/**
+ * Split the events' time range into evenly sized buckets and summarize each.
+ * Returns an array (oldest first) of { label, count, avgLoadTime }, where
+ * avgLoadTime is null for buckets without page loads. Empty array when there
+ * are no timestamped events.
+ */
+export function bucketActivityOverTime(
+  events,
+  pageLoads,
+  bucketCount = ACTIVITY_BUCKET_COUNT,
+) {
+  const times = events.map(getEventTime).filter((time) => time > 0);
+  if (!times.length) return [];
+
+  const min = Math.min(...times);
+  const max = Math.max(...times);
+  const span = max - min;
+  const size = span > 0 ? span / bucketCount : 1;
+
+  const buckets = Array.from({ length: bucketCount }, (_, i) => ({
+    start: min + i * size,
+    count: 0,
+    loadSum: 0,
+    loadCount: 0,
+  }));
+
+  const indexFor = (time) =>
+    span > 0 ? Math.min(bucketCount - 1, Math.floor((time - min) / size)) : 0;
+
+  for (const event of events) {
+    const time = getEventTime(event);
+    if (time > 0) buckets[indexFor(time)].count += 1;
+  }
+  for (const load of pageLoads) {
+    const time = getEventTime(load);
+    const loadTime = load.metadata?.load_time;
+    if (time > 0 && typeof loadTime === "number") {
+      const bucket = buckets[indexFor(time)];
+      bucket.loadSum += loadTime;
+      bucket.loadCount += 1;
+    }
+  }
+
+  return buckets.map((bucket) => ({
+    label: formatBucketLabel(bucket.start, span),
+    count: bucket.count,
+    avgLoadTime: bucket.loadCount
+      ? Math.round(bucket.loadSum / bucket.loadCount)
+      : null,
+  }));
+}
+
 /**
  * Count error events by severity.
  */
@@ -299,6 +366,7 @@ export function getActivityDashboardData(
 ) {
   const events = getScopedEvents(deploymentId, projectId);
   const { pageLoads, clicks } = splitEventsByType(events);
+  const timeline = bucketActivityOverTime(events, pageLoads);
 
   return {
     events,
@@ -306,6 +374,14 @@ export function getActivityDashboardData(
     clicks,
     loadPaths: groupEventsByPath(pageLoads),
     clickPaths: groupEventsByPath(clicks),
+    activityOverTime: timeline.map((bucket) => ({
+      label: bucket.label,
+      value: bucket.count,
+    })),
+    loadTimeTrend: timeline.map((bucket) => ({
+      label: bucket.label,
+      value: bucket.avgLoadTime,
+    })),
     metrics: [
       { label: "Total Activity", value: events.length },
       { label: "Page Loads", value: pageLoads.length },
