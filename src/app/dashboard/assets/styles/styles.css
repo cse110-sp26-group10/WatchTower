@@ -695,6 +695,18 @@ body {
   border: 1px solid var(--wt-border);
   cursor: pointer;
   white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Let the message side shrink/ellipsize so the timestamp + Fix button stay
+   inside the card instead of overflowing its right edge. */
+.error-click-target-btn .row-left-group {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.error-click-target-btn .row-inline-group {
+  flex-shrink: 0;
 }
 
 .fix-error-btn:hover {
