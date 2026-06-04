@@ -43,7 +43,7 @@ export class SummaryMetrics extends HTMLElement {
 
       const value = document.createElement("span");
       value.className = "metric-card-value";
-      if (item.state === "warning") value.style.color = "var(--wt-warning)";
+      if (item.state === "warning") card.classList.add("warning-state");
       value.textContent = item.value;
 
       card.append(title, value);

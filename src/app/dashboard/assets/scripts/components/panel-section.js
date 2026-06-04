@@ -29,8 +29,7 @@ export class PanelSection extends HTMLElement {
     title.textContent = heading;
 
     const hint = document.createElement("span");
-    hint.style.fontSize = "11px";
-    hint.style.color = "var(--wt-text-3)";
+    hint.className = "workspace-panel-hint";
     hint.textContent = subheading;
 
     const body = document.createElement("div");

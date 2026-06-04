@@ -31,34 +31,17 @@ export class SignUpPage extends HTMLElement {
               src="/src/app/dashboard/public/logo.svg"
               alt="WatchTower logo"
               class="login-nav-logo"
-              onerror="this.style.display='none'"
+              onerror="this.hidden=true"
             />
             WatchTower
           </a>
           <button
             id="signup-theme-toggle"
+            class="auth-theme-toggle"
             aria-label="Toggle theme"
-            style="
-              display: flex;
-              align-items: center;
-              background: var(--wt-surface-2);
-              border: 1px solid var(--wt-border);
-              border-radius: 999px;
-              padding: 4px;
-              cursor: pointer;
-              gap: 2px;
-            "
           >
-            <span id="theme-icon-sun" style="
-              display: flex; align-items: center; justify-content: center;
-              width: 32px; height: 32px; border-radius: 50%;
-              transition: background 0.15s ease; color: var(--wt-text-3);
-            ">${SUN_SVG}</span>
-            <span id="theme-icon-moon" style="
-              display: flex; align-items: center; justify-content: center;
-              width: 32px; height: 32px; border-radius: 50%;
-              transition: background 0.15s ease; color: var(--wt-text-3);
-            ">${MOON_SVG}</span>
+            <span id="theme-icon-sun" class="auth-theme-icon">${SUN_SVG}</span>
+            <span id="theme-icon-moon" class="auth-theme-icon">${MOON_SVG}</span>
           </button>
         </nav>
 
@@ -132,220 +115,7 @@ export class SignUpPage extends HTMLElement {
           </div>
         </div>
       </div>
-
-      <style>
-        .login-shell {
-          min-height: 100vh;
-          display: flex;
-          flex-direction: column;
-          background-color: var(--wt-bg);
-          color: var(--wt-text);
-          font-family: var(--font-sans);
-        }
-
-        .login-nav {
-          display: flex;
-          align-items: center;
-          gap: 1.5rem;
-          padding: 0.875rem 1.5rem;
-          background-color: var(--wt-surface);
-          border-bottom: 1px solid var(--wt-border);
-        }
-
-        .login-nav-brand {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-          font-weight: 700;
-          font-size: 1rem;
-          color: var(--wt-text);
-          text-decoration: none;
-          margin-right: auto;
-        }
-
-        .login-nav-logo {
-          width: 1.75rem;
-          height: 1.75rem;
-          object-fit: contain;
-        }
-
-        .login-body {
-          flex: 1;
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          align-items: center;
-          gap: 2rem;
-          padding: 3rem 4rem;
-          max-width: 75rem;
-          width: 100%;
-          margin: 0 auto;
-          box-sizing: border-box;
-        }
-
-        @media (max-width: 48rem) {
-          .login-body {
-            grid-template-columns: 1fr;
-            padding: 2rem 1.5rem;
-          }
-          .login-hero { display: none; }
-        }
-
-        .login-hero {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-
-        .login-hero-inner {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 1.5rem;
-          text-align: center;
-        }
-
-        .login-tower-graphic img {
-          width: clamp(9rem, 20vw, 14rem);
-          height: auto;
-        }
-
-        .login-tagline {
-          font-size: 1.125rem;
-          font-weight: 700;
-          color: var(--wt-text);
-          line-height: 1.4;
-          margin: 0;
-        }
-
-        .login-card-wrap {
-          display: flex;
-          justify-content: center;
-        }
-
-        .login-card {
-          background-color: var(--wt-surface);
-          border: 1px solid var(--wt-border);
-          border-radius: 0;
-          padding: 2.5rem 2rem;
-          width: 100%;
-          max-width: 22rem;
-          display: flex;
-          flex-direction: column;
-          gap: 1.5rem;
-        }
-
-        .login-card-title {
-          margin: 0;
-          font-size: 1.5rem;
-          font-weight: 700;
-          color: var(--wt-text);
-        }
-
-        .login-form {
-          display: flex;
-          flex-direction: column;
-          gap: 0.875rem;
-        }
-
-        .login-field {
-          display: flex;
-          flex-direction: column;
-        }
-
-        .login-input {
-          padding: 0.75rem 1rem;
-          background-color: var(--wt-surface-2);
-          border: 1px solid var(--wt-border);
-          border-radius: var(--wt-radius-md);
-          color: var(--wt-text);
-          font-size: 0.875rem;
-          font-family: var(--font-sans);
-          outline: none;
-          transition: border-color 0.15s, box-shadow 0.15s;
-        }
-
-        .login-input::placeholder {
-          color: var(--wt-text-3);
-        }
-
-        .login-input:focus {
-          border-color: var(--color-active);
-          box-shadow: 0 0 0 3px var(--color-active-bg);
-        }
-
-        .login-input.is-invalid {
-          border-color: var(--wt-danger);
-          box-shadow: 0 0 0 3px var(--color-crit-bg);
-        }
-
-        .login-error {
-          margin: 0;
-          font-size: 0.8125rem;
-          color: var(--wt-danger);
-        }
-
-        .login-submit {
-          margin-top: 0.5rem;
-          padding: 0.75rem 1rem;
-          background-color: var(--color-active);
-          color: #fff;
-          border: none;
-          border-radius: var(--wt-radius-md);
-          font-size: 0.9375rem;
-          font-weight: 600;
-          font-family: var(--font-sans);
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 0.5rem;
-          transition: opacity 0.15s, transform 0.1s;
-        }
-
-        .login-submit:hover:not(:disabled) {
-          opacity: 0.88;
-        }
-
-        .login-submit:active:not(:disabled) {
-          transform: scale(0.98);
-        }
-
-        .login-submit:disabled {
-          opacity: 0.55;
-          cursor: not-allowed;
-        }
-
-        @keyframes login-spin {
-          to { transform: rotate(360deg); }
-        }
-
-        .login-submit-spinner {
-          width: 1rem;
-          height: 1rem;
-          border: 2px solid rgba(255,255,255,0.35);
-          border-top-color: #fff;
-          border-radius: 50%;
-          animation: login-spin 0.65s linear infinite;
-        }
-
-        .login-auth-switch {
-          margin: 0.25rem 0 0;
-          color: var(--wt-text-2);
-          font-size: 0.8125rem;
-          text-align: center;
-        }
-
-        .login-auth-switch a {
-          color: var(--color-active);
-          font-weight: 600;
-          text-decoration: none;
-        }
-
-        .login-auth-switch a:hover {
-          text-decoration: underline;
-        }
-      </style>
-    `;
+`;
   }
 
   bindEvents() {
@@ -362,15 +132,11 @@ export class SignUpPage extends HTMLElement {
       const moon = this.querySelector("#theme-icon-moon");
       if (!sun || !moon) return;
       if (isDark) {
-        moon.style.background = "var(--wt-surface)";
-        moon.style.color = "var(--wt-text)";
-        sun.style.background = "transparent";
-        sun.style.color = "var(--wt-text-3)";
+        moon.classList.add("is-active");
+        sun.classList.remove("is-active");
       } else {
-        sun.style.background = "var(--wt-surface)";
-        sun.style.color = "var(--wt-text)";
-        moon.style.background = "transparent";
-        moon.style.color = "var(--wt-text-3)";
+        sun.classList.add("is-active");
+        moon.classList.remove("is-active");
       }
     };
 

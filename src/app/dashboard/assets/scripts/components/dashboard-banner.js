@@ -11,7 +11,7 @@ export class DashboardBanner extends HTMLElement {
       <section class="deployment-banner-strip">
         <div class="status-indicator-block">
           <span class="status-indicator-dot online"></span>
-          <strong style="color: var(--wt-success); font-size: 13px; letter-spacing: 0.05em;">ONLINE</strong>
+          <strong class="status-indicator-label">ONLINE</strong>
         </div>
         <div class="disruption-announcement">System Live</div>
       </section>

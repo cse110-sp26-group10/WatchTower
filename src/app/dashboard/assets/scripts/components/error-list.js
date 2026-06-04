@@ -33,10 +33,7 @@ export class ErrorList extends HTMLElement {
       left.className = "row-left-group";
 
       const severity = document.createElement("span");
-      severity.style.color = this.getSeverityColor(error);
-      severity.style.fontWeight = "700";
-      severity.style.fontFamily = "monospace";
-      severity.style.fontSize = "11px";
+      severity.className = `severity-label ${this.getSeverityClass(error)}`;
       severity.textContent = `[${error.metadata?.severity?.toUpperCase() || "CRITICAL"}]`;
 
       const details = document.createElement("div");
@@ -56,19 +53,11 @@ export class ErrorList extends HTMLElement {
 
       // Right-side group: occurrence count (when stacked) + latest timestamp
       const right = document.createElement("div");
-      right.style.display = "flex";
-      right.style.alignItems = "center";
-      right.style.gap = "8px";
+      right.className = "row-inline-group";
 
       if (count > 1) {
         const countBadge = document.createElement("span");
-        countBadge.style.background = "var(--wt-surface)";
-        countBadge.style.color = "var(--wt-text)";
-        countBadge.style.fontWeight = "700";
-        countBadge.style.fontSize = "11px";
-        countBadge.style.padding = "2px 6px";
-        countBadge.style.borderRadius = "var(--wt-radius-sm)";
-        countBadge.style.border = "1px solid var(--wt-border)";
+        countBadge.className = "count-badge";
         countBadge.textContent = `×${count}`;
         countBadge.title = `${count} occurrences`;
         right.append(countBadge);
@@ -109,17 +98,15 @@ export class ErrorList extends HTMLElement {
 
   appendEmptyState(message) {
     const empty = document.createElement("div");
-    empty.style.padding = "12px";
-    empty.style.textAlign = "center";
-    empty.style.color = "var(--wt-text-3)";
+    empty.className = "list-empty";
     empty.textContent = message;
     this.append(empty);
   }
 
-  getSeverityColor(error) {
+  getSeverityClass(error) {
     return error.metadata?.severity?.toLowerCase() === "warning"
-      ? "var(--wt-warning)"
-      : "var(--wt-danger)";
+      ? "is-warning"
+      : "is-critical";
   }
 
   dispatchErrorSelected(errorId) {

@@ -3,7 +3,6 @@ import { deploymentScope } from "../core/deployment-scope.js";
 import { getEventById, getHomeDashboardData } from "../core/dashboard-data.js";
 import "../components/activity-list.js";
 import "../components/dashboard-banner.js";
-import "../components/dashboard-styles.js";
 import "../components/error-detail-modal.js";
 import "../components/error-list.js";
 import "../components/panel-section.js";
@@ -56,7 +55,7 @@ export class HomePage extends HTMLElement {
         <uptime-card id="home-uptime"></uptime-card>
       </section>
 
-      <section class="dashboard-double-row" id="section-activity-top" style="margin-bottom: 20px;">
+      <section class="dashboard-double-row is-spaced" id="section-activity-top">
         <panel-section heading="Page Loads" subheading="grouped by path">
           <path-count-list id="home-load-paths" empty-message="No page loads tracked"></path-count-list>
         </panel-section>
@@ -71,7 +70,6 @@ export class HomePage extends HTMLElement {
       </panel-section>
 
       <error-detail-modal id="home-error-modal"></error-detail-modal>
-      <dashboard-styles></dashboard-styles>
     `;
   }
 

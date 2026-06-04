@@ -1,6 +1,3 @@
-import { deploymentScope } from "../core/deployment-scope.js";
-import { relativeTime } from "../core/formatters.js";
-
 const LINKS = [
   ["#/", "Overview", "/"],
   ["#/projects", "Projects", "/projects"],
@@ -68,7 +65,7 @@ export class AppSidebar extends HTMLElement {
     brand.className = "sidebar-brand-wrap";
     brand.innerHTML = `
       <a href="#/" class="sidebar-brand-link" aria-label="WatchTower home">
-        <img src="/src/app/dashboard/public/logo.svg" class="sidebar-brand-logo" alt="" width="30" height="30" onerror="this.style.display='none'" />
+        <img src="/src/app/dashboard/public/logo.svg" class="sidebar-brand-logo" alt="" width="30" height="30" onerror="this.hidden=true" />
         <span class="sidebar-brand-name">WatchTower</span>
       </a>
       <button

@@ -37,15 +37,15 @@ export class AppTopbar extends HTMLElement {
             <span class="menu-toggle-line"></span>
           </button>
 
-          <div style="display: flex; align-items: center; gap: 0.5rem; margin-left: 1rem;">
-            <label style="font-weight: 600; color: var(--wt-text-2); font-size: 0.8125rem;">Project:</label>
+          <div class="topbar-filter-group">
+            <label class="topbar-filter-label">Project:</label>
             <project-filter></project-filter>
           </div>
 
-          <div style="display: flex; align-items: center; gap: 0.5rem; margin-left: 1rem;">
-            <label style="font-weight: 600; color: var(--wt-text-2); font-size: 0.8125rem;">Deployment:</label>
+          <div class="topbar-filter-group">
+            <label class="topbar-filter-label">Deployment:</label>
             <deployment-filter></deployment-filter>
-            <span id="header-metadata-strip" style="display: inline-flex; align-items: center; gap: 0.75rem; margin-left: 0.75rem; font-family: monospace; font-size: 0.75rem; color: var(--wt-text-2);"></span>
+            <span id="header-metadata-strip" class="topbar-metadata-strip"></span>
           </div>
         </div>
       </header>
@@ -58,14 +58,14 @@ export class AppTopbar extends HTMLElement {
 
     const currentDep = deploymentScope.deployment;
     if (!currentDep || deploymentScope.id === "all") {
-      metaContainer.innerHTML = `<span style="color: var(--wt-text-3); font-style: italic;">All active clusters monitored</span>`;
+      metaContainer.innerHTML = `<span class="metadata-muted">All active clusters monitored</span>`;
       return;
     }
 
     metaContainer.innerHTML = `
-      <span style="background: var(--wt-surface-2); padding: 0.125rem 0.375rem; border-radius: var(--wt-radius-sm); border: 1px solid var(--wt-border);">version: <b>${currentDep.version}</b></span>
-      <span style="background: var(--wt-surface-2); padding: 0.125rem 0.375rem; border-radius: var(--wt-radius-sm); border: 1px solid var(--wt-border);">commit: <b>${currentDep.commit_hash}</b></span>
-      <span style="background: var(--wt-surface-2); padding: 0.125rem 0.375rem; border-radius: var(--wt-radius-sm); border: 1px solid var(--wt-border);">deployed: <b>${relativeTime(currentDep.deployed_at)}</b></span>
+      <span class="metadata-badge">version: <b>${currentDep.version}</b></span>
+      <span class="metadata-badge">commit: <b>${currentDep.commit_hash}</b></span>
+      <span class="metadata-badge">deployed: <b>${relativeTime(currentDep.deployed_at)}</b></span>
     `;
   }
 }

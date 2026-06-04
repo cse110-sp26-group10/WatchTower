@@ -4,7 +4,6 @@ import {
   getErrorsDashboardData,
   getEventById,
 } from "../core/dashboard-data.js";
-import "../components/dashboard-styles.js";
 import "../components/error-detail-modal.js";
 import "../components/error-list.js";
 import "../components/panel-section.js";
@@ -55,7 +54,6 @@ export class ErrorsPage extends HTMLElement {
       </panel-section>
 
       <error-detail-modal id="errors-page-modal"></error-detail-modal>
-      <dashboard-styles></dashboard-styles>
     `;
   }
 

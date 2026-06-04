@@ -2,7 +2,6 @@ import { projectScope } from "../core/project-scope.js";
 import { deploymentScope } from "../core/deployment-scope.js";
 import { getActivityDashboardData } from "../core/dashboard-data.js";
 import "../components/activity-list.js";
-import "../components/dashboard-styles.js";
 import "../components/panel-section.js";
 import "../components/path-count-list.js";
 import "../components/summary-metrics.js";
@@ -38,7 +37,7 @@ export class ActivityPage extends HTMLElement {
     this.innerHTML = `
       <summary-metrics></summary-metrics>
 
-      <section class="dashboard-double-row" style="margin-bottom: 20px;">
+      <section class="dashboard-double-row is-spaced">
         <panel-section heading="Page Loads" subheading="grouped by path">
           <path-count-list id="activity-load-paths" empty-message="No page loads tracked"></path-count-list>
         </panel-section>
@@ -52,7 +51,6 @@ export class ActivityPage extends HTMLElement {
         <activity-list id="activity-events"></activity-list>
       </panel-section>
 
-      <dashboard-styles></dashboard-styles>
     `;
   }
 
