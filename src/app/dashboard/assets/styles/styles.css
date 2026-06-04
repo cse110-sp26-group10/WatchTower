@@ -543,6 +543,47 @@ body {
   flex: 0 0 0.125rem;
   border-radius: 62.4375rem;
   background: currentcolor;
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
+}
+
+/* Desktop: always show a directional chevron, never the hamburger */
+@media (width > 56.25rem) {
+  .menu-toggle-line {
+    display: none;
+  }
+
+  /* Left chevron = sidebar is open, click will collapse */
+  .menu-toggle-btn::before {
+    content: "‹";
+    font-size: 1.4rem;
+    font-weight: 400;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Right chevron = sidebar is collapsed, click will expand */
+  .app-container:has(.sidebar.is-collapsed) .menu-toggle-btn::before {
+    content: "›";
+  }
+}
+
+/* Mobile: animate hamburger → X when sidebar is open */
+@media (width <= 56.25rem) {
+  .app-container:has(.sidebar.is-open) .menu-toggle-line:nth-child(1) {
+    transform: rotate(45deg) translate(0.1875rem, 0.375rem);
+  }
+
+  .app-container:has(.sidebar.is-open) .menu-toggle-line:nth-child(2) {
+    opacity: 0;
+  }
+
+  .app-container:has(.sidebar.is-open) .menu-toggle-line:nth-child(3) {
+    transform: rotate(-45deg) translate(0.1875rem, -0.375rem);
+  }
 }
 
 /* 2. The Global Collapsed State Profile */
