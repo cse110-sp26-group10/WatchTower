@@ -1,3 +1,4 @@
+// @vitest-environment jsdom
 import { describe, it, expect } from "vitest";
 import { parseBrowser } from "../../src/app/tracker/assets/tracker.js";
 

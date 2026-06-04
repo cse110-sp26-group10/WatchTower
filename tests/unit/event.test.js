@@ -176,18 +176,12 @@ describe("Event — deployment validation", () => {
   });
 });
 
-describe("Event — user_id validation", () => {
-  it("rejects a malformed UUID", () => {
+describe("Event — user_id field", () => {
+  it("ignores user_id since it is no longer part of the event schema", () => {
     expect(
       new Event(JSON.stringify({ ...validBase(), user_id: "not-a-uuid" }))
         .valid,
-    ).toBe(false);
-  });
-
-  it("rejects a numeric user_id", () => {
-    expect(
-      new Event(JSON.stringify({ ...validBase(), user_id: 12345 })).valid,
-    ).toBe(false);
+    ).toBe(true);
   });
 });
 
