@@ -29,3 +29,36 @@ How we adopted it:
 * Good, because switching between local and remote is only an `.env` change.
 * Good, because it opens a native path to auth, storage, and realtime.
 * Neutral, because remote schema changes must go through the migration and PR workflow, with no ad-hoc `supabase db push`.
+
+---
+
+## Amendment: Use Supabase Built-In Auth for User Authentication
+
+### Context and Problem Statement
+
+WatchTower needs to gate the dashboard behind a login so that event data is private to the team that owns a project. Once Supabase was adopted as the database layer (see above), the question became whether to build custom authentication (session tokens, password hashing, JWT signing) or leverage the auth system that Supabase already provides.
+
+### Considered Options
+
+* **Supabase built-in auth (GoTrue)** — email/password sign-up and sign-in via `supabase.auth.signUp()` / `supabase.auth.signInWithPassword()`, sessions managed automatically by the JS client.
+* **Custom JWT auth** — build our own registration/login endpoints, hash passwords with bcrypt or argon2, issue and verify JWTs manually, manage refresh token rotation.
+* **Third-party auth provider** — Auth0, Clerk, or similar SaaS identity platform.
+
+### Decision Outcome
+
+Chosen option: **Supabase built-in auth**. Since we were already using `@supabase/supabase-js` for all database access, auth required zero new dependencies — `supabase.auth.*` methods were already available. It also integrates directly with Row-Level Security: policies can be written against `auth.uid()`, so the database itself enforces that users only read data belonging to their own projects.
+
+How we adopted it:
+
+* Users register and log in through the `/login` and `/signup` pages; the Supabase JS client stores the session in `localStorage` and refreshes it automatically.
+* The server uses the `service_role` key for all backend writes (bypassing RLS), while the frontend session token is used only to identify the current user.
+* Project rows include a `user_id` foreign key referencing `auth.users`, so each user's projects are isolated at the database level.
+* On logout, `supabase.auth.signOut()` clears the session and redirects to the login page.
+
+### Consequences
+
+* Good, because auth required no new libraries, no custom token logic, and no additional infrastructure — the full implementation fit within the existing Supabase setup.
+* Good, because session management (refresh tokens, expiry, persistence) is handled entirely by the Supabase client, eliminating a common source of security bugs in custom auth.
+* Good, because RLS policies tied to `auth.uid()` enforce data isolation at the database layer rather than relying solely on application-level checks.
+* Neutral, because users must sign up with an email address; social OAuth (GitHub, Google) is supported by Supabase but was not wired up within the project timeline.
+* Bad, because the project currently uses a single `service_role` key on the server, which bypasses RLS for all server-side writes — acceptable for the current scope but would need tighter scoping for a production deployment.
