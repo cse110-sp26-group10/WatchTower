@@ -497,6 +497,28 @@ body {
   font-weight: 900;
 }
 
+.metric-card-tile.success-state .metric-card-value {
+  color: var(--wt-success);
+}
+
+.metric-card-tile.success-metric {
+  background: linear-gradient(
+    135deg,
+    var(--color-ok-bg) 0%,
+    var(--wt-surface) 62%
+  );
+  border-color: var(--wt-success);
+  box-shadow: 0 0.625rem 1.5rem rgb(46 125 50 / 18%);
+}
+
+.metric-card-tile.success-metric .metric-card-title {
+  color: var(--wt-success);
+}
+
+.metric-card-tile.success-metric .metric-card-value {
+  font-weight: 900;
+}
+
 .dashboard-double-row {
   display: flex;
   flex-wrap: wrap;

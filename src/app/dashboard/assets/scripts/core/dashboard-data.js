@@ -229,7 +229,11 @@ export function getHomeDashboardData(
     loadPaths: groupEventsByPath(pageLoads),
     clickPaths: groupEventsByPath(clicks),
     metrics: [
-      { label: "Errors", value: errors.length, state: "danger" },
+      {
+        label: "Errors",
+        value: errors.length,
+        state: errors.length ? "danger" : "success",
+      },
       {
         label: "Avg Load Time",
         value: pageLoads.length
@@ -305,11 +309,15 @@ export function getErrorsDashboardData(
   return {
     errors,
     metrics: [
-      { label: "Total Errors", value: severityCounts.total, state: "danger" },
+      {
+        label: "Total Errors",
+        value: severityCounts.total,
+        state: severityCounts.total ? "danger" : "success",
+      },
       {
         label: "Critical Errors",
         value: severityCounts.critical,
-        state: "danger",
+        state: severityCounts.critical ? "danger" : "success",
       },
       { label: "Warnings", value: severityCounts.warnings, state: "warning" },
     ],

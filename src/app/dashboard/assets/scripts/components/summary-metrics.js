@@ -9,7 +9,11 @@ export class SummaryMetrics extends HTMLElement {
 
   set metrics(value) {
     this.items = [
-      { label: "Errors", value: value?.errors || 0, state: "danger" },
+      {
+        label: "Errors",
+        value: value?.errors || 0,
+        state: value?.errors ? "danger" : "success",
+      },
       {
         label: "Avg Load Time",
         value: value?.pageLoads ? `${value.avgLatency}ms` : "-",
@@ -34,8 +38,12 @@ export class SummaryMetrics extends HTMLElement {
       const card = document.createElement("div");
       const classes = ["metric-card-tile"];
       if (item.state === "danger") classes.push("danger-state");
+      if (item.state === "success") classes.push("success-state");
       const isError = /errors?/i.test(item.label);
-      if (isError) classes.push("error-metric");
+      // The errors tile turns green when there are no errors (success state).
+      if (isError) {
+        classes.push(item.state === "success" ? "success-metric" : "error-metric");
+      }
       card.className = classes.join(" ");
 
       // Errors tile opens the errors page; the rest open the activity page.
