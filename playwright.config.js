@@ -14,7 +14,7 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'npx serve src/prototype/dashboard -p 3000 --no-clipboard',
+    command: 'npx serve src/app/dashboard -p 3000 --no-clipboard',
     port: 3000,
     reuseExistingServer: !process.env.CI,
     timeout: 30000,

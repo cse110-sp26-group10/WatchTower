@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WatchTower</title>
+  <link rel="stylesheet" href="assets/styles/styles.css">
+  <link rel="icon" type="image/png" href="/src/app/dashboard/public/favicon.png">
+</head>
+<body>
+  <!-- Login mounts here when not authenticated -->
+  <div id="login-outlet"></div>
+
+  <!-- App shell is built by main.js only when authenticated -->
+  <div id="app-shell"></div>
+
+  <div id="aria-announcer" aria-live="polite" aria-atomic="true" class="sr-only"></div>
+  <script type="module" src="assets/scripts/main.js"></script>
+  <noscript>
+  <div style="padding: 1rem; background: #ffeaea; color: #b00020;">
+    This website requires JavaScript to function properly. Please enable JavaScript in your browser.
+  </div>
+</noscript>
+</body>
+</html>
