@@ -1,9 +1,12 @@
+import { dataStore } from "../core/data-store.js";
+
 const LINKS = [
   ["#/", "Overview", "/"],
   ["#/projects", "Projects", "/projects"],
   ["#/errors", "Errors", "/errors"],
   ["#/feedback", "Feedback", "/feedback"],
   ["#/activity", "Activity", "/activity"],
+  ["#/settings", "Settings", "/settings"],
 ];
 
 export class AppSidebar extends HTMLElement {
@@ -33,8 +36,6 @@ export class AppSidebar extends HTMLElement {
     nav.id = "app-sidebar-nav";
     nav.setAttribute("aria-label", "Dashboard sections");
 
-    nav.classList.add("is-collapsed");
-
     const list = document.createElement("ul");
     list.className = "sidebar-list";
 
@@ -50,6 +51,14 @@ export class AppSidebar extends HTMLElement {
     }
 
     nav.append(list);
+
+    // Logout button, pinned to the bottom of the sidebar
+    const logoutBtn = document.createElement("button");
+    logoutBtn.type = "button";
+    logoutBtn.className = "sidebar-logout";
+    logoutBtn.textContent = "Log out";
+    logoutBtn.addEventListener("click", () => this.handleLogout(logoutBtn));
+    nav.append(logoutBtn);
 
     // Mobile background click-to-close shroud overlay
     const backdrop = document.createElement("div");
@@ -76,6 +85,14 @@ export class AppSidebar extends HTMLElement {
       // Regular sizing viewport toggle profile
       nav.classList.toggle("is-collapsed");
     }
+  }
+
+  async handleLogout(btn) {
+    btn.disabled = true;
+    // Clear server session (cookies) then the client-side auth flag.
+    await dataStore.logOut();
+    localStorage.removeItem("wt-auth");
+    window.location.reload();
   }
 
   closeMobileMenu() {

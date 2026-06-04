@@ -1,31 +1,7 @@
-const STORAGE_KEY = "wt-projects";
-
-const DEFAULT_PROJECTS = [
-  {
-    id: "proj_shop",
-    name: "Drape Storefront",
-    url: "https://drape.example.com",
-    createdAt: "2026-05-30T09:00:00.000Z",
-  },
-  {
-    id: "proj_api",
-    name: "Core API",
-    url: "https://api.drape.example.com",
-    createdAt: "2026-05-29T16:30:00.000Z",
-  },
-];
+import { dataStore } from "../core/data-store.js";
 
 function loadProjects() {
-  try {
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
-    return Array.isArray(saved) ? saved : DEFAULT_PROJECTS;
-  } catch {
-    return DEFAULT_PROJECTS;
-  }
-}
-
-function saveProjects(projects) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(projects));
+  return dataStore.getProjects();
 }
 
 function normalizeUrl(value) {
@@ -323,18 +299,21 @@ export class ProjectsPage extends HTMLElement {
       this.addProject();
     });
 
-    this.querySelector("#projects-list")?.addEventListener("click", (event) => {
-      const button = event.target.closest("[data-remove-project]");
-      if (!button) return;
-      this.projects = this.projects.filter(
-        (project) => project.id !== button.dataset.removeProject,
-      );
-      saveProjects(this.projects);
-      this.updateProjectList();
-    });
+    this.querySelector("#projects-list")?.addEventListener(
+      "click",
+      async (event) => {
+        const button = event.target.closest("[data-remove-project]");
+        if (!button) return;
+        const error = await dataStore.deleteProject(
+          Number.parseInt(button.dataset.removeProject),
+        );
+        if (error) return;
+        this.updatePageData();
+      },
+    );
   }
 
-  addProject() {
+  async addProject() {
     const nameInput = this.querySelector("#project-name");
     const urlInput = this.querySelector("#project-url");
     const errorEl = this.querySelector("#project-error");
@@ -363,16 +342,14 @@ export class ProjectsPage extends HTMLElement {
       return;
     }
 
-    const project = {
-      id: `proj_${Date.now().toString(36)}`,
-      name,
-      url,
-      createdAt: new Date().toISOString(),
-    };
+    const error = await dataStore.createProject(name, url);
+    if (error) {
+      errorEl.textContent = "Project creation failed.";
+      errorEl.hidden = false;
+      return;
+    }
 
-    this.projects = [project, ...this.projects];
-    saveProjects(this.projects);
-    this.updateProjectList();
+    this.updatePageData();
     this.querySelector("#project-form").reset();
     nameInput.focus();
   }
@@ -391,8 +368,8 @@ export class ProjectsPage extends HTMLElement {
     list.innerHTML = this.projects
       .map((project) => {
         const name = escapeHtml(project.name);
-        const url = escapeHtml(project.url);
-        const createdAt = escapeHtml(formatDate(project.createdAt));
+        const url = escapeHtml(project.website_url);
+        const created_at = escapeHtml(formatDate(project.created_at));
 
         return `
       <article class="project-card">
@@ -400,12 +377,17 @@ export class ProjectsPage extends HTMLElement {
           <h3>${name}</h3>
         </div>
         <a class="project-url" href="${url}" target="_blank" rel="noreferrer">${url}</a>
-        <div class="project-meta">Added ${createdAt}</div>
+        <div class="project-meta">Added ${created_at}</div>
         <button class="project-remove" type="button" data-remove-project="${project.id}">Remove</button>
       </article>
     `;
       })
       .join("");
+  }
+
+  updatePageData() {
+    this.projects = loadProjects();
+    this.updateProjectList();
   }
 }
 

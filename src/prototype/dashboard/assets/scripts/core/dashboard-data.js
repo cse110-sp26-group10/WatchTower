@@ -1,5 +1,6 @@
 import { dataStore } from "./data-store.js";
 import { deploymentScope } from "./deployment-scope.js";
+import { relativeTime } from "./formatters.js";
 
 /**
  * Return the currently selected deployment id.
@@ -151,8 +152,8 @@ function buildUptimeSummary(log) {
     latency: latest?.latency || 0,
     uptimePercent,
     checks,
-    rangeStartLabel: "9 hours ago",
-    rangeEndLabel: "6 minutes ago",
+    rangeStartLabel: (checks[0] && relativeTime(checks[0].timestamp)) || "N/A",
+    rangeEndLabel: (latest && relativeTime(latest.timestamp)) || "N/A",
   };
 }
 
@@ -160,7 +161,7 @@ function expandUptimeTimeline(log) {
   if (!log.length) return [];
 
   const pattern = log.flatMap((entry) => {
-    const repeats = entry.is_up ? 5 : 2;
+    const repeats = entry.is_up ? 1 : 1; // 5 : 2
     return Array.from({ length: repeats }, () => ({
       is_up: entry.is_up,
       latency: entry.latency,
@@ -171,11 +172,7 @@ function expandUptimeTimeline(log) {
 
   while (pattern.length < 48) {
     pattern.unshift({
-      ...pattern[pattern.length % log.length],
-      is_up:
-        pattern.length % 11 === 0
-          ? false
-          : pattern[pattern.length % log.length].is_up,
+      ...pattern[pattern.length % log.length], // , is_up: pattern.length % 11 === 0 ? false : pattern[pattern.length % log.length].is_up,
     });
   }
 

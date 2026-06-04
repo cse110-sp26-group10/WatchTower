@@ -21,6 +21,8 @@ const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const ALLOWED_ORIGINS = new Set([
   "http://localhost:5500",
   "http://127.0.0.1:5500",
+  "http://localhost:3000",
+  "http://127.0.0.1:3000",
   "https://cse110-sp26-group10.github.io/WatchTower/src/test-app/",
 ]);
 
@@ -95,8 +97,9 @@ async function monitorProject(user, project) {
   while (true) {
     const uptimeCheck = await getProjectStatus(project);
     if (!uptimeCheck.is_up) {
-      const uptimeLog = await dbHelper.getUptimeLogFromProject(project);
-      if (uptimeLog && (uptimeLog.length == 0 || uptimeLog[0].is_up)) {
+      const { uptimeLog, error } =
+        await dbHelper.getUptimeLogFromProject(project);
+      if (!error && (uptimeLog.length === 0 || uptimeLog[0].is_up)) {
         // Only sends alert once each time the website goes down
         sendAlert(project, uptimeCheck); // Runs asynchronously
       }

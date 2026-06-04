@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeAll, afterAll, vi } from "vitest";
-import Event from "../../src/prototype/server/assets/Event.js";
+import Event from "../../src/app/server/assets/Event.js";
 
 const FIXED_NOW = "2026-05-19T12:00:00.000Z";
-const VALID_PROJECT_ID = "550e8400-e29b-41d4-a716-446655440000";
+const VALID_UUID = "550e8400-e29b-41d4-a716-446655440000";
 
 beforeAll(() => {
   vi.useFakeTimers();
@@ -28,8 +28,10 @@ function validBase(eventType = "page_load", metadata = { load_time: 100 }) {
       deployed_at: "2026-01-01T00:00:00.000Z",
       author: "evan",
     },
+    user_id: VALID_UUID,
     current_url: "https://example.com/page",
     referrer: "",
+    browser: { name: "Chrome", version: "124" },
     metadata,
   };
 }
@@ -45,26 +47,6 @@ describe("Event — valid construction", () => {
     expect(e.event.host).toBe("example.com");
     expect(e.event.created_at).toBeDefined();
     expect(e.event.referring_domain).toBe("");
-  });
-
-  it("does not require user_id (server adds project_id)", () => {
-    const e = new Event(JSON.stringify(validBase()));
-    expect(e.valid).toBe(true);
-    expect(e.event.user_id).toBeUndefined();
-    expect(e.setField("project_id", VALID_PROJECT_ID)).toBe(true);
-    expect(e.event.project_id).toBe(VALID_PROJECT_ID);
-  });
-
-  it("strips client-only fields such as browser", () => {
-    const data = {
-      ...validBase(),
-      browser: { name: "Chrome", version: "124" },
-      user_id: VALID_PROJECT_ID,
-    };
-    const e = new Event(JSON.stringify(data));
-    expect(e.valid).toBe(true);
-    expect(e.event.browser).toBeUndefined();
-    expect(e.event.user_id).toBeUndefined();
   });
 
   it("constructs a valid error event", () => {
@@ -194,6 +176,15 @@ describe("Event — deployment validation", () => {
   });
 });
 
+describe("Event — user_id field", () => {
+  it("ignores user_id since it is no longer part of the event schema", () => {
+    expect(
+      new Event(JSON.stringify({ ...validBase(), user_id: "not-a-uuid" }))
+        .valid,
+    ).toBe(true);
+  });
+});
+
 describe("Event — URL validation", () => {
   it("rejects an invalid current_url", () => {
     expect(
@@ -250,6 +241,55 @@ describe("Event — metadata validation", () => {
         ),
       ).valid,
     ).toBe(false);
+  });
+});
+
+describe("Event — browser validation", () => {
+  it("accepts a valid browser field", () => {
+    const e = new Event(JSON.stringify(validBase()));
+    expect(e.valid).toBe(true);
+    expect(e.event.browser).toEqual({ name: "Chrome", version: "124" });
+  });
+
+  it("rejects a missing browser field", () => {
+    const data = validBase();
+    delete data.browser;
+    expect(new Event(JSON.stringify(data)).valid).toBe(false);
+  });
+
+  it("rejects browser where name is not a string", () => {
+    const data = { ...validBase(), browser: { name: 42, version: "124" } };
+    expect(new Event(JSON.stringify(data)).valid).toBe(false);
+  });
+
+  it("rejects browser where version is not a string", () => {
+    const data = { ...validBase(), browser: { name: "Chrome", version: 124 } };
+    expect(new Event(JSON.stringify(data)).valid).toBe(false);
+  });
+
+  it("rejects browser that is not an object", () => {
+    const data = { ...validBase(), browser: "Chrome" };
+    expect(new Event(JSON.stringify(data)).valid).toBe(false);
+  });
+
+  it("strips extra fields inside browser", () => {
+    const data = {
+      ...validBase(),
+      browser: { name: "Chrome", version: "124", extra: "remove" },
+    };
+    const e = new Event(JSON.stringify(data));
+    expect(e.valid).toBe(true);
+    expect(e.event.browser.extra).toBeUndefined();
+  });
+
+  it("rejects browser that is null", () => {
+    const data = { ...validBase(), browser: null };
+    expect(new Event(JSON.stringify(data)).valid).toBe(false);
+  });
+
+  it("rejects browser that is an array", () => {
+    const data = { ...validBase(), browser: [] };
+    expect(new Event(JSON.stringify(data)).valid).toBe(false);
   });
 });
 

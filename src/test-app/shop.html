@@ -6,9 +6,18 @@
     <title>Shop — Drape</title>
     <link rel="stylesheet" href="assets/styles/styles.css" />
     <script
-      src="../prototype/tracker/watchtower.js"
-      data-apikey="b23b3210-3597-45ad-8484-14936a967760"
+      src="../app/tracker/watchtower.js"
+      data-apikey="00000000-0000-0000-0000-000000000001"
     ></script>
+    <script>
+      if (
+        window.location.hostname === "localhost" ||
+        window.location.hostname === "127.0.0.1"
+      ) {
+        window.__WATCHTOWER_CONFIG__.apiKey =
+          "00000000-0000-0000-0000-000000000000";
+      }
+    </script>
   </head>
   <body>
     <nav class="nav">

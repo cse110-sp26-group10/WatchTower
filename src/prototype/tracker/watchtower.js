@@ -5,13 +5,13 @@ const baseUrl = isLocal
 
 const scripts = ["src/prototype/tracker/assets/tracker.js"];
 
+window.__WATCHTOWER_CONFIG__ = {
+  apiKey: document.currentScript.getAttribute("data-apikey"),
+};
+
 scripts.forEach((src) => {
   const scriptName = src.split("/").at(-1);
   const script = document.createElement("script");
-  script.setAttribute(
-    "data-apikey",
-    document.currentScript.getAttribute("data-apikey"),
-  );
   script.type = "module";
   script.src = `${baseUrl}/${src}`;
   script.onload = () => console.log(`WatchTower: ${scriptName} loaded`);

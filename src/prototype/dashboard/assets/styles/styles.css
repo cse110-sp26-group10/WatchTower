@@ -96,7 +96,7 @@ body {
 /* ── Modern Workspace Flex Grid Shell Setup ────────────────────────────── */
 .app-container {
   display: grid;
-  grid-template-columns: 13.75rem 1fr; /* 220px */
+  grid-template-columns: auto 1fr; /* sidebar column shrinks to 0 when collapsed */
   position: relative;
   min-height: 100vh;
   width: 100%;
@@ -166,7 +166,8 @@ body {
 
 /* ── Sidebar System Layout ─────────────────────────────────────────────── */
 .sidebar {
-  display: block;
+  display: flex;
+  flex-direction: column;
   width: 13.75rem; /* 220px */
   background-color: var(--wt-surface);
   border-right: 1px solid var(--wt-border);
@@ -215,6 +216,30 @@ body {
   color: var(--wt-text);
   font-weight: 700;
   font-size: 1rem;
+}
+
+.sidebar-logout {
+  margin-top: auto; /* push to the bottom of the sidebar */
+  padding: 0.625rem 1rem; /* match .sidebar-link */
+  border: 1px solid var(--wt-border);
+  border-radius: var(--wt-radius-md);
+  background: transparent;
+  color: var(--wt-text-2);
+  font: inherit;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.sidebar-logout:hover {
+  background-color: var(--color-active-bg);
+  color: var(--color-active-text);
+}
+
+.sidebar-logout:disabled {
+  opacity: 0.6;
+  cursor: default;
 }
 
 /* ── Main Layout Viewport ──────────────────────────────────────────────── */
@@ -530,7 +555,7 @@ body {
 /* 2560 x 1440 (large monitor) responsiveness */
 @media (width >= 120rem) {
   .app-container {
-    grid-template-columns: 16rem 1fr;
+    grid-template-columns: auto 1fr;
   }
 
   .sidebar {

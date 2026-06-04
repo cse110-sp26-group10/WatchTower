@@ -54,8 +54,7 @@ export class DeploymentFilter extends HTMLElement {
       const option = document.createElement("option");
       option.value = deployment.id;
       // Keep dropdown names beautifully clean
-      option.textContent =
-        deployment.name || `${deployment.version} (${deployment.commit_hash})`;
+      option.textContent = deployment.id;
       select.append(option);
     }
 

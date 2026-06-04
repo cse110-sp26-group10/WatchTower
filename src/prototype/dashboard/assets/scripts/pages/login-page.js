@@ -1,3 +1,5 @@
+import { dataStore } from "../core/data-store.js";
+
 const SUN_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
   <circle cx="12" cy="12" r="5"/>
   <line x1="12" y1="1" x2="12" y2="3"/>
@@ -12,6 +14,16 @@ const SUN_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" 
 
 const MOON_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
   <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+</svg>`;
+
+const EYE_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/>
+  <circle cx="12" cy="12" r="3"/>
+</svg>`;
+
+const EYE_OFF_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-7-11-7a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 7 11 7a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+  <line x1="1" y1="1" x2="23" y2="23"/>
 </svg>`;
 
 /**
@@ -110,15 +122,24 @@ export class LoginPage extends HTMLElement {
 
                 <div class="login-field">
                   <label class="sr-only" for="login-password">Password</label>
-                  <input
-                    class="login-input"
-                    type="password"
-                    id="login-password"
-                    name="password"
-                    placeholder="Password"
-                    autocomplete="current-password"
-                    required
-                  />
+                  <div class="login-password-wrap">
+                    <input
+                      class="login-input"
+                      type="password"
+                      id="login-password"
+                      name="password"
+                      placeholder="Password"
+                      autocomplete="current-password"
+                      required
+                    />
+                    <button
+                      class="login-password-toggle"
+                      id="login-password-toggle"
+                      type="button"
+                      aria-label="Show password"
+                      aria-pressed="false"
+                    >${EYE_SVG}</button>
+                  </div>
                 </div>
 
                 <p class="login-error" id="login-error" aria-live="polite" hidden></p>
@@ -317,6 +338,44 @@ export class LoginPage extends HTMLElement {
           box-shadow: 0 0 0 3px var(--color-crit-bg);
         }
 
+        /* ── Password show/hide toggle ───────────────────────────── */
+        .login-password-wrap {
+          position: relative;
+          display: flex;
+        }
+
+        .login-password-wrap .login-input {
+          flex: 1;
+          padding-right: 2.75rem;            /* room for the eye button */
+        }
+
+        .login-password-toggle {
+          position: absolute;
+          top: 0;
+          right: 0;
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 2.5rem;
+          padding: 0;
+          background: transparent;
+          border: none;
+          color: var(--wt-text-3);
+          cursor: pointer;
+          transition: color 0.15s;
+        }
+
+        .login-password-toggle:hover {
+          color: var(--wt-text);
+        }
+
+        .login-password-toggle:focus-visible {
+          outline: 2px solid var(--color-active);
+          outline-offset: -2px;
+          border-radius: var(--wt-radius-md);
+        }
+
         /* ── Error message ───────────────────────────────────────── */
         .login-error {
           margin: 0;
@@ -396,7 +455,21 @@ export class LoginPage extends HTMLElement {
     const errorEl = this.querySelector("#login-error");
     const usernameInput = this.querySelector("#login-username");
     const passwordInput = this.querySelector("#login-password");
+    const passwordToggle = this.querySelector("#login-password-toggle");
     const themeBtn = this.querySelector("#login-theme-toggle");
+
+    // ── Password show/hide toggle ─────────────────────────────────
+    passwordToggle?.addEventListener("click", () => {
+      const show = passwordInput.type === "password";
+      passwordInput.type = show ? "text" : "password";
+      passwordToggle.innerHTML = show ? EYE_OFF_SVG : EYE_SVG;
+      passwordToggle.setAttribute("aria-pressed", String(show));
+      passwordToggle.setAttribute(
+        "aria-label",
+        show ? "Hide password" : "Show password",
+      );
+      passwordInput.focus();
+    });
 
     // ── Theme toggle (mirrors app behaviour) ──────────────────────
     const updateToggleUI = (isDark) => {
@@ -458,19 +531,17 @@ export class LoginPage extends HTMLElement {
         return;
       }
 
-      // ── Mock auth ─────────────────────────────────────────────────
-      // Swap this block for a real fetch() call when the backend is ready.
       submitBtn.disabled = true;
       submitBtn.querySelector(".login-submit-label").textContent =
         "Signing in…";
       submitBtn.querySelector(".login-submit-spinner").hidden = false;
 
-      setTimeout(() => {
+      setTimeout(async () => {
         // Mock: any non-empty credentials pass
         // Replace with: const ok = await authService.login(username, password);
-        const mockSuccess = true;
+        const error = await dataStore.logIn(username, password);
 
-        if (mockSuccess) {
+        if (!error) {
           localStorage.setItem("wt-auth", "1");
           window.location.reload();
         } else {
@@ -481,7 +552,6 @@ export class LoginPage extends HTMLElement {
 
           errorEl.textContent = "Invalid username or password.";
           errorEl.hidden = false;
-          passwordInput.value = "";
           passwordInput.classList.add("is-invalid");
           passwordInput.focus();
         }
