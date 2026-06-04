@@ -133,6 +133,7 @@ Some work was still back-loaded toward the end of the sprint, which made merge c
 ### What we'll do differently:
 For the next sprint, we should create smaller PRs, set clearer mid-sprint checkpoints, and integrate frontend/backend changes earlier instead of waiting until the end. We should also lock down shared interfaces sooner so testing can begin earlier and avoid being blocked by unstable feature branches.
 Also do more documentation and keeping up to update the newer ADRs.
+
 ---
 ## Metrics
 | Metric | Value |
