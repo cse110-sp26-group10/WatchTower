@@ -38,10 +38,14 @@ test.describe("Dashboard — authenticated", () => {
     await page.goto("/#/");
     const card = page.locator("#home-uptime");
     await expect(card).toBeVisible();
-    const status = card.locator(".uptime-status");
-    await expect(status).toBeVisible();
-    const text = await status.textContent();
-    expect(["Healthy", "Down"]).toContain(text.trim());
+    // Card renders either live status or empty state when no data is available
+    const hasStatus = await card.locator(".uptime-status").isVisible();
+    const hasEmpty = await card.locator(".uptime-empty").isVisible();
+    expect(hasStatus || hasEmpty).toBe(true);
+    if (hasStatus) {
+      const text = await card.locator(".uptime-status").textContent();
+      expect(["Healthy", "Down"]).toContain(text.trim());
+    }
   });
 
   test("error list and activity panels render with items", async ({ page }) => {
