@@ -684,6 +684,25 @@ body {
   background: var(--wt-surface-2);
 }
 
+.fix-error-btn {
+  background: var(--wt-surface);
+  color: var(--wt-text-2);
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.6875rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--wt-radius-sm);
+  border: 1px solid var(--wt-border);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.fix-error-btn:hover {
+  background: var(--wt-surface-2);
+  border-color: var(--wt-success);
+  color: var(--wt-success);
+}
+
 .deployment-badge {
   padding: 0.25rem 0.5rem;
 }

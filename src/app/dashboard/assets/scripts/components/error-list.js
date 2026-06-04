@@ -23,9 +23,10 @@ export class ErrorList extends HTMLElement {
 
     for (const group of this.groupErrors(this._errors)) {
       const { error, count } = group;
-      const row = document.createElement("button");
+      const row = document.createElement("div");
       row.className = "interactive-data-row error-click-target-btn";
-      row.type = "button";
+      row.setAttribute("role", "button");
+      row.tabIndex = 0;
       row.dataset.errorId = error.id;
       row.addEventListener("click", () => this.dispatchErrorSelected(error.id));
 
@@ -70,6 +71,16 @@ export class ErrorList extends HTMLElement {
 
       row.append(right);
       this.append(row);
+
+      const fixBtn = document.createElement("button");
+      fixBtn.type = "button";
+      fixBtn.className = "fix-error-btn";
+      fixBtn.textContent = "Mark as Fixed";
+      fixBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        this.resolveError(group);
+      });
+      right.append(fixBtn);
     }
   }
 
@@ -84,9 +95,10 @@ export class ErrorList extends HTMLElement {
 
       const existing = groups.get(key);
       if (!existing) {
-        groups.set(key, { error, count: 1 });
+        groups.set(key, { error, count: 1, ids: [error.id] });
       } else {
         existing.count += 1;
+        existing.ids.push(error.id);
         // Keep whichever occurrence is newest as the representative.
         if (new Date(error.timestamp) > new Date(existing.error.timestamp)) {
           existing.error = error;
@@ -114,6 +126,17 @@ export class ErrorList extends HTMLElement {
       new CustomEvent("error-selected", {
         bubbles: true,
         detail: { errorId },
+      }),
+    );
+  }
+
+  // Resolve every occurrence in the group so the row does not reappear on the
+  // next fetch. The errors page listens for this and calls the data store.
+  resolveError(group) {
+    this.dispatchEvent(
+      new CustomEvent("error-resolve", {
+        bubbles: true,
+        detail: { ids: group.ids },
       }),
     );
   }

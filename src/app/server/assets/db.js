@@ -74,7 +74,31 @@ export const dbHelper = {
       return { events: null, error: error };
     }
     const events = data.flatMap((item) => item.events || []) || [];
-    return { events: events, error: null };
+    return { events: events.filter((event) => !event.resolved), error: null };
+  },
+  // Soft-deletes events by marking them resolved. Scoped to the user's own
+  // projects so a user cannot resolve another team's events.
+  async resolveEvents(user, ids) {
+    const { data: links, error } = await supabase
+      .from("users_projects")
+      .select("project_id")
+      .eq("user_id", user.id);
+    if (error) {
+      console.error("Query error:", error);
+      return error;
+    }
+    const projectIds = links.map((link) => link.project_id);
+    const { error: updateError } = await supabase
+      .from("events")
+      .update({ resolved: true })
+      .in("id", ids)
+      .in("project_id", projectIds);
+    if (updateError) {
+      console.error("Failed to resolve events:", updateError);
+      return updateError;
+    }
+    console.log("Events resolved");
+    return null;
   },
   // Returns all uptime checks from all projects associated with the user
   async getUptimeLog(user) {
