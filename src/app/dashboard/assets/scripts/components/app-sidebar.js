@@ -1,13 +1,15 @@
-import { dataStore } from "../core/data-store.js";
-
 const LINKS = [
   ["#/", "Overview", "/"],
   ["#/projects", "Projects", "/projects"],
   ["#/errors", "Errors", "/errors"],
   ["#/feedback", "Feedback", "/feedback"],
   ["#/activity", "Activity", "/activity"],
-  ["#/settings", "Settings", "/settings"],
 ];
+
+const GEAR_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+  <circle cx="12" cy="12" r="3"/>
+  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+</svg>`;
 
 /**
  * App sidebar used for page navigation
@@ -55,13 +57,14 @@ export class AppSidebar extends HTMLElement {
 
     nav.append(list);
 
-    // Logout button, pinned to the bottom of the sidebar
-    const logoutBtn = document.createElement("button");
-    logoutBtn.type = "button";
-    logoutBtn.className = "sidebar-logout";
-    logoutBtn.textContent = "Log out";
-    logoutBtn.addEventListener("click", () => this.handleLogout(logoutBtn));
-    nav.append(logoutBtn);
+    // Settings gear icon pinned to the bottom of the sidebar
+    const settingsLink = document.createElement("a");
+    settingsLink.href = "#/settings";
+    settingsLink.className = "sidebar-settings-link";
+    settingsLink.dataset.route = "/settings";
+    settingsLink.setAttribute("aria-label", "Settings");
+    settingsLink.innerHTML = `${GEAR_SVG}<span class="sidebar-settings-label">Settings</span>`;
+    nav.append(settingsLink);
 
     // Mobile background click-to-close shroud overlay
     const backdrop = document.createElement("div");
@@ -78,7 +81,6 @@ export class AppSidebar extends HTMLElement {
     const backdrop = this.querySelector("#sidebar-shroud");
     if (!nav) return;
 
-    // Check if we are currently running on desktop view or small viewport mobile view
     const isMobileViewport = window.innerWidth <= 900;
 
     if (isMobileViewport) {
@@ -86,19 +88,10 @@ export class AppSidebar extends HTMLElement {
       const isOpen = nav.classList.toggle("is-open");
       backdrop?.classList.toggle("is-open", isOpen);
     } else {
-      // Regular sizing viewport toggle profile
       nav.classList.remove("is-open");
       backdrop?.classList.remove("is-open");
       nav.classList.toggle("is-collapsed");
     }
-  }
-
-  async handleLogout(btn) {
-    btn.disabled = true;
-    // Clear server session (cookies) then the client-side auth flag.
-    await dataStore.logOut();
-    localStorage.removeItem("wt-auth");
-    window.location.reload();
   }
 
   closeMobileMenu() {
@@ -111,15 +104,17 @@ export class AppSidebar extends HTMLElement {
   }
 
   setActive(path) {
-    this.querySelectorAll(".sidebar-link").forEach((link) => {
-      const active = link.dataset.route === path;
-      link.classList.toggle("is-active", active);
-      if (active) {
-        link.setAttribute("aria-current", "page");
-      } else {
-        link.removeAttribute("aria-current");
-      }
-    });
+    this.querySelectorAll(".sidebar-link, .sidebar-settings-link").forEach(
+      (link) => {
+        const active = link.dataset.route === path;
+        link.classList.toggle("is-active", active);
+        if (active) {
+          link.setAttribute("aria-current", "page");
+        } else {
+          link.removeAttribute("aria-current");
+        }
+      },
+    );
   }
 }
 

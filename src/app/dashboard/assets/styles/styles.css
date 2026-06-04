@@ -226,28 +226,27 @@ body {
   font-size: 1rem;
 }
 
-.sidebar-logout {
-  margin-top: auto; /* push to the bottom of the sidebar */
-  padding: 0.625rem 1rem; /* match .sidebar-link */
-  border: 1px solid var(--wt-border);
+.sidebar-settings-link {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.625rem 1rem;
   border-radius: var(--wt-radius-md);
-  background: transparent;
   color: var(--wt-text-2);
-  font: inherit;
   font-weight: 500;
-  text-align: left;
-  cursor: pointer;
+  text-decoration: none;
   transition: all 0.15s ease;
 }
 
-.sidebar-logout:hover {
+.sidebar-settings-link:hover,
+.sidebar-settings-link.is-active {
   background-color: var(--color-active-bg);
   color: var(--color-active-text);
 }
 
-.sidebar-logout:disabled {
-  opacity: 0.6;
-  cursor: default;
+.sidebar-settings-label {
+  font-size: 0.9375rem;
 }
 
 /* ── Main Layout Viewport ──────────────────────────────────────────────── */
