@@ -28,14 +28,14 @@
 ## Sprint Backlog
 | ID | Task | Assignee(s) | Status | Notes |
 |----|------|-------------|--------|-------|
-| T01 | Complete backend–frontend integration (connect new UI to endpoints) | Han Yang-Lin, Kevin Wang, Jensen Guo | 🔲 Not Started | High priority integration; ensure ready for demo |
-| T02 | Write ADR for notification system (NodeMailer / ntfy) | Han Yang-Lin, Kevin Wang | 🔲 Not Started | Backend documentation deliverable |
-| T03 | Update Supabase ADR to include auth reasoning | Han Yang-Lin, Kevin Wang | 🔲 Not Started | Add detailed architectural justification for built-in auth |
+| T01 | Complete backend–frontend integration (connect new UI to endpoints) | Han Yang-Lin, Kevin Wang, Jensen Guo | ✅ Done | High priority integration; ensure ready for demo |
+| T02 | Write ADR for notification system (NodeMailer / ntfy) | Han Yang-Lin, Kevin Wang | ✅ Done | Backend documentation deliverable |
+| T03 | Update Supabase ADR to include auth reasoning | Han Yang-Lin, Kevin Wang | 🔄 In Progress | Add detailed architectural justification for built-in auth |
 | T04 | Finish small UI fixes, polish app/cards to look professional | Jensen Guo | 🔲 Not Started | Detail-oriented; grounded in developer user research/needs |
-| T05 | Merge browser-type detection PR and validate in dashboard | Evan Marriott, Nicole Sutedja | 🔲 Not Started | Core lead verification |
+| T05 | Merge browser-type detection PR and validate in dashboard | Evan Marriott, Nicole Sutedja | ✅ Done | Core lead verification |
 | T06 | Implement screen/display size tracking for error events | Evan Marriott, Nicole Sutedja | 🔲 Not Started | Track display context at time of error |
-| T07 | Finalize PR structure and close completed GitHub Issues | Evan Marriott, Nicole Sutedja | 🔲 Not Started | Align issue tracker with final repository state |
-| T08 | Write "definition of done" into process docs | Evan Marriott, Nicole Sutedja | 🔲 Not Started | Core process documentation |
+| T07 | Finalize PR structure and close completed GitHub Issues | Evan Marriott, Nicole Sutedja | ✅ Done | Align issue tracker with final repository state |
+| T08 | Write "definition of done" into process docs | Evan Marriott, Nicole Sutedja | ✅ Done | Core process documentation |
 | T09 | Finalize CI pipeline additions (dependency check, changelog, formatting) & open PR from testing branch | Benedict Luis, Aron Wu | ✅ Done | Merged via PR #83; dependency + Prettier on `main` |
 | T10 | Check and update all Scrum Master docs, repo tasks, metrics, and issues | Benedict Luis, Aron Wu | 🔄 In Progress | ci-plan + standup updated; metrics and GitHub issues still open |
 | T11 | Rename `prototype` folder and update lint/test paths | Kaley Chung, Prakhar Shah, Bethany Miyamoto | 🔲 Not Started | Structural path updates |
