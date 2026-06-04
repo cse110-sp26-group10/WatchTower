@@ -1,8 +1,8 @@
-import { dataStore } from '../core/data-store.js';
+import { dataStore } from "../core/data-store.js";
 
 const METHODS = [
-  ['push', 'Push notifications', 'Browser/device push alerts.'],
-  ['email', 'Email', 'Alerts sent to your account email.'],
+  ["push", "Push notifications", "Browser/device push alerts."],
+  ["email", "Email", "Alerts sent to your account email."],
 ];
 const NTFY_PREFIX = "WatchTower/";
 
@@ -23,17 +23,19 @@ export class SettingsPage extends HTMLElement {
   }
 
   render() {
-    this.className = 'dashboard-viewport';
+    this.className = "dashboard-viewport";
     const profile = dataStore.getProfile() || {};
     const selected = new Set(profile.notify_methods || []);
-    const alertId = profile.alert_id || '';
+    const alertId = profile.alert_id || "";
 
     this.innerHTML = `
       <div class="settings-card">
         <h1 class="settings-title">Notification settings</h1>
         <p class="settings-subtitle">Choose how you want to be notified about alerts.</p>
 
-        ${alertId ? `
+        ${
+          alertId
+            ? `
           <div class="settings-ntfy">
             <span class="settings-ntfy-label">Your ntfy topic</span>
             <div class="settings-ntfy-row">
@@ -42,24 +44,28 @@ export class SettingsPage extends HTMLElement {
             </div>
             <p class="settings-ntfy-hint">Subscribe to this topic in the ntfy app to receive push alerts.</p>
           </div>
-        ` : ''}
+        `
+            : ""
+        }
 
         <fieldset class="settings-methods">
           <legend class="sr-only">Notification methods</legend>
-          ${METHODS.map(([id, label, desc]) => `
+          ${METHODS.map(
+            ([id, label, desc]) => `
             <label class="settings-method" for="notify-${id}">
               <input
                 type="checkbox"
                 id="notify-${id}"
                 value="${id}"
-                ${selected.has(id) ? 'checked' : ''}
+                ${selected.has(id) ? "checked" : ""}
               />
               <span class="settings-method-text">
                 <span class="settings-method-label">${label}</span>
                 <span class="settings-method-desc">${desc}</span>
               </span>
             </label>
-          `).join('')}
+          `,
+          ).join("")}
         </fieldset>
 
         <p class="settings-status" id="settings-status" aria-live="polite" hidden></p>
@@ -230,52 +236,61 @@ export class SettingsPage extends HTMLElement {
   }
 
   bindEvents() {
-    const copyBtn = this.querySelector('#settings-ntfy-copy');
-    copyBtn?.addEventListener('click', async () => {
-      const topic = this.querySelector('#settings-ntfy-topic')?.textContent || '';
+    const copyBtn = this.querySelector("#settings-ntfy-copy");
+    copyBtn?.addEventListener("click", async () => {
+      const topic =
+        this.querySelector("#settings-ntfy-topic")?.textContent || "";
       try {
         await navigator.clipboard.writeText(topic);
-        copyBtn.textContent = 'Copied';
-        setTimeout(() => { copyBtn.textContent = 'Copy'; }, 1500);
+        copyBtn.textContent = "Copied";
+        setTimeout(() => {
+          copyBtn.textContent = "Copy";
+        }, 1500);
       } catch {
-        copyBtn.textContent = 'Copy failed';
-        setTimeout(() => { copyBtn.textContent = 'Copy'; }, 1500);
+        copyBtn.textContent = "Copy failed";
+        setTimeout(() => {
+          copyBtn.textContent = "Copy";
+        }, 1500);
       }
     });
 
-    const saveBtn = this.querySelector('#settings-save');
-    const statusEl = this.querySelector('#settings-status');
-    const labelEl = saveBtn.querySelector('.settings-save-label');
+    const saveBtn = this.querySelector("#settings-save");
+    const statusEl = this.querySelector("#settings-status");
+    const labelEl = saveBtn.querySelector(".settings-save-label");
 
     const setStatus = (text, kind) => {
       statusEl.textContent = text;
-      statusEl.classList.toggle('is-success', kind === 'success');
+      statusEl.classList.toggle("is-success", kind === "success");
       statusEl.hidden = false;
     };
 
-    saveBtn.addEventListener('click', async () => {
-      const methods = [...this.querySelectorAll('input[type="checkbox"]:checked')]
-        .map((input) => input.value);
+    saveBtn.addEventListener("click", async () => {
+      const methods = [
+        ...this.querySelectorAll('input[type="checkbox"]:checked'),
+      ].map((input) => input.value);
 
       saveBtn.disabled = true;
-      labelEl.textContent = 'Saving…';
+      labelEl.textContent = "Saving…";
       statusEl.hidden = true;
 
       const error = await dataStore.updateNotifyMethods(methods);
 
       saveBtn.disabled = false;
-      labelEl.textContent = 'Save preferences';
+      labelEl.textContent = "Save preferences";
 
       if (error) {
-        setStatus('Could not save your preferences. Please try again.', 'error');
+        setStatus(
+          "Could not save your preferences. Please try again.",
+          "error",
+        );
       } else {
         setStatus(
-          methods.length ? 'Preferences saved.' : 'Notifications turned off.',
-          'success'
+          methods.length ? "Preferences saved." : "Notifications turned off.",
+          "success",
         );
       }
     });
   }
 }
 
-customElements.define('settings-page', SettingsPage);
+customElements.define("settings-page", SettingsPage);

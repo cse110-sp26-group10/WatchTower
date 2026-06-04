@@ -1,10 +1,10 @@
-import { projectScope } from '../core/project-scope.js';
-import { deploymentScope } from '../core/deployment-scope.js';
-import { getFeedbackDashboardData } from '../core/dashboard-data.js';
-import '../components/dashboard-styles.js';
-import '../components/feedback-list.js';
-import '../components/panel-section.js';
-import '../components/summary-metrics.js';
+import { projectScope } from "../core/project-scope.js";
+import { deploymentScope } from "../core/deployment-scope.js";
+import { getFeedbackDashboardData } from "../core/dashboard-data.js";
+import "../components/dashboard-styles.js";
+import "../components/feedback-list.js";
+import "../components/panel-section.js";
+import "../components/summary-metrics.js";
 
 export class FeedbackPage extends HTMLElement {
   set route(value) {
@@ -14,11 +14,15 @@ export class FeedbackPage extends HTMLElement {
   connectedCallback() {
     this.render();
     this.cacheElements();
-    if (projectScope && typeof projectScope.subscribe === 'function') {
-      this.projectUnsubscribe = projectScope.subscribe(() => this.updatePageData());
+    if (projectScope && typeof projectScope.subscribe === "function") {
+      this.projectUnsubscribe = projectScope.subscribe(() =>
+        this.updatePageData(),
+      );
     }
-    if (deploymentScope && typeof deploymentScope.subscribe === 'function') {
-      this.deploymentUnsubscribe = deploymentScope.subscribe(() => this.updatePageData());
+    if (deploymentScope && typeof deploymentScope.subscribe === "function") {
+      this.deploymentUnsubscribe = deploymentScope.subscribe(() =>
+        this.updatePageData(),
+      );
     }
     this.updatePageData();
   }
@@ -29,7 +33,7 @@ export class FeedbackPage extends HTMLElement {
   }
 
   render() {
-    this.className = 'dashboard-viewport';
+    this.className = "dashboard-viewport";
     this.innerHTML = `
       <summary-metrics></summary-metrics>
 
@@ -42,8 +46,8 @@ export class FeedbackPage extends HTMLElement {
   }
 
   cacheElements() {
-    this.metrics = this.querySelector('summary-metrics');
-    this.feedbackList = this.querySelector('#feedback-page-list');
+    this.metrics = this.querySelector("summary-metrics");
+    this.feedbackList = this.querySelector("#feedback-page-list");
   }
 
   updatePageData() {
@@ -53,4 +57,4 @@ export class FeedbackPage extends HTMLElement {
   }
 }
 
-customElements.define('feedback-page', FeedbackPage);
+customElements.define("feedback-page", FeedbackPage);

@@ -4,9 +4,11 @@
 export class ErrorDetailModal extends HTMLElement {
   connectedCallback() {
     this.render();
-    this.modal = this.querySelector('#error-detail-modal');
-    this.querySelector('#modal-close-btn')?.addEventListener('click', () => this.close());
-    this.modal?.addEventListener('click', (event) => {
+    this.modal = this.querySelector("#error-detail-modal");
+    this.querySelector("#modal-close-btn")?.addEventListener("click", () =>
+      this.close(),
+    );
+    this.modal?.addEventListener("click", (event) => {
       if (event.target === this.modal) this.close();
     });
   }
@@ -53,63 +55,70 @@ export class ErrorDetailModal extends HTMLElement {
   open(error) {
     if (!error || !this.modal) return;
 
-    const severityBadge = this.querySelector('#modal-severity-badge');
-    const title = this.querySelector('#modal-error-title');
-    const message = this.querySelector('#modal-error-message');
-    const path = this.querySelector('#modal-error-path');
-    const time = this.querySelector('#modal-error-time');
-    const badges = this.querySelector('#modal-deployment-badges');
-    const severity = error.metadata?.severity?.toUpperCase() || 'CRITICAL';
+    const severityBadge = this.querySelector("#modal-severity-badge");
+    const title = this.querySelector("#modal-error-title");
+    const message = this.querySelector("#modal-error-message");
+    const path = this.querySelector("#modal-error-path");
+    const time = this.querySelector("#modal-error-time");
+    const badges = this.querySelector("#modal-deployment-badges");
+    const severity = error.metadata?.severity?.toUpperCase() || "CRITICAL";
 
     severityBadge.textContent = severity;
-    severityBadge.style.fontSize = '10px';
-    severityBadge.style.fontFamily = 'monospace';
-    severityBadge.style.padding = '2px 6px';
-    severityBadge.style.borderRadius = 'var(--wt-radius-sm)';
-    severityBadge.style.fontWeight = '700';
-    severityBadge.style.backgroundColor = severity === 'WARNING' ? 'var(--color-warn-bg)' : 'var(--color-crit-bg)';
-    severityBadge.style.color = severity === 'WARNING' ? 'var(--color-warn-text)' : 'var(--color-crit-text)';
+    severityBadge.style.fontSize = "10px";
+    severityBadge.style.fontFamily = "monospace";
+    severityBadge.style.padding = "2px 6px";
+    severityBadge.style.borderRadius = "var(--wt-radius-sm)";
+    severityBadge.style.fontWeight = "700";
+    severityBadge.style.backgroundColor =
+      severity === "WARNING" ? "var(--color-warn-bg)" : "var(--color-crit-bg)";
+    severityBadge.style.color =
+      severity === "WARNING"
+        ? "var(--color-warn-text)"
+        : "var(--color-crit-text)";
 
     title.textContent = `Event ID: ${error.id}`;
-    message.textContent = error.metadata?.message || 'No extended message trace provided.';
-    path.textContent = error.pathname || '-';
-    time.textContent = error.timestamp ? new Date(error.timestamp).toLocaleString() : 'Recent';
+    message.textContent =
+      error.metadata?.message || "No extended message trace provided.";
+    path.textContent = error.pathname || "-";
+    time.textContent = error.timestamp
+      ? new Date(error.timestamp).toLocaleString()
+      : "Recent";
 
     this.renderDeploymentBadges(badges, error.deployment);
-    this.modal.style.display = 'flex';
+    this.modal.style.display = "flex";
   }
 
   close() {
-    if (this.modal) this.modal.style.display = 'none';
+    if (this.modal) this.modal.style.display = "none";
   }
 
   renderDeploymentBadges(container, deployment) {
     container.replaceChildren();
 
     if (!deployment) {
-      const empty = document.createElement('span');
-      empty.style.color = 'var(--wt-text-3)';
-      empty.style.fontStyle = 'italic';
-      empty.textContent = 'No specific deployment tag attached';
+      const empty = document.createElement("span");
+      empty.style.color = "var(--wt-text-3)";
+      empty.style.fontStyle = "italic";
+      empty.textContent = "No specific deployment tag attached";
       container.append(empty);
       return;
     }
 
     const rows = [
-      ['ID', deployment.id],
-      ['Version', deployment.version || 'unknown'],
-      ['Hash', deployment.commit_hash || 'HEAD'],
+      ["ID", deployment.id],
+      ["Version", deployment.version || "unknown"],
+      ["Hash", deployment.commit_hash || "HEAD"],
     ];
 
     for (const [label, value] of rows) {
-      const badge = document.createElement('span');
-      badge.style.background = 'var(--wt-surface-2)';
-      badge.style.padding = '4px 8px';
-      badge.style.borderRadius = 'var(--wt-radius-sm)';
-      badge.style.border = '1px solid var(--wt-border)';
+      const badge = document.createElement("span");
+      badge.style.background = "var(--wt-surface-2)";
+      badge.style.padding = "4px 8px";
+      badge.style.borderRadius = "var(--wt-radius-sm)";
+      badge.style.border = "1px solid var(--wt-border)";
       badge.append(`${label}: `);
 
-      const strong = document.createElement('b');
+      const strong = document.createElement("b");
       strong.textContent = value;
       badge.append(strong);
       container.append(badge);
@@ -117,4 +126,4 @@ export class ErrorDetailModal extends HTMLElement {
   }
 }
 
-customElements.define('error-detail-modal', ErrorDetailModal);
+customElements.define("error-detail-modal", ErrorDetailModal);

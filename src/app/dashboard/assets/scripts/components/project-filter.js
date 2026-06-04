@@ -1,5 +1,5 @@
-import { dataStore } from '../core/data-store.js';
-import { projectScope } from '../core/project-scope.js';
+import { dataStore } from "../core/data-store.js";
+import { projectScope } from "../core/project-scope.js";
 
 const ALL_ID = "all";
 
@@ -22,12 +22,20 @@ export class ProjectFilter extends HTMLElement {
     });
 
     document.addEventListener("watchtower:data-update", () => {
-      const projects = new Set(dataStore.getProjects().map(project => project.id)).add(ALL_ID);
-      const options = new Set(Array.from(this.selectElement.options).map(select => isNaN(select.value) ? select.value : Number(select.value)));
-      if (projects.size === options.size && projects.isSubsetOf(options)) { // If the two sets are identical (no change occurred)
+      const projects = new Set(
+        dataStore.getProjects().map((project) => project.id),
+      ).add(ALL_ID);
+      const options = new Set(
+        Array.from(this.selectElement.options).map((select) =>
+          isNaN(select.value) ? select.value : Number(select.value),
+        ),
+      );
+      if (projects.size === options.size && projects.isSubsetOf(options)) {
+        // If the two sets are identical (no change occurred)
         return;
       }
-      if (!projects.has(projectScope.id)) { // Selected project no longer exists
+      if (!projects.has(projectScope.id)) {
+        // Selected project no longer exists
         projectScope.set(ALL_ID);
       }
       if (this.selectElement) {
@@ -44,11 +52,11 @@ export class ProjectFilter extends HTMLElement {
 
   render() {
     // 1. Create the select dropdown menu
-    const select = document.createElement('select');
-    select.id = 'project-filter';
-    select.className = 'filter-select';
-    select.setAttribute('aria-label', 'Filter by project');
-    
+    const select = document.createElement("select");
+    select.id = "project-filter";
+    select.className = "filter-select";
+    select.setAttribute("aria-label", "Filter by project");
+
     select.style = `
       padding: 4px 8px;
       font-size: 13px;
@@ -64,15 +72,15 @@ export class ProjectFilter extends HTMLElement {
     this.selectElement = select;
 
     // 3. Add default item
-    const allOption = document.createElement('option');
+    const allOption = document.createElement("option");
     allOption.value = ALL_ID;
-    allOption.textContent = 'All projects';
+    allOption.textContent = "All projects";
     select.append(allOption);
 
     // 4. Populate list from data store array
     const projects = dataStore.getProjects() || [];
     for (const project of projects) {
-      const option = document.createElement('option');
+      const option = document.createElement("option");
       option.value = project.id;
       // Keep dropdown names beautifully clean
       option.textContent = `${project.name} (${project.id})`;
@@ -80,16 +88,18 @@ export class ProjectFilter extends HTMLElement {
     }
 
     // 5. Change update cycle execution loop
-    select.addEventListener('change', () => {
-      if (typeof projectScope.set === 'function') {
-        projectScope.set(isNaN(select.value) ? select.value : Number(select.value));
+    select.addEventListener("change", () => {
+      if (typeof projectScope.set === "function") {
+        projectScope.set(
+          isNaN(select.value) ? select.value : Number(select.value),
+        );
       }
     });
 
     // 6. Complete cleanup: clear out everything and append ONLY the dropdown element
-    this.innerHTML = ''; 
+    this.innerHTML = "";
     this.append(select);
-    
+
     // Initial sync alignment step
     this.syncSelectValue();
   }
@@ -101,4 +111,4 @@ export class ProjectFilter extends HTMLElement {
   }
 }
 
-customElements.define('project-filter', ProjectFilter);
+customElements.define("project-filter", ProjectFilter);

@@ -1,39 +1,46 @@
-import { dataStore } from './data-store.js';
-import { projectScope } from './project-scope.js';
-import { deploymentScope } from './deployment-scope.js';
-import { relativeTime } from './formatters.js';
+import { dataStore } from "./data-store.js";
+import { projectScope } from "./project-scope.js";
+import { deploymentScope } from "./deployment-scope.js";
+import { relativeTime } from "./formatters.js";
 
 /**
  * Return the currently selected project id.
  */
 export function getCurrentProjectId() {
-  if (!projectScope) return 'all';
+  if (!projectScope) return "all";
   if (projectScope.id) return projectScope.id;
   if (projectScope.project?.id) return projectScope.project.id;
-  return 'all';
+  return "all";
 }
 
 /**
  * Return the currently selected deployment id.
  */
 export function getCurrentDeploymentId() {
-  if (!deploymentScope) return 'all';
+  if (!deploymentScope) return "all";
   if (deploymentScope.id) return deploymentScope.id;
   if (deploymentScope.deployment?.id) return deploymentScope.deployment.id;
-  return 'all';
+  return "all";
 }
 
 /**
  * Return events filtered to the selected deployment scope.
  */
-export function getScopedEvents(deploymentId = getCurrentDeploymentId(), projectId = getCurrentProjectId()) {
+export function getScopedEvents(
+  deploymentId = getCurrentDeploymentId(),
+  projectId = getCurrentProjectId(),
+) {
   const events = dataStore.getEvents() || [];
-  const projectScopedEvents = (!projectId || projectId === 'all')
-    ? events
-    : events.filter((event) => event.project_id === projectId);
-  const scopedEvents = (!deploymentId || deploymentId === 'all')
-    ? projectScopedEvents
-    : projectScopedEvents.filter((event) => event.deployment?.id === deploymentId);
+  const projectScopedEvents =
+    !projectId || projectId === "all"
+      ? events
+      : events.filter((event) => event.project_id === projectId);
+  const scopedEvents =
+    !deploymentId || deploymentId === "all"
+      ? projectScopedEvents
+      : projectScopedEvents.filter(
+          (event) => event.deployment?.id === deploymentId,
+        );
 
   return sortEventsByTimestamp(scopedEvents);
 }
@@ -41,9 +48,17 @@ export function getScopedEvents(deploymentId = getCurrentDeploymentId(), project
 /**
  * Find one event by id.
  */
-export function getEventById(eventId, deploymentId = getCurrentDeploymentId(), projectId = getCurrentProjectId()) {
+export function getEventById(
+  eventId,
+  deploymentId = getCurrentDeploymentId(),
+  projectId = getCurrentProjectId(),
+) {
   if (!eventId) return null;
-  return getScopedEvents(deploymentId, projectId).find((event) => event.id === eventId) || null;
+  return (
+    getScopedEvents(deploymentId, projectId).find(
+      (event) => event.id === eventId,
+    ) || null
+  );
 }
 
 /**
@@ -62,10 +77,10 @@ function getEventTime(event) {
  */
 export function splitEventsByType(events) {
   return {
-    errors: events.filter((event) => event.event_type === 'error'),
-    pageLoads: events.filter((event) => event.event_type === 'page_load'),
-    clicks: events.filter((event) => event.event_type === 'click'),
-    surveys: events.filter((event) => event.event_type === 'survey'),
+    errors: events.filter((event) => event.event_type === "error"),
+    pageLoads: events.filter((event) => event.event_type === "page_load"),
+    clicks: events.filter((event) => event.event_type === "click"),
+    surveys: events.filter((event) => event.event_type === "survey"),
   };
 }
 
@@ -74,7 +89,10 @@ export function splitEventsByType(events) {
  */
 export function calculateAverageLatency(pageLoads) {
   if (!pageLoads.length) return 0;
-  const totalLatency = pageLoads.reduce((sum, event) => sum + (event.metadata?.load_time || 0), 0);
+  const totalLatency = pageLoads.reduce(
+    (sum, event) => sum + (event.metadata?.load_time || 0),
+    0,
+  );
   return Math.round(totalLatency / pageLoads.length);
 }
 
@@ -83,7 +101,7 @@ export function calculateAverageLatency(pageLoads) {
  */
 export function groupEventsByPath(events) {
   return events.reduce((counts, event) => {
-    const path = event.pathname || '-';
+    const path = event.pathname || "-";
     counts[path] = (counts[path] || 0) + 1;
     return counts;
   }, {});
@@ -93,15 +111,18 @@ export function groupEventsByPath(events) {
  * Count error events by severity.
  */
 export function getErrorSeverityCounts(errors) {
-  return errors.reduce((counts, error) => {
-    const severity = error.metadata?.severity?.toLowerCase();
-    if (severity === 'warning') {
-      counts.warnings += 1;
-    } else {
-      counts.critical += 1;
-    }
-    return counts;
-  }, { total: errors.length, critical: 0, warnings: 0 });
+  return errors.reduce(
+    (counts, error) => {
+      const severity = error.metadata?.severity?.toLowerCase();
+      if (severity === "warning") {
+        counts.warnings += 1;
+      } else {
+        counts.critical += 1;
+      }
+      return counts;
+    },
+    { total: errors.length, critical: 0, warnings: 0 },
+  );
 }
 
 /**
@@ -112,7 +133,10 @@ export function getErrorSeverityCounts(errors) {
  *   - projects      → [{ id, name, website_url }] for the project filter dropdown labels
  *   - uptime        → legacy pre-processed summary (kept for backward compat)
  */
-export function getHomeDashboardData(deploymentId = getCurrentDeploymentId(), projectId = getCurrentProjectId()) {
+export function getHomeDashboardData(
+  deploymentId = getCurrentDeploymentId(),
+  projectId = getCurrentProjectId(),
+) {
   const events = getScopedEvents(deploymentId, projectId);
   const { errors, pageLoads, clicks, surveys } = splitEventsByType(events);
   const uptimeLog = dataStore.getUptimeLog() || [];
@@ -138,10 +162,15 @@ export function getHomeDashboardData(deploymentId = getCurrentDeploymentId(), pr
     loadPaths: groupEventsByPath(pageLoads),
     clickPaths: groupEventsByPath(clicks),
     metrics: [
-      { label: 'Errors', value: errors.length, state: 'danger' },
-      { label: 'Avg Load Time', value: pageLoads.length ? `${calculateAverageLatency(pageLoads)}ms` : '-' },
-      { label: 'Page Loads', value: pageLoads.length },
-      { label: 'Clicks', value: clicks.length },
+      { label: "Errors", value: errors.length, state: "danger" },
+      {
+        label: "Avg Load Time",
+        value: pageLoads.length
+          ? `${calculateAverageLatency(pageLoads)}ms`
+          : "-",
+      },
+      { label: "Page Loads", value: pageLoads.length },
+      { label: "Clicks", value: clicks.length },
     ],
   };
 }
@@ -155,19 +184,21 @@ function buildUptimeSummary(log) {
   const latest = sorted[sorted.length - 1] || null;
   const checks = expandUptimeTimeline(sorted);
   const upCount = checks.filter((check) => check.is_up).length;
-  const uptimePercent = checks.length ? Math.round((upCount / checks.length) * 100) : 0;
+  const uptimePercent = checks.length
+    ? Math.round((upCount / checks.length) * 100)
+    : 0;
   const currentProject = projectScope?.project;
 
   return {
-    name: currentProject?.name || 'N/A',
-    category: 'Production',
-    url: 'drape.example.com',
+    name: currentProject?.name || "N/A",
+    category: "Production",
+    url: "drape.example.com",
     isHealthy: latest?.is_up !== false,
     latency: latest?.latency || 0,
     uptimePercent,
     checks,
-    rangeStartLabel: (checks[0] && relativeTime(checks[0].timestamp)) || 'N/A',
-    rangeEndLabel: (latest && relativeTime(latest.timestamp)) || 'N/A',
+    rangeStartLabel: (checks[0] && relativeTime(checks[0].timestamp)) || "N/A",
+    rangeEndLabel: (latest && relativeTime(latest.timestamp)) || "N/A",
   };
 }
 
@@ -196,7 +227,10 @@ function expandUptimeTimeline(log) {
 /**
  * Build the data model used by the errors dashboard.
  */
-export function getErrorsDashboardData(deploymentId = getCurrentDeploymentId(), projectId = getCurrentProjectId()) {
+export function getErrorsDashboardData(
+  deploymentId = getCurrentDeploymentId(),
+  projectId = getCurrentProjectId(),
+) {
   const events = getScopedEvents(deploymentId, projectId);
   const { errors } = splitEventsByType(events);
   const severityCounts = getErrorSeverityCounts(errors);
@@ -204,9 +238,13 @@ export function getErrorsDashboardData(deploymentId = getCurrentDeploymentId(), 
   return {
     errors,
     metrics: [
-      { label: 'Total Errors', value: severityCounts.total, state: 'danger' },
-      { label: 'Critical Errors', value: severityCounts.critical, state: 'danger' },
-      { label: 'Warnings', value: severityCounts.warnings, state: 'warning' },
+      { label: "Total Errors", value: severityCounts.total, state: "danger" },
+      {
+        label: "Critical Errors",
+        value: severityCounts.critical,
+        state: "danger",
+      },
+      { label: "Warnings", value: severityCounts.warnings, state: "warning" },
     ],
   };
 }
@@ -214,23 +252,40 @@ export function getErrorsDashboardData(deploymentId = getCurrentDeploymentId(), 
 /**
  * Build the data model used by the feedback dashboard.
  */
-export function getFeedbackDashboardData(deploymentId = getCurrentDeploymentId(), projectId = getCurrentProjectId()) {
+export function getFeedbackDashboardData(
+  deploymentId = getCurrentDeploymentId(),
+  projectId = getCurrentProjectId(),
+) {
   const events = getScopedEvents(deploymentId, projectId);
   const { surveys } = splitEventsByType(events);
   const ratings = surveys
     .map((survey) => Number(survey.metadata?.rating || 0))
     .filter((rating) => rating > 0);
   const averageRating = ratings.length
-    ? (ratings.reduce((sum, rating) => sum + rating, 0) / ratings.length).toFixed(1)
-    : '-';
+    ? (
+        ratings.reduce((sum, rating) => sum + rating, 0) / ratings.length
+      ).toFixed(1)
+    : "-";
 
   return {
     surveys,
     metrics: [
-      { label: 'Feedback Entries', value: surveys.length },
-      { label: 'Avg Rating', value: averageRating === '-' ? '-' : `${averageRating}/5`, state: 'warning' },
-      { label: 'Low Ratings', value: ratings.filter((rating) => rating <= 2).length, state: 'danger' },
-      { label: 'High Ratings', value: ratings.filter((rating) => rating >= 4).length, state: 'success' },
+      { label: "Feedback Entries", value: surveys.length },
+      {
+        label: "Avg Rating",
+        value: averageRating === "-" ? "-" : `${averageRating}/5`,
+        state: "warning",
+      },
+      {
+        label: "Low Ratings",
+        value: ratings.filter((rating) => rating <= 2).length,
+        state: "danger",
+      },
+      {
+        label: "High Ratings",
+        value: ratings.filter((rating) => rating >= 4).length,
+        state: "success",
+      },
     ],
   };
 }
@@ -238,7 +293,10 @@ export function getFeedbackDashboardData(deploymentId = getCurrentDeploymentId()
 /**
  * Build the data model used by the activity dashboard.
  */
-export function getActivityDashboardData(deploymentId = getCurrentDeploymentId(), projectId = getCurrentProjectId()) {
+export function getActivityDashboardData(
+  deploymentId = getCurrentDeploymentId(),
+  projectId = getCurrentProjectId(),
+) {
   const events = getScopedEvents(deploymentId, projectId);
   const { pageLoads, clicks } = splitEventsByType(events);
 
@@ -249,10 +307,15 @@ export function getActivityDashboardData(deploymentId = getCurrentDeploymentId()
     loadPaths: groupEventsByPath(pageLoads),
     clickPaths: groupEventsByPath(clicks),
     metrics: [
-      { label: 'Total Activity', value: events.length },
-      { label: 'Page Loads', value: pageLoads.length },
-      { label: 'Clicks', value: clicks.length },
-      { label: 'Avg Load Time', value: pageLoads.length ? `${calculateAverageLatency(pageLoads)}ms` : '-' },
+      { label: "Total Activity", value: events.length },
+      { label: "Page Loads", value: pageLoads.length },
+      { label: "Clicks", value: clicks.length },
+      {
+        label: "Avg Load Time",
+        value: pageLoads.length
+          ? `${calculateAverageLatency(pageLoads)}ms`
+          : "-",
+      },
     ],
   };
 }

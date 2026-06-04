@@ -1,4 +1,4 @@
-import { dataStore } from '../core/data-store.js';
+import { dataStore } from "../core/data-store.js";
 
 const SUN_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
   <circle cx="12" cy="12" r="5"/>
@@ -450,63 +450,67 @@ export class LoginPage extends HTMLElement {
   }
 
   bindEvents() {
-    const form      = this.querySelector('#login-form');
-    const submitBtn = this.querySelector('#login-submit');
-    const errorEl   = this.querySelector('#login-error');
-    const usernameInput = this.querySelector('#login-username');
-    const passwordInput = this.querySelector('#login-password');
-    const passwordToggle = this.querySelector('#login-password-toggle');
-    const themeBtn  = this.querySelector('#login-theme-toggle');
+    const form = this.querySelector("#login-form");
+    const submitBtn = this.querySelector("#login-submit");
+    const errorEl = this.querySelector("#login-error");
+    const usernameInput = this.querySelector("#login-username");
+    const passwordInput = this.querySelector("#login-password");
+    const passwordToggle = this.querySelector("#login-password-toggle");
+    const themeBtn = this.querySelector("#login-theme-toggle");
 
     // ── Password show/hide toggle ─────────────────────────────────
-    passwordToggle?.addEventListener('click', () => {
-      const show = passwordInput.type === 'password';
-      passwordInput.type = show ? 'text' : 'password';
+    passwordToggle?.addEventListener("click", () => {
+      const show = passwordInput.type === "password";
+      passwordInput.type = show ? "text" : "password";
       passwordToggle.innerHTML = show ? EYE_OFF_SVG : EYE_SVG;
-      passwordToggle.setAttribute('aria-pressed', String(show));
-      passwordToggle.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+      passwordToggle.setAttribute("aria-pressed", String(show));
+      passwordToggle.setAttribute(
+        "aria-label",
+        show ? "Hide password" : "Show password",
+      );
       passwordInput.focus();
     });
 
     // ── Theme toggle (mirrors app behaviour) ──────────────────────
     const updateToggleUI = (isDark) => {
-      const sun  = this.querySelector('#theme-icon-sun');
-      const moon = this.querySelector('#theme-icon-moon');
+      const sun = this.querySelector("#theme-icon-sun");
+      const moon = this.querySelector("#theme-icon-moon");
       if (!sun || !moon) return;
       if (isDark) {
-        moon.style.background = 'var(--wt-surface)';
-        moon.style.color = 'var(--wt-text)';
-        sun.style.background = 'transparent';
-        sun.style.color = 'var(--wt-text-3)';
+        moon.style.background = "var(--wt-surface)";
+        moon.style.color = "var(--wt-text)";
+        sun.style.background = "transparent";
+        sun.style.color = "var(--wt-text-3)";
       } else {
-        sun.style.background = 'var(--wt-surface)';
-        sun.style.color = 'var(--wt-text)';
-        moon.style.background = 'transparent';
-        moon.style.color = 'var(--wt-text-3)';
+        sun.style.background = "var(--wt-surface)";
+        sun.style.color = "var(--wt-text)";
+        moon.style.background = "transparent";
+        moon.style.color = "var(--wt-text-3)";
       }
     };
 
-    themeBtn?.addEventListener('click', () => {
+    themeBtn?.addEventListener("click", () => {
       const html = document.documentElement;
-      const isDark = html.dataset.theme?.includes('dark');
+      const isDark = html.dataset.theme?.includes("dark");
       const flags = [];
-      if (!isDark) flags.push('dark');
-      if (localStorage.getItem('wt_colorblind') === '1') flags.push('colorblind');
-      html.dataset.theme = flags.join(' ');
-      localStorage.setItem('wt_dark', isDark ? '0' : '1');
+      if (!isDark) flags.push("dark");
+      if (localStorage.getItem("wt_colorblind") === "1")
+        flags.push("colorblind");
+      html.dataset.theme = flags.join(" ");
+      localStorage.setItem("wt_dark", isDark ? "0" : "1");
       updateToggleUI(!isDark);
     });
 
     // Set initial icon state
-    updateToggleUI(document.documentElement.dataset.theme?.includes('dark'));
+    updateToggleUI(document.documentElement.dataset.theme?.includes("dark"));
 
     // ── Submit handler ─────────────────────────────────────────────
     const handleSubmit = () => {
       // Clear previous errors
       errorEl.hidden = true;
-      errorEl.textContent = '';
-      usernameInput.classList.remove('is-invalid');
-      passwordInput.classList.remove('is-invalid');
+      errorEl.textContent = "";
+      usernameInput.classList.remove("is-invalid");
+      passwordInput.classList.remove("is-invalid");
 
       const username = usernameInput.value.trim();
       const password = passwordInput.value;
@@ -514,22 +518,23 @@ export class LoginPage extends HTMLElement {
       // Basic client-side validation
       let valid = true;
       if (!username) {
-        usernameInput.classList.add('is-invalid');
+        usernameInput.classList.add("is-invalid");
         valid = false;
       }
       if (!password) {
-        passwordInput.classList.add('is-invalid');
+        passwordInput.classList.add("is-invalid");
         valid = false;
       }
       if (!valid) {
-        errorEl.textContent = 'Please fill in all fields.';
+        errorEl.textContent = "Please fill in all fields.";
         errorEl.hidden = false;
         return;
       }
 
       submitBtn.disabled = true;
-      submitBtn.querySelector('.login-submit-label').textContent = 'Signing in…';
-      submitBtn.querySelector('.login-submit-spinner').hidden = false;
+      submitBtn.querySelector(".login-submit-label").textContent =
+        "Signing in…";
+      submitBtn.querySelector(".login-submit-spinner").hidden = false;
 
       setTimeout(async () => {
         // Mock: any non-empty credentials pass
@@ -537,28 +542,29 @@ export class LoginPage extends HTMLElement {
         const error = await dataStore.logIn(username, password);
 
         if (!error) {
-          localStorage.setItem('wt-auth', '1');
+          localStorage.setItem("wt-auth", "1");
           window.location.reload();
         } else {
           submitBtn.disabled = false;
-          submitBtn.querySelector('.login-submit-label').textContent = 'Sign In';
-          submitBtn.querySelector('.login-submit-spinner').hidden = true;
+          submitBtn.querySelector(".login-submit-label").textContent =
+            "Sign In";
+          submitBtn.querySelector(".login-submit-spinner").hidden = true;
 
-          errorEl.textContent = 'Invalid username or password.';
+          errorEl.textContent = "Invalid username or password.";
           errorEl.hidden = false;
-          passwordInput.classList.add('is-invalid');
+          passwordInput.classList.add("is-invalid");
           passwordInput.focus();
         }
       }, 0); // No real backend — redirect immediately
     };
 
-    submitBtn?.addEventListener('click', handleSubmit);
+    submitBtn?.addEventListener("click", handleSubmit);
 
     // Allow Enter key anywhere in the form
-    form?.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') handleSubmit();
+    form?.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") handleSubmit();
     });
   }
 }
 
-customElements.define('login-page', LoginPage);
+customElements.define("login-page", LoginPage);

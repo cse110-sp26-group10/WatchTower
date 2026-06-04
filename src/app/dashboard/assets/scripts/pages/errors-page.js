@@ -1,11 +1,14 @@
-import { projectScope } from '../core/project-scope.js';
-import { deploymentScope } from '../core/deployment-scope.js';
-import { getErrorsDashboardData, getEventById } from '../core/dashboard-data.js';
-import '../components/dashboard-styles.js';
-import '../components/error-detail-modal.js';
-import '../components/error-list.js';
-import '../components/panel-section.js';
-import '../components/summary-metrics.js';
+import { projectScope } from "../core/project-scope.js";
+import { deploymentScope } from "../core/deployment-scope.js";
+import {
+  getErrorsDashboardData,
+  getEventById,
+} from "../core/dashboard-data.js";
+import "../components/dashboard-styles.js";
+import "../components/error-detail-modal.js";
+import "../components/error-list.js";
+import "../components/panel-section.js";
+import "../components/summary-metrics.js";
 
 export class ErrorsPage extends HTMLElement {
   constructor() {
@@ -22,24 +25,28 @@ export class ErrorsPage extends HTMLElement {
   connectedCallback() {
     this.render();
     this.cacheElements();
-    if (projectScope && typeof projectScope.subscribe === 'function') {
-      this.projectUnsubscribe = projectScope.subscribe(() => this.updatePageData());
+    if (projectScope && typeof projectScope.subscribe === "function") {
+      this.projectUnsubscribe = projectScope.subscribe(() =>
+        this.updatePageData(),
+      );
     }
-    if (deploymentScope && typeof deploymentScope.subscribe === 'function') {
-      this.deploymentUnsubscribe = deploymentScope.subscribe(() => this.updatePageData());
+    if (deploymentScope && typeof deploymentScope.subscribe === "function") {
+      this.deploymentUnsubscribe = deploymentScope.subscribe(() =>
+        this.updatePageData(),
+      );
     }
     this.updatePageData();
-    this.addEventListener('error-selected', this.handleErrorSelected);
+    this.addEventListener("error-selected", this.handleErrorSelected);
   }
 
   disconnectedCallback() {
     this.projectUnsubscribe?.();
     this.deploymentUnsubscribe?.();
-    this.removeEventListener('error-selected', this.handleErrorSelected);
+    this.removeEventListener("error-selected", this.handleErrorSelected);
   }
 
   render() {
-    this.className = 'dashboard-viewport';
+    this.className = "dashboard-viewport";
     this.innerHTML = `
       <summary-metrics></summary-metrics>
 
@@ -53,9 +60,9 @@ export class ErrorsPage extends HTMLElement {
   }
 
   cacheElements() {
-    this.metrics = this.querySelector('summary-metrics');
-    this.errorList = this.querySelector('#errors-page-list');
-    this.errorModal = this.querySelector('#errors-page-modal');
+    this.metrics = this.querySelector("summary-metrics");
+    this.errorList = this.querySelector("#errors-page-list");
+    this.errorModal = this.querySelector("#errors-page-modal");
   }
 
   updatePageData() {
@@ -69,4 +76,4 @@ export class ErrorsPage extends HTMLElement {
   }
 }
 
-customElements.define('errors-page', ErrorsPage);
+customElements.define("errors-page", ErrorsPage);

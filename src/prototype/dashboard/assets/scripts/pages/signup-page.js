@@ -1,4 +1,4 @@
-import { dataStore } from '../core/data-store.js';
+import { dataStore } from "../core/data-store.js";
 
 const SUN_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
   <circle cx="12" cy="12" r="5"/>
@@ -446,7 +446,7 @@ export class SignUpPage extends HTMLElement {
 
       const error = await dataStore.signUp(email, password);
       if (error) {
-        showError('Sign up failed');
+        showError("Sign up failed");
         return;
       }
 
