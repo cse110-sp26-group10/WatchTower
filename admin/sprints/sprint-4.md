@@ -58,15 +58,15 @@
 | Name | Did | Doing | Blockers |
 |------|-----|-------|----------|
 | Nicole Sutedja | | | |
-| Evan Marriott | | | |
-| Jensen Guo | | | |
-| Han Yang-Lin | | | |
-| Kevin Wang | | | |
-| Benedict Luis | | | |
+| Evan Marriott | Merged PRs into main for the dashboard and errors or test app, refactored src folder to have the folder name for the watchtower be “app” instead of prototype | continue refining documentation and PRs | midterm tomorrow |
+| Jensen Guo | UI tweaks (emphasizing error number, fixing hamburger menu), repo cleanup, code comments | Ensure CSS consistency, make branding stronger, documentation | Finals |
+| Han Yang-Lin | Finished integrating the frontend with the backend. Added project filter dropdown that stays updated with the existing list of projects. Updated uptime card with removed project filter, added margins, and fixed checkmark for indicating selection | Add auth reasoning to Supabase ADR | CSE 120 project |
+| Kevin Wang | asking for feedback from the prof | polish the frontend | other ddls and final |
+| Benedict Luis | Went to prof Powell for feedback and started working on audit scrum master doc | Finish issue #86 | Finals and projects |
 | Aron Wu | | | |
-| Kaley Chung | | | |
+| Kaley Chung | Fix the mobile and validate mobile responsiveness across screen sizes (use the tool from Audria's Slack notes) and add Figma to the repo | Delegate tasks and deadlines for demo prep team | midterms |
 | Prakhar Shah | | | |
-| Bethany Miyamoto | | | |
+| Bethany Miyamoto | task for next sprint assigned | repo clean up and dry run | midterm and projects |
 
 ### Stand-up 2 — 06/04/2026
 | Name | Did | Doing | Blockers |
