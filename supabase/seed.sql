@@ -101,9 +101,9 @@ BEGIN
 
   INSERT INTO users (auth_id, alert_id) VALUES (v_auth_id_test, v_alert_id_test) RETURNING id INTO v_user_id_test;
 
-  INSERT INTO users_projects (user_id, project_id) VALUES (v_user_id_test, v_project_id_local);
+  INSERT INTO users_projects (user_id, project_id, permission_level) VALUES (v_user_id_test, v_project_id_local, 'Viewer');
   
-  INSERT INTO users_projects (user_id, project_id) VALUES (v_user_id_test, v_project_id_deployed);
+  INSERT INTO users_projects (user_id, project_id, permission_level) VALUES (v_user_id_test, v_project_id_deployed, 'Owner');
 
   -- First user (Han)
   
@@ -169,7 +169,7 @@ BEGIN
 
   INSERT INTO users (auth_id, alert_id) VALUES (v_auth_id_1, v_alert_id_1) RETURNING id INTO v_user_id_1;
 
-  INSERT INTO users_projects (user_id, project_id) VALUES (v_user_id_1, v_project_id_local);
+  INSERT INTO users_projects (user_id, project_id, permission_level) VALUES (v_user_id_1, v_project_id_local, 'Owner');
 
   -- Second user (Kevin): same project, separate alert_id + email.
   INSERT INTO auth.users (
@@ -234,6 +234,6 @@ BEGIN
 
   INSERT INTO users (auth_id, alert_id) VALUES (v_auth_id_2, v_alert_id_2) RETURNING id INTO v_user_id_2;
 
-  INSERT INTO users_projects (user_id, project_id) VALUES (v_user_id_2, v_project_id_local);
+  INSERT INTO users_projects (user_id, project_id, permission_level) VALUES (v_user_id_2, v_project_id_local, 'Co-Owner');
 
 END $$;

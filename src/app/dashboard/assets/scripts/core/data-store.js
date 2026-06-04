@@ -85,12 +85,14 @@ let PROJECTS = [
     name: 'Drape Storefront',
     website_url: 'https://drape.example.com',
     created_at: '2026-05-30T09:00:00.000Z',
+    permission_level: 'Owner'
   },
   {
     id: 2,
     name: 'Core API',
     website_url: 'https://api.drape.example.com',
     created_at: '2026-05-29T16:30:00.000Z',
+    permission_level: 'Viewer'
   },
 ];
 

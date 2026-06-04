@@ -97,8 +97,8 @@ export const dbHelper = {
     },
     async signUp(email, password) {
         const { data, error } = await newClient().auth.signUp({ email, password });
-        const altMessage = "Invalid credentials";
-        if (error || !data || !data.session || !data.user) { console.error("Sign up failed:", error || altMessage); return { data: null, user: null, error: error || altMessage }; }
+        const invalidMessage = "Invalid credentials";
+        if (error || !data || !data.session || !data.user) { console.error("Sign up failed:", error || invalidMessage); return { data: null, user: null, error: error || invalidMessage }; }
         const { data: user, error: creationError } = await supabase.from("users").insert({ auth_id: data.user.id }).select().single();
         if (creationError) { console.error("User creation failed:", error); return { data: null, user: null, error: error }; }
         console.log("Signed up successfully");
@@ -106,8 +106,8 @@ export const dbHelper = {
     },
     async logIn(email, password) {
         const { data, error } = await newClient().auth.signInWithPassword({ email, password });
-        const altMessage = "Invalid credentials";
-        if (error || !data || !data.session) { console.error("Login failed:", error || altMessage); return { data: null, error: error || altMessage }; }
+        const invalidMessage = "Invalid credentials";
+        if (error || !data || !data.session) { console.error("Login failed:", error || invalidMessage); return { data: null, error: error || invalidMessage }; }
         console.log("Logged in successfully");
         return { data: data, error: null };
     },
@@ -119,8 +119,8 @@ export const dbHelper = {
     },
     async refreshSession(refreshToken) {
         const { data, error } = await newClient().auth.refreshSession({ refresh_token: refreshToken });
-        const altMessage = "Invalid credentials";
-        if (error || !data || !data.session) { console.error("Session refresh failed:", error || altMessage); return { data: null, error: error || altMessage }; }
+        const invalidMessage = "Invalid credentials";
+        if (error || !data || !data.session) { console.error("Session refresh failed:", error || invalidMessage); return { data: null, error: error || invalidMessage }; }
         console.log("Session refreshed successfully");
         return { data: data, error: null };
     },
@@ -129,7 +129,7 @@ export const dbHelper = {
         const { data: project, error } = await supabase.from("projects").insert({name: name, website_url: websiteUrl}).select().single();
         if (error || !project) { console.error("Failed to create project:", error); return { project: null, error: error }; }
         // Link project to user
-        const { error: relationError } = await supabase.from("users_projects").insert({user_id: user.id, project_id: project.id});
+        const { error: relationError } = await supabase.from("users_projects").insert({ user_id: user.id, project_id: project.id, permission_level: "Owner" });
         if (relationError) {
             await supabase.from("projects").delete().eq("id", project.id); // Delete project if not linked to user successfully
             console.error("Failed to link project to user:", relationError);
@@ -139,24 +139,85 @@ export const dbHelper = {
         return { project: project, error: null };
     },
     async deleteProject(user, projectId) {
-        const { data: projects, error } = await supabase.from("users_projects").select("*").eq("user_id", user.id).eq("project_id", projectId);
+        const { data: user_project, error } = await supabase.from("users_projects").select("*").eq("user_id", user.id).eq("project_id", projectId).limit(1).maybeSingle();
         if (error) { console.error("Query error:", error); return error; }
-        const altMessage = "Project not found or project does not belong to user";
-        if (projects.length === 0) { console.error("Failed to delete project:", altMessage); return altMessage; };
-        const { error: deletionError } = await supabase.from("projects").delete().eq("id", projectId);
-        if (deletionError) { console.error("Failed to delete project:", deletionError); return deletionError; }
-        console.log("Project deleted");
+        const notFoundMessage = "Project not found for user";
+        if (!user_project) { console.error("Failed to delete project:", notFoundMessage); return notFoundMessage; };
+        if (user_project.permission_level === "Owner" || user_project.permission_level === "Co-Owner") {
+            // Delete project
+            const { error: deletionError } = await supabase.from("projects").delete().eq("id", projectId);
+            if (deletionError) { console.error("Failed to delete project:", deletionError); return deletionError; }
+            console.log("Project deleted");
+        } else {
+            // Remove link between user and project
+            const { error: deletionError } = await supabase.from("users_projects").delete().eq("user_id", user.id).eq("project_id", projectId);
+            if (deletionError) { console.error("Failed to unlink project:", deletionError); return deletionError; }
+            console.log("Project unlinked");
+        }
         return null;
     },
-    async getProjects(user) {
-        const { data, error } = await supabase.from("users_projects").select("projects(*)").eq("user_id", user.id);
+    async shareProject(user, projectId, sharedUser, permissionLevel) {
+        const { data: user_project, error } = await supabase.from("users_projects").select("*").eq("user_id", user.id).eq("project_id", projectId).limit(1).maybeSingle();
+        if (error) { console.error("Query error:", error); return error; }
+        const notFoundMessage = "Project not found for user";
+        if (!user_project) { console.error("Failed to share project:", notFoundMessage); return notFoundMessage; };
+        const noPermissionMessage = "Insufficient permission";
+        if (user_project.permission_level !== "Owner" && user_project.permission_level !== "Co-Owner") { console.error("Failed to share project:", noPermissionMessage); return noPermissionMessage; };
+        const { data: shared_user_project, sharedUserError } = await supabase.from("users_projects").select("*").eq("user_id", sharedUser.id).eq("project_id", projectId).limit(1).maybeSingle();
+        if (sharedUserError) { console.error("Query error:", sharedUserError); return sharedUserError; }
+        if (!shared_user_project) {
+            // Share with user
+            const { error: shareError } = await supabase.from("users_projects").insert({ user_id: sharedUser.id, project_id: projectId, permission_level: permissionLevel });
+            if (shareError) { console.error("Failed to share project:", shareError); return shareError; }
+            console.log("Project shared");
+        } else {
+            // Update shared user's project permissions
+            if (shared_user_project.permission_level === "Owner" || (user_project.permission_level !== "Owner" && shared_user_project.permission_level === "Co-Owner")) {
+                console.error("Failed to update project share permissions:", noPermissionMessage);
+                return noPermissionMessage;
+            }
+            const { error: shareError } = await supabase.from("users_projects").update({ permission_level: permissionLevel }).eq("user_id", sharedUser.id).eq("project_id", projectId);
+            if (shareError) { console.error("Failed to update project share permissions:", shareError); return shareError; }
+            console.log("Project share permissions updated");
+        }
+        return null;
+    },
+    async unshareProject(user, projectId, sharedUser) {
+        const { data: user_project, error } = await supabase.from("users_projects").select("*").eq("user_id", user.id).eq("project_id", projectId).limit(1).maybeSingle();
+        if (error) { console.error("Query error:", error); return error; }
+        const notFoundMessage = "Project not found for user";
+        if (!user_project) { console.error("Failed to unshare project:", notFoundMessage); return notFoundMessage; };
+        const noPermissionMessage = "Insufficient permission";
+        if (!user_project.permission_level === "Owner" && user_project.permission_level !== "Co-Owner") { console.error("Failed to unshare project:", noPermissionMessage); return noPermissionMessage; };
+        const { data: shared_user_project, sharedUserError } = await supabase.from("users_projects").select("*").eq("user_id", sharedUser.id).eq("project_id", projectId).limit(1).maybeSingle();
+        if (sharedUserError) { console.error("Query error:", sharedUserError); return sharedUserError; }
+        const notSharedMessage = "Project wasn't shared with user initially";
+        if (!shared_user_project) { console.error("Failed to unshare project:", notSharedMessage); return notSharedMessage; }
+        if (shared_user_project.permission_level === "Owner" || (user_project.permission_level !== "Owner" && shared_user_project.permission_level === "Co-Owner")) {
+            console.error("Failed to unshare project:", noPermissionMessage);
+            return noPermissionMessage;
+        }
+        const { error: unshareError } = await supabase.from("users_projects").delete().eq("user_id", sharedUser.id).eq("project_id", projectId);
+        if (unshareError) { console.error("Failed to unshare project:", unshareError); return unshareError; }
+        console.log("Project unshared");
+        return null;
+    },
+    async getProjects(user, permissionLevel) {
+        const { data, error } = await (permissionLevel
+            ? supabase.from("users_projects").select("projects(*)").eq("user_id", user.id).eq("permission_level", permissionLevel)
+            : supabase.from("users_projects").select("projects(*), permission_level").eq("user_id", user.id));
         if (error || !data) { console.error("Query error:", error); return { projects: null, error: error }; }
-        return { projects: data.map((entry) => entry.projects), error: null };
+        return { projects: data.map((entry) => ({ ...entry.projects, permission_level: entry.permission_level || permissionLevel })), error: null };
     },
     async getUsers() {
         const { data: users, error } = await supabase.from("users").select("*");
         if (error || !users) { console.error("Query error:", error); return { users: null, error: error }; }
         return { users: users, error: null };
+    },
+    async getUserFromId(userId) {
+        const { data: user, error } = await supabase.from("users").select("*").eq("id", userId).limit(1).maybeSingle();
+        if (error || !user ) { console.error("Query error:", error); return { user: null, error: error }; }
+        return { user: user, error: null };
     },
     async getProjectFromId(projectId) {
         const { data: project, error } = await supabase.from("projects").select("*").eq("id", projectId).limit(1).maybeSingle();

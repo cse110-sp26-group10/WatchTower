@@ -18,6 +18,7 @@ const NOTIFY_METHODS = new Set(["push", "email"]); // valid notification channel
 const UUID_REGEX =
     /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const PERMISSION_LEVELS = new Set(["Owner", "Co-Owner", "Viewer"]);
 const ALLOWED_HOSTNAMES = new Set([
     "localhost",
     "127.0.0.1",
@@ -115,7 +116,7 @@ async function monitorProject(user, project) {
 }
 
 async function initUser(user) {
-    const { projects, error } = await dbHelper.getProjects(user);
+    const { projects, error } = await dbHelper.getProjects(user, "Owner");
     if (error) {
         console.error("Failed to load projects:", error);
         return;
@@ -376,6 +377,66 @@ const server = http.createServer(async (req, res) => {
                 } catch (error) {
                     invalidateRequest(res);
                     console.error("Project deletion failed:", error);
+                }
+            } else if (requestPath === "/api/projects/share") {
+                const { user, error: accessError } = await getUserFromRequest(req);
+                if (accessError) {
+                    unauthorizedRequest(res);
+                    console.error("Unauthorized:", accessError);
+                    return;
+                }
+                try {
+                    const { id: projectId, user_id: sharedUserId, permission_level: permissionLevel } = JSON.parse(body);
+                    if (!projectId || !sharedUserId || !permissionLevel)
+                        throw new Error("Missing user ID or project ID or permission level");
+                    if (user.id === sharedUserId) throw new Error("Cannot share project with yourself");
+                    if (!PERMISSION_LEVELS.has(permissionLevel) || permissionLevel === "Owner") throw new Error("Invalid permission level");
+                    const { user: sharedUser, error: userError } = await dbHelper.getUserFromId(sharedUserId);
+                    if (userError || !sharedUser) throw new Error("Invalid user id");
+                    const error = await dbHelper.shareProject(
+                        user,
+                        projectId,
+                        sharedUser,
+                        permissionLevel
+                    );
+                    if (error) {
+                        invalidateRequest(res);
+                        return;
+                    }
+                    res.writeHead(200, { "Content-Type": "application/json" });
+                    res.end(JSON.stringify({ status: "success" }));
+                } catch (error) {
+                    invalidateRequest(res);
+                    console.error("Project sharing failed:", error);
+                }
+            } else if (requestPath === "/api/projects/unshare") {
+                const { user, error: accessError } = await getUserFromRequest(req);
+                if (accessError) {
+                    unauthorizedRequest(res);
+                    console.error("Unauthorized:", accessError);
+                    return;
+                }
+                try {
+                    const { id: projectId, user_id: sharedUserId } = JSON.parse(body);
+                    if (!projectId || !sharedUserId)
+                        throw new Error("Missing user ID or project ID");
+                    if (user.id === sharedUserId) throw new Error("Cannot unshare project with yourself");
+                    const { user: sharedUser, error: userError } = await dbHelper.getUserFromId(sharedUserId);
+                    if (userError || !sharedUser) throw new Error("Invalid user id");
+                    const error = await dbHelper.unshareProject(
+                        user,
+                        projectId,
+                        sharedUser
+                    );
+                    if (error) {
+                        invalidateRequest(res);
+                        return;
+                    }
+                    res.writeHead(200, { "Content-Type": "application/json" });
+                    res.end(JSON.stringify({ status: "success" }));
+                } catch (error) {
+                    invalidateRequest(res);
+                    console.error("Project unsharing failed:", error);
                 }
             } else if (requestPath === "/api/notifications/methods") {
                 const { user, error: accessError } = await getUserFromRequest(req);
