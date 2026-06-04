@@ -33,15 +33,13 @@ export function parseBrowser(ua, uaData) {
   return { name: ua.slice(0, 50) || 'Unknown', version: '' };
 }
 
-const apiKey = window.__WATCHTOWER_CONFIG__?.apiKey || null;
-
 async function logEvent(event) {
     if (!originalFetch) return;
     try {
         const response = await originalFetch(`http://localhost:8080/api/log`, {
             method: "POST",
             headers: {
-                "Authorization": `Bearer ${apiKey}`,
+                "Authorization": `Bearer ${window.__WATCHTOWER_CONFIG__?.apiKey}`,
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(event)
