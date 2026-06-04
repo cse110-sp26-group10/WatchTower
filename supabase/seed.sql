@@ -24,7 +24,7 @@ DECLARE
   v_email_1 TEXT := 'hyanglin@ucsd.edu';
   v_encrypted_password_1 TEXT := extensions.crypt('password', extensions.gen_salt('bf'));
   v_user_id_1 INT;
-  -- Second user (Kevin), co-owner of the same project. Subscribe ntfy to v_alert_id2.
+  -- Second user (Kevin), co-owner of the same project. Subscribe ntfy to v_alert_id_2.
   v_auth_id_2 UUID := '10000000-0000-0000-0000-000000000002';
   v_alert_id_2 UUID := '20000000-0000-0000-0000-000000000002';
   v_email_2 TEXT := 'xuw040@ucsd.edu';
@@ -167,7 +167,7 @@ BEGIN
     NOW()
   );
 
-  INSERT INTO users (auth_id, alert_id) VALUES (v_auth_id, v_alert_id) RETURNING id INTO v_user_id_1;
+  INSERT INTO users (auth_id, alert_id) VALUES (v_auth_id_1, v_alert_id_1) RETURNING id INTO v_user_id_1;
 
   INSERT INTO users_projects (user_id, project_id) VALUES (v_user_id_1, v_project_id_local);
 
