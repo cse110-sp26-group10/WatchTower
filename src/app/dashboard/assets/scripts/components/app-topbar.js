@@ -75,7 +75,7 @@ export class AppTopbar extends HTMLElement {
       <header class="topbar">
         <div class="topbar-left">
           <a href="#/" class="brand-name" style="display: flex; align-items: center; gap: 0.5rem; text-decoration: none;">
-            <img src="/src/app/dashboard/public/logo.svg" alt="WatchTower logo" style="height: 1.75rem; width: auto;">
+            <img src="public/logo.svg" alt="WatchTower logo" style="height: 1.75rem; width: auto;">
             <span style="color: var(--wt-text); font-weight: 700; font-size: 1.15rem;">WatchTower</span>
           </a>
 
