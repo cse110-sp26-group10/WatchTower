@@ -34,23 +34,18 @@ export function parseBrowser(ua, uaData) {
 }
 
 async function logEvent(event) {
-    if (!originalFetch) return;
-    try {
-        const response = await originalFetch(`http://localhost:8080/api/log`, {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${window.__WATCHTOWER_CONFIG__?.apiKey}`,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(event)
-        });
-        if (!response.ok) {
-            throw new Error("Network response failed");
-        }
-        const data = await response.json();
-        console.log("Response:", data);
-    } catch (error) {
-        console.log("Logging failed:", error);
+  if (!originalFetch) return;
+  try {
+    const response = await originalFetch(`http://localhost:8080/api/log`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${window.__WATCHTOWER_CONFIG__?.apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(event),
+    });
+    if (!response.ok) {
+      throw new Error("Network response failed");
     }
     const data = await response.json();
     console.log("Response:", data);
