@@ -1,4 +1,4 @@
-import { starsForRating } from '../core/formatters.js';
+import { starsForRating } from "../core/formatters.js";
 
 /**
  * Component that lists feedback, grouping identical ones
@@ -17,32 +17,27 @@ export class FeedbackList extends HTMLElement {
     this.replaceChildren();
 
     if (!this._surveys?.length) {
-      this.appendEmptyState('No user feedback entries.');
+      this.appendEmptyState("No user feedback entries.");
       return;
     }
 
     for (const survey of this._surveys) {
-      const row = document.createElement('div');
-      row.className = 'interactive-data-row';
+      const row = document.createElement("div");
+      row.className = "interactive-data-row";
 
-      const left = document.createElement('div');
-      left.className = 'row-left-group';
+      const left = document.createElement("div");
+      left.className = "row-left-group";
 
-      const details = document.createElement('div');
-      details.className = 'row-details-wrapper';
+      const details = document.createElement("div");
+      details.className = "row-details-wrapper";
 
-      const stars = document.createElement('span');
-      stars.style.color = 'var(--wt-warning)';
-      stars.style.fontWeight = '700';
-      stars.style.fontSize = '12px';
-      stars.style.letterSpacing = '2px';
+      const stars = document.createElement("span");
+      stars.className = "feedback-stars";
       stars.textContent = starsForRating(survey.metadata?.rating || 0);
 
-      const comment = document.createElement('span');
-      comment.className = 'row-primary-text';
-      comment.style.fontStyle = 'italic';
-      comment.style.fontWeight = '500';
-      comment.textContent = `"${survey.metadata?.message || 'No text comment provided.'}"`;
+      const comment = document.createElement("span");
+      comment.className = "row-primary-text feedback-comment";
+      comment.textContent = `"${survey.metadata?.message || "No text comment provided."}"`;
 
       details.append(stars, comment);
       left.append(details);
@@ -52,13 +47,11 @@ export class FeedbackList extends HTMLElement {
   }
 
   appendEmptyState(message) {
-    const empty = document.createElement('div');
-    empty.style.padding = '12px';
-    empty.style.textAlign = 'center';
-    empty.style.color = 'var(--wt-text-3)';
+    const empty = document.createElement("div");
+    empty.className = "list-empty";
     empty.textContent = message;
     this.append(empty);
   }
 }
 
-customElements.define('feedback-list', FeedbackList);
+customElements.define("feedback-list", FeedbackList);

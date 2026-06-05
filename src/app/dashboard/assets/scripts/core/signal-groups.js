@@ -9,7 +9,7 @@ export function groupErrors(signals) {
   const groups = new Map();
 
   for (const signal of signals) {
-    const message = signal.metadata?.message || '(unknown error)';
+    const message = signal.metadata?.message || "(unknown error)";
     const group = groups.get(message) || {
       message,
       count: 0,
@@ -22,7 +22,10 @@ export function groupErrors(signals) {
     group.count += 1;
     group.signals.push(signal);
 
-    if ((SEVERITY_RANK[signal.metadata?.severity] ?? 99) < (SEVERITY_RANK[group.severity] ?? 99)) {
+    if (
+      (SEVERITY_RANK[signal.metadata?.severity] ?? 99) <
+      (SEVERITY_RANK[group.severity] ?? 99)
+    ) {
       group.severity = signal.metadata?.severity;
     }
     if (new Date(signal.timestamp) > new Date(group.latestSignal.timestamp)) {
@@ -36,7 +39,8 @@ export function groupErrors(signals) {
   }
 
   return Array.from(groups.values()).sort((a, b) => {
-    const sevDiff = (SEVERITY_RANK[a.severity] ?? 99) - (SEVERITY_RANK[b.severity] ?? 99);
+    const sevDiff =
+      (SEVERITY_RANK[a.severity] ?? 99) - (SEVERITY_RANK[b.severity] ?? 99);
     return sevDiff !== 0 ? sevDiff : b.count - a.count;
   });
 }

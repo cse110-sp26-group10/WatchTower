@@ -39,7 +39,7 @@ export default [
   {
     files: ['src/test-app/**/*.js'],
     rules: {
-      'no-unused-vars': ['error', { varsIgnorePattern: '^(escapeHtml|addToCart|removeFromCart|clearCart|getCartCount|getCart|getProducts|getProductById|getProductsByCategory|getCategories|submitSurvey|triggerTestError|handleRemove|selectSize|handleAddToCart|setCategory)$' }],
+      'no-unused-vars': ['error', { varsIgnorePattern: '^(escapeHtml|addToCart|removeFromCart|clearCart|getCartCount|getCart|getProducts|getProductById|getProductsByCategory|getCategories|submitSurvey|triggerTestError|handleRemove|selectSize|handleAddToCart|setCategory|triggerTypeError|triggerWarning|triggerRangeError|triggerCallUndefined|triggerReferenceError|triggerUnhandledRejection|triggerURIError)$' }],
     },
   },
   // Node globals — server

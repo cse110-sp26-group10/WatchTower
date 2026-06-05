@@ -1,168 +1,171 @@
-# Build Signals in Observability: Research for WatchTower
+# Observability Tool Research
 
-The main purpose for build signals is to summarizes how deployment and build signals help engineering teams identify when problems began, and proposes how WatchTower should integrate those signals without overcomplicating the system. The goal is to build just enough observability to know when something breaks and why, without overbuilding for problems the project doesn't have yet.
+The main purpose of observability tools is to enable software developers to understand the internal state of the software so they could detect, diagnose, and resolve issues to improve reliability, minimize downtime, and enhance the user experience. Observability tools can be categorized into traditional observability and user-centric observability tools. Traditional observability tools focus more on server logs, metrics, and distributed tracing, while user-centric observability tools focus more on user experience and product behavior to bridge the gap between frontend behavior and backend performance.
 
-## 1. Why Build Signals Matter for Incident Investigation
+## Traditional Observability Tools
 
-WWhen an application or product breaks, a good engineer doesn’t just look at the error. They ask what changed right before it happened. Our project is built to help answer that question quickly and confidently.
+### Popular Tools
 
-### The Core Problem: Change Causes Most Outages
+- **Sentry:** A tool that focuses on code-level health by monitoring the code, alerting when and where a function fails.
+- **Datadog:** A powerful unified platform that excels at correlating data across the entire environment.
+- **New Relic:** A pioneer in application performance monitoring that allows for great visibility on how the software performs.
+- **LogRocket:** A session replay and product analytics tool that allows developers to understand user behavior before encountering an error.
+- **Honeycomb:** A tool that allows developers to slice and dice through events by any attribute to locate unpredictable problems.
 
-Most outages happen because something recently changed, whether it’s a new code deployment, a configuration update that changes how the application behaves, or an infrastructure change such as updating servers or cloud resources. 
+### Sentry
 
-Without a clear record of these changes, engineers are often left piecing together timelines from logs and memory, which is slow and unreliable. Build signals solve this by placing deployment history directly alongside your errors and metrics, making it easier to see what changed and exactly when it happened.
+**Focus:** Error monitoring & performance tracing
 
-### The Site Reliability Engineer (SRE) Mental Model
+- Automatic error capture with stack traces
+- Groups duplicate errors by fingerprint to reduce noise
+- Links errors to specific releases and deployments
+- Distributed tracing with spans across services
+- Alerting rules based on error thresholds
+- Source maps for readable frontend stack traces
 
-When something goes wrong, the person responsible for keeping the app running will instinctively look at what changed in the minutes before the problem started. Incident responders naturally focus on the window just before an issue begins, searching for any recent changes that might have triggered it.
+### Datadog
 
-Tools such as Instana, New Relic, and Datadog help automate this process by collecting deployments, configuration updates, and scaling events around the time of an incident, then highlighting which changes most closely line up with when the issue started.
+**Focus:** Infrastructure & full-stack observability
 
-Without this automation, on-call engineers are left manually scrolling through deployment histories and trying to line up timelines under pressure, which is both slow and easy to get wrong.
+- Metrics, logs, and traces in one platform
+- Host-level monitoring (CPU, memory, disk)
+- APM with automatic service maps
+- Log aggregation and search
+- Dashboards and alerting
+- Very broad integration surface (500+ integrations)
 
-## 2. What "Build Signals" Actually Means
+### New Relic
 
-Build signals are structured data emitted during the CI/CD pipeline that describe *what was deployed, when, and by whom*. They sit in the category of **change events** alongside configuration drifts and infrastructure scaling events.
+**Focus:** Application performance monitoring (APM)
 
-### Minimum Useful Data Per Signal
+- Agent-based instrumentation for app performance
+- Transaction tracing and slow query detection
+- Log management & infrastructure monitoring
+- Dashboards and alerting
+- AI-powered anomaly detection
 
-| Field | Why It Matters |
-|---|---|
-| `timestamp` | Anchor point for correlating with error/performance timelines |
-| `version` / `commit_sha` | Links the deployed artifact to a specific code state |
-| `environment` | Distinguishes staging from production incidents |
-| `author` / `triggered_by` | Identifies the person who made the change |
-| `status` | `success`, `failure`, or `in_progress` — a failed deploy itself is an incident |
-| `workflow_name` | Distinguishes deploy runs from test-only runs |
+### LogRocket
 
-These six fields are the minimum needed to answer "which deployment started the fire." Every field beyond this should earn its place.
+**Focus:** Frontend session replay & debugging
 
-### How Signals Flow in Practice
+- Session replay tied to errors and network requests
+- Console log and network request capture
+- Redux/state inspection
+- Error grouping with user context
+- Funnel and conversion analysis
 
-In a GitHub Actions–based workflow, every CI run emits a `workflow_run` event that contains this metadata. A WatchTower-compatible implementation could receive these events via a webhook and store them alongside error events and performance samples. The webhook approach requires no additional dependencies — GitHub sends a POST request on each workflow completion, and the receiving endpoint logs it.
+### Features
 
-## 3. How Industry Tools Represent Build Signals
+- **Error Tracking and Crash Reporting:** Captures unhandled exceptions and crashes with detailed stack traces, environment details, and user context to help developers fix bugs.
+- **Application Performance Monitoring (APM):** Provides visibility into request latency, throughput, and error rates at the code level.
+- **Infrastructure Monitoring:** Tracks the health of the underlying hardware or cloud resources (e.g. CPU usage, memory, network throughput).
+- **Log Management:** Aggregates and indexes text-based logs from various sources, allowing teams to search and filter events leading up to an issue.
+- **Session Replay:** Reproduces user behavior in the browser (e.g. clicks, scrolls, text inputs) to visually debug frontend issues.
+- **Real User Monitoring (RUM):** Captures metrics directly within the browser (e.g. page load times).
+- **High-Cardinality Analysis:** Extracts data by specific attributes (e.g. user IDs, request IDs) without pre-aggregating the data.
 
-Understanding the patterns used by mature tools helps WatchTower adopt the right abstraction without copying their scale.
+### Tool Comparison
 
-### Deployment Markers on Timelines
+| Feature | Sentry | Datadog | New Relic | LogRocket | Honeycomb |
+| ------- | ------ | ------- | --------- | --------- | --------- |
+| Error Tracking and Crash Reporting | Yes | Yes | Yes | Yes | Yes |
+| Application Performance Monitoring (APM) | Yes | Yes | Yes | Yes | Yes |
+| Infrastructure Monitoring | No | Yes | Yes | No | Yes |
+| Log Management | Yes | Yes | Yes | Yes | Yes |
+| Session Replay | Yes | Yes | No | Yes | No |
+| Real User Monitoring (RUM) | Yes | Yes | Yes | Yes | No |
+| High-Cardinality Analysis | No | Yes | Yes | No | Yes |
 
-The dominant pattern across New Relic, Datadog, Dynatrace, and others is the **deployment marker**: a vertical line or annotated point plotted on the same time axis as error rate, latency, and throughput graphs. Engineers can click a marker to see the commit SHA, author, and linked PR, then immediately read whether performance changed before or after that point.
+## User-Centric Observability Tools
 
-New Relic describes the value succinctly: change tracking connects deployments directly to performance data, eliminating time-consuming log searches. Cross-team visibility is a key benefit — if a fix in one service degrades a downstream service, the marker appears on both services' charts automatically.
+### Popular Tools
 
-### Event Enrichment, Not Separate Systems
+- **PostHog:** An all-in-one tool that combines product analytics with feature flags, session recording, and A/B testing in one package and has the option to be self-hosted.
+- **Amplitude:** A powerful tool aimed towards behavioral analysis, excelling at complex product data combined with AI-powered analytics.
+- **Mixpanel:** A user-friendly tool focused heavily on event-driven behavioral analytics that can track metrics like user retention, funnels, and cohorts.
+- **Heap:** A tool known for its autocapture feature which tracks every user interaction without manual setup, allowing for retrospective analysis without the need to code every event.
+- **Fullstory:** A leading tool in digital experience with powerful session replays and AI-driven identification of user friction.
+- **Microsoft Clarity:** A free tool for understanding user behavior that provides session recording and heatmaps.
 
-A recurring architectural principle is that build signals should *enrich* existing incident context rather than live in a separate tool. When an alert fires, best practice is to automatically attach recent deployment info to the alert notification so the on-call engineer arrives with context, not just an error message.
+### Features
 
-### The Correlation Engine Approach (What WatchTower Should Avoid for Now)
+- **Event Capture:** Tracks events like user interactions (e.g. clicks, taps, scrolls), network requests, and console errors.
+- **Session Recordings/Replays:** Lets you see how users interact with the software through the playback of live user sessions.
+- **Heat Maps:** Creates color-coded overlays that show areas of high and low activity in the software.
+- **Surveys:** Allows you to get feedback from users.
+- **Feature Flags:** Allows you to toggle features on/off for part of the user base without needing to redeploy code.
+- **User Journey Visualization:** Allows you to follow along the paths users take as they navigate through the software.
 
-Enterprise tools build ML-backed correlation engines that link traces, metrics, logs, and change events automatically. This is powerful but complex. For WatchTower's MVP, this is out of scope. The simpler alternative — displaying deployment events on the same timeline as errors — delivers 80% of the value with far less implementation risk.
+### Tool Comparison
 
-## 4. Build Signals and DORA Metrics
+| Feature | PostHog | Amplitude | Mixpanel | Heap | Fullstory | Microsoft Clarity |
+| ------- | ------- | --------- | -------- | ---- | --------- | ----------------- |
+| Event Capture | Yes - 1,000,000 free events | Yes | Yes | Yes Yes - Automatic tracking; historical data limited to 6 months (free) or 1 year (paid) | Yes | Yes - Free |
+| Session Recordings/Replays | Yes - 5,000 free recordings | No | No | Yes - Requires add-ons | Yes | Yes - Free |
+| Heat Maps | Yes | Yes | No | Yes - Requires add-ons | Yes | Yes - Free |
+| Surveys | Yes | Yes | Yes - Integrates with third-party tools like Survicate | Yes - Integrates with third-party tools like Chameleon | Yes | No |
+| Feature Flags | Yes | Yes | No | No | No | No |
+| User Journey Visualization | Yes | Yes | Yes | Yes | No | No |
 
-Build signals are also the raw material for DORA (DevOps Research and Assessment) metrics, which measure delivery process health:
+## Summary
 
-- **Deployment Frequency** — How often are builds reaching production?
-- **Change Failure Rate** — What percentage of deployments cause an incident?
-- **Mean Time to Recovery (MTTR)** — How quickly does the team resolve production failures?
+### Realistic Features to Include
 
-WatchTower does not need to compute these at MVP, but storing clean build signal records now means the team can derive them later without retrofitting data collection. Capturing a `status` field (success/failure) and linking it to subsequent error spikes is the foundational step.
+- **Error Tracking and Crash Reporting:** The most important feature of an observability tool, allowing developers to understand where problems occur within the software.
+- **Application Performance Monitoring:** Metrics like latency, throughput, and error rates are all critical to the user experience.
+- **Log Management:** Keeping a structured log is essential for extracting useful insight that can be displayed on the dashboard.
+- **Real User Monitoring / Event Capture:** Tracking events in the browser can provide insight into which specific part of the software is not working. This serves as an implementation of error tracking and application performance monitoring.
+- **Surveys:** It is an important aspect of software development to get feedback from users to improve the software.
 
-## 5. WatchTower Integration: Principles and Constraints
+### Features That Are Too Complex
 
-### Project Constraints Recap
+- **Infrastructure Monitoring:** Requires additional server script to be injected into the target software to monitor those metrics.
+- **Session Replay:** Requires collecting additional data on user actions and additional complexity for the dashboard to support session playback.
+- **High-Cardinality Analysis:** Requires additional preprocessing and aggregation to reduce high-cardinality identifiers into lower-cardinality buckets.
+- **Heat Maps:** Requires a great amount of mouse events to be logged and additional complexity for the dashboard to display the heat map.
+- **Feature Flags:** Requires too much additional complexity.
+- **User Journey Visualization:** Requires processing multiple events to form a chain of user navigation within the browser.
 
-WatchTower must:
-- Run on Cloudflare or GitHub Pages (no server frameworks)
-- Use vanilla JavaScript only (no frameworks)
-- Maintain operational stability as its first priority
-- Add features only with clear justification — more features equal more risk
+## WatchTower MVP Scope
 
-These constraints shape every design choice below.
+### Core Philosophy
 
-### What WatchTower Should Do (MVP)
+The main purpose of WatchTower is to enable small, early-stage teams to detect and respond to problems fast. Observability must act as an enabler of velocity — not a tax on engineering time. For teams of 4–6 developers, the system must be high signal, low noise.
 
-**1. Expose a `/api/deploy` ingest endpoint**
+**The Four Golden Signals** — WatchTower focuses exclusively on Latency, Traffic, Errors, and Saturation. If an anomaly does not impact one of these four pillars, it should not trigger a page.
 
-A single POST endpoint that accepts a JSON payload containing the minimum build signal fields listed in Section 2. This endpoint is called by a GitHub Actions step at the end of a deploy workflow:
+**The Dashboard Graveyard** — A common anti-pattern is building complex dashboards that track everything, leading to a situation where nobody knows what to look at during an incident. WatchTower avoids this by focusing only on actionable metrics.
 
-```yaml
-# .github/workflows/deploy.yml (example step)
-- name: Notify WatchTower
-  run: |
-    curl -X POST ${{ secrets.WATCHTOWER_URL }}/api/deploy \
-      -H "Content-Type: application/json" \
-      -d '{
-        "version": "${{ github.sha }}",
-        "environment": "production",
-        "author": "${{ github.actor }}",
-        "status": "success",
-        "workflow": "${{ github.workflow }}",
-        "timestamp": "${{ github.run_started_at }}"
-      }'
-```
+**Alert Fatigue** — Constant pages for non-critical issues lead to burnout. Alerts must be reserved strictly for situations requiring human intervention — user-facing 500 errors, broken checkout flows.
 
-No GitHub webhook configuration is needed. A direct `curl` step in the Actions workflow is simpler, more explicit, and easier to debug — especially important at the start of a project when the pipeline itself may be unstable.
+**The Observability Tax** — High-cardinality indexing and storing 100% of network traces is financially unviable for an early-stage startup. WatchTower relies on intelligent sampling and short data retention windows.
 
-**2. Display deployment events on the error/performance timeline**
+### Jobs to Be Done
 
-WatchTower already captures error events and (eventually) performance samples. Build signals should appear on the same shared time axis, not on a separate page. A vertical marker styled distinctly from error markers is sufficient. On hover or click, it should display: version, author, environment, and status.
+Observability tools in startups aren't just monitors — they are hired to complete specific developer jobs:
 
-This answers the question "did this error rate spike start before or after the last deployment?" without requiring any correlation logic — a human can see it instantly.
+- "Alert me when there is a problem." — System Health, Threshold Alerts, Error Rate
+- "Explain why the problem happened." — Error Stack Traces, Grouped by Fingerprint
+- "Show me the blast radius." — User Feedback, Affected Session Count
+- "Tell me what changed." — Deployment Tags, Git Commit Correlation
 
-**3. Store build signals the same way as other events**
+Deployment correlation is WatchTower's core differentiator. In a startup shipping code multiple times a day, the vast majority of incidents are caused by recent deployments. WatchTower must immediately answer: "Did the code we pushed 10 minutes ago cause this?"
 
-WatchTower's existing event storage (whatever shape that takes — a simple append-only log, a KV store) should accept build signal records using the same schema conventions as error records. This avoids building a separate pipeline and reduces surface area for bugs.
+### What is Realistic for WatchTower
 
-**4. Surface build failure as an incident signal**
+- **Automatic error capture** — catch unhandled exceptions server-side without manual logging
+- **Error grouping by fingerprint** — bucket errors by type and message so duplicates don't flood the view; a simple hash is enough, no ML needed
+- **Deployment tagging** — attach a build ID or git commit to errors so you can see which deploy introduced a problem
+- **Basic performance signals** — track response times and flag degradations, no need for full distributed tracing
+- **User feedback collection** — simple rating widget or form that ties a signal to a session or page
+- **Threshold-based alerting** — notify when error rate spikes or response time crosses a limit
+- **A simple dashboard** — show recent errors, error counts over time, and performance trends in one view
 
-If a deploy returns `"status": "failure"`, WatchTower should surface that in the same view as errors. A failed deployment is often the first sign something went wrong. Teams that only watch application errors can miss a situation where the build itself is the problem.
+### What to Avoid
 
-### What WatchTower Should Not Do (MVP)
-
-- **No automatic correlation.** Do not attempt to algorithmically link deployments to errors. Display both on a shared timeline and let the engineer draw conclusions.
-- **No pipeline metrics dashboard.** Build duration, queue time, and test coverage are useful but belong in a later sprint. They don't answer the question WatchTower is here to answer: "what is my software doing right now?"
-- **No GitHub webhook integration.** GitHub webhooks require a persistent listener, HMAC verification, and retries for missed events. The `curl` step approach is more reliable at this stage and keeps WatchTower's ingest surface minimal.
-- **No DORA metric computation.** Store the raw data correctly now; compute aggregate metrics when there is enough history to make them meaningful.
-
----
-
-## 6. Suggested Data Schema
-
-```json
-{
-  "type": "deploy",
-  "timestamp": "2026-05-18T14:32:00Z",
-  "version": "a3f9c21",
-  "environment": "production",
-  "author": "jsmith",
-  "status": "success",
-  "workflow": "deploy-production",
-  "url": "https://github.com/org/repo/actions/runs/12345"
-}
-```
-
-The `type: "deploy"` field distinguishes these records from `type: "error"` and `type: "feedback"` records that WatchTower already collects, while keeping them in the same store. The optional `url` field lets a developer jump directly from the WatchTower UI to the GitHub Actions run log, closing the investigation loop quickly.
-
----
-
-## 7. Stability Considerations
-
-WatchTower is operational-facing software. Every integration decision must account for what happens when it fails.
-
-- **The ingest endpoint must fail silently from the pipeline's perspective.** If WatchTower is down, a deploy should still succeed. The `curl` step in GitHub Actions should use `|| true` or equivalent to prevent a WatchTower outage from blocking releases.
-- **Build signal ingest must not block UI rendering.** Signals should be loaded asynchronously; if the store returns slowly, the error timeline should render first.
-- **Volume is low.** A student project deploys a handful of times per day. There is no scaling concern for this feature. Do not over-engineer the storage or ingest path.
-
-## 8. Key Takaways 
-
-Build signals are the bridge between code changes and production incidents. The most valuable thing they enable is a shared timeline where a developer can see "the error rate went up, and we deployed 8 minutes before that." Enterprise tools build elaborate correlation engines on top of this foundation, but the foundation itself is simple: record what was deployed, when, and whether it succeeded, then show it next to the other signals.
-
-For WatchTower, the implementation is:
-
-1. A single POST endpoint to receive deploy events from GitHub Actions.
-2. A vertical marker on the existing error/performance timeline.
-3. Shared record storage with the rest of WatchTower's event types.
-4. Fail-safe integration so WatchTower downtime never blocks a deploy.
-
+- **Session replay** — high data volume, privacy concerns, and significant frontend instrumentation overhead
+- **Distributed tracing with full span propagation** — useful at scale, but requires injecting trace headers across every service boundary; too much surface area early on
+- **ML-based anomaly detection** — hard to debug, and requires enough historical data to be useful
+- **Heatmaps and funnel analysis** — product analytics, not operational monitoring
+- **Infrastructure-level monitoring** — host metrics, container stats, and cloud billing dashboards are a different problem; keep WatchTower focused on the app layer
+- **Feature flags and A/B testing** — product tooling that belongs in a different system

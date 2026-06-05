@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -11,15 +11,21 @@
   <!-- Login mounts here when not authenticated -->
   <div id="login-outlet"></div>
 
-  <!-- App shell is built by main.js only when authenticated -->
-  <div id="app-shell"></div>
+    <!-- App shell is built by main.js only when authenticated -->
+    <div id="app-shell"></div>
 
-  <div id="aria-announcer" aria-live="polite" aria-atomic="true" class="sr-only"></div>
-  <script type="module" src="assets/scripts/main.js"></script>
-  <noscript>
-  <div style="padding: 1rem; background: #ffeaea; color: #b00020;">
-    This website requires JavaScript to function properly. Please enable JavaScript in your browser.
-  </div>
-</noscript>
-</body>
+    <div
+      id="aria-announcer"
+      aria-live="polite"
+      aria-atomic="true"
+      class="sr-only"
+    ></div>
+    <script type="module" src="assets/scripts/main.js"></script>
+    <noscript>
+      <div class="noscript-warning">
+        This website requires JavaScript to function properly. Please enable
+        JavaScript in your browser.
+      </div>
+    </noscript>
+  </body>
 </html>

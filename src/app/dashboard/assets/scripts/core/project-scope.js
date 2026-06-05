@@ -1,6 +1,6 @@
-import { dataStore } from './data-store.js';
+import { dataStore } from "./data-store.js";
 
-let activeProjectId = 'all';
+let activeProjectId = "all";
 const listeners = new Set();
 
 function notify() {
@@ -18,11 +18,13 @@ export const projectScope = {
   },
 
   get project() {
-    return activeProjectId === 'all' ? null : dataStore.getProject(activeProjectId);
+    return activeProjectId === "all"
+      ? null
+      : dataStore.getProject(activeProjectId);
   },
 
   set(id) {
-    activeProjectId = id || 'all';
+    activeProjectId = id || "all";
     notify();
   },
 

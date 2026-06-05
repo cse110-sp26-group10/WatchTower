@@ -1,15 +1,15 @@
-import { projectScope } from '../core/project-scope.js';
-import { deploymentScope } from '../core/deployment-scope.js';
-import { getEventById, getHomeDashboardData } from '../core/dashboard-data.js';
-import '../components/activity-list.js';
-import '../components/dashboard-banner.js';
-import '../components/dashboard-styles.js';
-import '../components/error-detail-modal.js';
-import '../components/error-list.js';
-import '../components/panel-section.js';
-import '../components/path-count-list.js';
-import '../components/summary-metrics.js';
-import '../components/uptime-card.js';
+import { projectScope } from "../core/project-scope.js";
+import { deploymentScope } from "../core/deployment-scope.js";
+import { getEventById, getHomeDashboardData } from "../core/dashboard-data.js";
+import { dataStore } from "../core/data-store.js";
+import "../components/activity-list.js";
+import "../components/dashboard-banner.js";
+import "../components/error-detail-modal.js";
+import "../components/error-list.js";
+import "../components/panel-section.js";
+import "../components/path-count-list.js";
+import "../components/summary-metrics.js";
+import "../components/uptime-card.js";
 
 export class HomePage extends HTMLElement {
   constructor() {
@@ -17,29 +17,38 @@ export class HomePage extends HTMLElement {
     this.handleErrorSelected = (event) => {
       this.openErrorModal(event.detail?.errorId);
     };
+    this.handleErrorResolve = (event) => {
+      dataStore.resolveErrors(event.detail?.ids);
+    };
   }
 
   connectedCallback() {
     this.render();
     this.cacheElements();
-    if (projectScope && typeof projectScope.subscribe === 'function') {
-      this.projectUnsubscribe = projectScope.subscribe(() => this.updatePageData());
+    if (projectScope && typeof projectScope.subscribe === "function") {
+      this.projectUnsubscribe = projectScope.subscribe(() =>
+        this.updatePageData(),
+      );
     }
-    if (deploymentScope && typeof deploymentScope.subscribe === 'function') {
-      this.deploymentUnsubscribe = deploymentScope.subscribe(() => this.updatePageData());
+    if (deploymentScope && typeof deploymentScope.subscribe === "function") {
+      this.deploymentUnsubscribe = deploymentScope.subscribe(() =>
+        this.updatePageData(),
+      );
     }
     this.updatePageData();
-    this.addEventListener('error-selected', this.handleErrorSelected);
+    this.addEventListener("error-selected", this.handleErrorSelected);
+    this.addEventListener("error-resolve", this.handleErrorResolve);
   }
 
   disconnectedCallback() {
     this.projectUnsubscribe?.();
     this.deploymentUnsubscribe?.();
-    this.removeEventListener('error-selected', this.handleErrorSelected);
+    this.removeEventListener("error-selected", this.handleErrorSelected);
+    this.removeEventListener("error-resolve", this.handleErrorResolve);
   }
 
   render() {
-    this.className = 'dashboard-viewport';
+    this.className = "dashboard-viewport";
     this.innerHTML = `
       <dashboard-banner></dashboard-banner>
       <summary-metrics></summary-metrics>
@@ -52,7 +61,7 @@ export class HomePage extends HTMLElement {
         <uptime-card id="home-uptime"></uptime-card>
       </section>
 
-      <section class="dashboard-double-row" id="section-activity-top" style="margin-bottom: 20px;">
+      <section class="dashboard-double-row is-spaced" id="section-activity-top">
         <panel-section heading="Page Loads" subheading="grouped by path">
           <path-count-list id="home-load-paths" empty-message="No page loads tracked"></path-count-list>
         </panel-section>
@@ -67,34 +76,35 @@ export class HomePage extends HTMLElement {
       </panel-section>
 
       <error-detail-modal id="home-error-modal"></error-detail-modal>
-      <dashboard-styles></dashboard-styles>
     `;
   }
 
   cacheElements() {
-    this.metrics    = this.querySelector('summary-metrics');
-    this.uptimeCard = this.querySelector('#home-uptime');
-    this.errorList  = this.querySelector('#home-errors');
-    this.loadPaths  = this.querySelector('#home-load-paths');
-    this.clickPaths = this.querySelector('#home-click-paths');
-    this.activityList = this.querySelector('#home-activity');
-    this.errorModal = this.querySelector('#home-error-modal');
+    this.banner = this.querySelector("dashboard-banner");
+    this.metrics = this.querySelector("summary-metrics");
+    this.uptimeCard = this.querySelector("#home-uptime");
+    this.errorList = this.querySelector("#home-errors");
+    this.loadPaths = this.querySelector("#home-load-paths");
+    this.clickPaths = this.querySelector("#home-click-paths");
+    this.activityList = this.querySelector("#home-activity");
+    this.errorModal = this.querySelector("#home-error-modal");
   }
 
   updatePageData() {
     const data = getHomeDashboardData();
 
-    this.metrics.items      = data.metrics;
-    this.errorList.errors   = data.errors;
-    this.loadPaths.pathCounts  = data.loadPaths;
+    this.banner.healthy = data.uptime?.isHealthy;
+    this.metrics.items = data.metrics;
+    this.errorList.errors = data.errors;
+    this.loadPaths.pathCounts = data.loadPaths;
     this.clickPaths.pathCounts = data.clickPaths;
-    this.activityList.events   = data.events;
+    this.activityList.events = data.events;
 
     // Feed the uptime card the raw log + projects list so its
     // project and time-window dropdowns can filter independently.
     // The card only shows the project dropdown when 2+ projects exist.
-    this.uptimeCard.projects   = data.projects;
-    this.uptimeCard.uptimeLog  = data.rawUptimeLog;
+    this.uptimeCard.projects = data.projects;
+    this.uptimeCard.uptimeLog = data.rawUptimeLog;
   }
 
   openErrorModal(errorId) {
@@ -102,4 +112,4 @@ export class HomePage extends HTMLElement {
   }
 }
 
-customElements.define('home-page', HomePage);
+customElements.define("home-page", HomePage);

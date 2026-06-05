@@ -1,10 +1,10 @@
-import { deploymentScope } from '../core/deployment-scope.js';
-import { getActivityDashboardData } from '../core/dashboard-data.js';
-import '../components/activity-list.js';
-import '../components/dashboard-styles.js';
-import '../components/panel-section.js';
-import '../components/path-count-list.js';
-import '../components/summary-metrics.js';
+import { deploymentScope } from "../core/deployment-scope.js";
+import { getActivityDashboardData } from "../core/dashboard-data.js";
+import "../components/activity-list.js";
+import "../components/dashboard-styles.js";
+import "../components/panel-section.js";
+import "../components/path-count-list.js";
+import "../components/summary-metrics.js";
 
 export class ActivityPage extends HTMLElement {
   set route(value) {
@@ -14,7 +14,7 @@ export class ActivityPage extends HTMLElement {
   connectedCallback() {
     this.render();
     this.cacheElements();
-    if (deploymentScope && typeof deploymentScope.subscribe === 'function') {
+    if (deploymentScope && typeof deploymentScope.subscribe === "function") {
       this.unsubscribe = deploymentScope.subscribe(() => this.updatePageData());
     } else {
       this.updatePageData();
@@ -26,7 +26,7 @@ export class ActivityPage extends HTMLElement {
   }
 
   render() {
-    this.className = 'dashboard-viewport';
+    this.className = "dashboard-viewport";
     this.innerHTML = `
       <summary-metrics></summary-metrics>
 
@@ -49,10 +49,10 @@ export class ActivityPage extends HTMLElement {
   }
 
   cacheElements() {
-    this.metrics = this.querySelector('summary-metrics');
-    this.loadPaths = this.querySelector('#activity-load-paths');
-    this.clickPaths = this.querySelector('#activity-click-paths');
-    this.activityList = this.querySelector('#activity-events');
+    this.metrics = this.querySelector("summary-metrics");
+    this.loadPaths = this.querySelector("#activity-load-paths");
+    this.clickPaths = this.querySelector("#activity-click-paths");
+    this.activityList = this.querySelector("#activity-events");
   }
 
   updatePageData() {
@@ -64,4 +64,4 @@ export class ActivityPage extends HTMLElement {
   }
 }
 
-customElements.define('activity-page', ActivityPage);
+customElements.define("activity-page", ActivityPage);

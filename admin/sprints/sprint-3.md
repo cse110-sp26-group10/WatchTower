@@ -64,30 +64,30 @@
 ### Stand-up 2 — 05/29/2026
 | Name | Did | Doing | Blockers |
 |------|-----|-------|----------|
-| Nicole Sutedja | | | |
-| Kaley Chung | | | |
-| Jensen Guo | | | |
-| Prakhar Shah | | | |
-| Bethany Miyamoto | | | |
-| Kevin Wang | | | |
-| Han Yang-Lin | | | |
-| Aron Wu | | | |
-| Benedict Luis | | | |
-| Evan Marriott | | | |
+| Nicole Sutedja | assigned tasks, help provide feedback & implemented frontend, started wireframe for user login | create user login page | None |
+| Kaley Chung | Asked questions/ research about project responsiveness | Check for screen sizes and devices | Midterms |
+| Jensen Guo | Implementing frontend, writing code comments | Finish implemented frontend | None |
+| Prakhar Shah | Added design-breif.md and updated cse135-research.md | help out other teams | Hackathon |
+| Bethany Miyamoto | made new branch and created new dashboard with dark/light mode and relative units | finish the rest of the pages | None |
+| Kevin Wang | implement the backend for ntfy | implement the email notification | others due |
+| Han Yang-Lin | Updated database structure and implemented user login and project creation | Discuss project creation/removal process and implement them, and refactor code to be more organized | None |
+| Aron Wu | Added tests for tracker.js | Add tests for user login | None |
+| Benedict Luis | Set up and tested the backend locally with Supabase/Docker. Verified /api/events, /api/uptime, and /api/log work without user_id. Fixed merge conflicts, lint/formatting issues, and updated unit/E2E tests to match the current backend/dashboard | work on the testing for the user login | midterm and going out of town of Sat |
+| Evan Marriott | read through feedback doc in depth and started planning changes | implement changes and improve PR structure | None |
 
 ### Stand-up 3 — 05/31/2026
 | Name | Did | Doing | Blockers |
 |------|-----|-------|----------|
-| Nicole Sutedja | | | |
-| Kaley Chung | | | |
-| Jensen Guo | | | |
-| Prakhar Shah | | | |
-| Bethany Miyamoto | | | |
-| Kevin Wang | | | |
-| Han Yang-Lin | | | |
-| Aron Wu | | | |
-| Benedict Luis | | | |
-| Evan Marriott | | | |
+| Nicole Sutedja | helped finish most of frontend wherever needed, implemented login, signup, projects page | write sprint 4 and tasks | Finals |
+| Kaley Chung | Fix the mobile responsiveness | Fix the large monitor responsiveness | Quizzes, midterms, finals |
+| Jensen Guo | Error page and creating components for dashboard | Adjust dashboard for better user experience, connect frontend to backend | Midterm |
+| Prakhar Shah | finished up all tasks, fixed minor errors | start sprint 4 tasks | Midterm |
+| Bethany Miyamoto | added hamburger button to nav bar for better user experience | fix minor frontend features for mobile version | midterm and homework |
+| Kevin Wang | the email and ntfy notification backend | connect the frontend and backend | other ddls |
+| Han Yang-Lin | Added server endpoints for fetching user profile and projects, and creating and deleting projects. Refactored backend to use dbHelper for database operations. Started integrating frontend and backend | Connect the frontend and backend | Interview and midterm |
+| Aron Wu | Added unit tests for user authentication, login, and notification, opened PR for merging tests + ci | Review PR, fix failing ci elements and merge | midterm |
+| Benedict Luis | Finished aligning tests after the dashboard prototype merge. Updated Event.js and unit/E2E tests, kept Evan’s auth/home setup, added hash route and login gate coverage, pushed fix/tests-align-main and opened the PR for aliign event validation and dashboard tests | Watch CI and fix any failures. Coordinate with Aron on the separate feat/testing-ci PR if needed. Start login/auth tests once Han’s frontend-backend auth flow is stable | Family urgency and Finals |
+| Evan Marriott | added more errors to test app | continue to work on repo structure | Finals coming up |
 
 ---
 ## Decisions Made
@@ -102,32 +102,48 @@
 ---
 ## Sprint Review
 ### What was completed:
--
+- Implemented major frontend updates, including the new dashboard UI, login/signup pages, projects page, hamburger navigation, dark/light mode, and mobile responsiveness improvements.
+- Added backend support for user login, project creation/deletion, user profile fetching, and project fetching.
+- Built notification backend work for email and ntfy alerts.
+- Added more error types to the test app.
+- Improved CI/testing work, including dependency checks, formatting checks, JSDoc validation, changelog updates, tracker tests, user auth/login/notification tests, and updated unit/E2E tests after the dashboard prototype merge.
+- Opened PRs for test/CI work and dashboard test alignment.
 
 ### What was not completed:
--
+- Full frontend-backend integration was not fully finished.
+- Large monitor responsiveness still needed more adjustment.
+- Some login/auth testing depended on the frontend-backend auth flow becoming stable.
+- Some CI/test PR work still needed review, fixes, or merging.
+- SMS/Twilio notification work was not fully resolved and shifted toward email/ntfy alternatives.
 
 ### Reason(s):
--
+- Several tasks depended on other features being finished first, especially frontend-backend integration and authentication.
+- The dashboard prototype merge caused test updates, merge conflicts, and alignment work.
+- SMS/Twilio had limitations, so the team had to pivot toward other notification options.
+- Midterms, finals, interviews, travel, and personal conflicts limited availability during the sprint.
 
 ---
 ## Sprint Retrospective
 ### What went well:
+The team made strong progress across multiple areas of the project. The frontend became much closer to the final demo design, the backend gained important auth and project-management features, and the testing/CI work became more complete. Team members also communicated across frontend, backend, and testing to keep the project moving despite many parallel tasks.
 
 ### What didn't go well:
+Some work was still back-loaded toward the end of the sprint, which made merge conflicts and test alignment harder. A lot of features were being developed at the same time, so integration became a bottleneck. School deadlines also made it harder for everyone to stay fully available.
 
 ### What we'll do differently:
+For the next sprint, we should create smaller PRs, set clearer mid-sprint checkpoints, and integrate frontend/backend changes earlier instead of waiting until the end. We should also lock down shared interfaces sooner so testing can begin earlier and avoid being blocked by unstable feature branches.
+Also do more documentation and keeping up to update the newer ADRs.
 
 ---
 ## Metrics
 | Metric | Value |
 |--------|-------|
 | Tasks Planned | 15 |
-| Tasks Completed | |
+| Tasks Completed | 10 |
 | PRs Opened | |
 | PRs Merged | |
 | Lines of Code Added | |
-| Unit Tests Written | |
+| Unit Tests Written | Multiple tests added for tracker, auth/login, notifications, Event.js, and dashboard routes |
 
 ---
 ## Notes & Misc

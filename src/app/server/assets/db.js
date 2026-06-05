@@ -4,11 +4,11 @@ import "dotenv/config";
 
 // A one-time client will be created when dealing with sign-ups, sign-ins, and sign-outs
 const newClient = () => {
-    return createClient(
-        process.env.SUPABASE_URL,
-        process.env.SUPABASE_SERVICE_ROLE_KEY,
-        { realtime: { transport: ws } }
-    );
+  return createClient(
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY,
+    { realtime: { transport: ws } },
+  );
 };
 
 // Node 20 has no native WebSocket; supabase-js builds a Realtime client at
@@ -16,43 +16,96 @@ const newClient = () => {
 export const supabase = newClient();
 
 export const dbHelper = {
-    async getAuthUserFromToken(accessToken) {
-        const { data, error } = await supabase.auth.getUser(accessToken);
-        if (error) { console.error("Query failed:", error); return { user: null, error: error }; }
-        if (!data || !data.user) return { user: null, error: "Invalid access token" };
-        return { user: data.user, error: null };
-    },
-    async getUserFromToken(accessToken) {
-        const { user: authUser, error: authError } = await this.getAuthUserFromToken(accessToken);
-        if (authError) return { user: null, authUser: null, error: authError };
-        const { data: user, error } = await supabase.from("users").select("*").eq("auth_id", authUser.id).limit(1).maybeSingle();
-        if (error) { console.error("Query failed:", error); return { user: null, authUser: null, error: error }; }
-        if (!user) return { user: null, authUser: null, error: "Missing user" };
-        return { user: user, authUser: authUser, error: null };
-    },
-    async getProjectFromAPIKey(apiKey) {
-        const { data: project, error } = await supabase.from("projects").select("*").eq("api_key", apiKey).limit(1).maybeSingle();
-        if (error) { console.error("Query failed:", error); return { project: null, error: error }; }
-        if (!project) return { project: null, error: "Invalid API key" };
-        return { project: project, error: null };
-    },
-    // Returns all events from all projects associated with the user
-    async getEvents(user) {
-        const { data, error } = await supabase
-            .from("projects").select(`
+  async getAuthUserFromToken(accessToken) {
+    const { data, error } = await supabase.auth.getUser(accessToken);
+    if (error) {
+      console.error("Query failed:", error);
+      return { user: null, error: error };
+    }
+    if (!data || !data.user)
+      return { user: null, error: "Invalid access token" };
+    return { user: data.user, error: null };
+  },
+  async getUserFromToken(accessToken) {
+    const { user: authUser, error: authError } =
+      await this.getAuthUserFromToken(accessToken);
+    if (authError) return { user: null, authUser: null, error: authError };
+    const { data: user, error } = await supabase
+      .from("users")
+      .select("*")
+      .eq("auth_id", authUser.id)
+      .limit(1)
+      .maybeSingle();
+    if (error) {
+      console.error("Query failed:", error);
+      return { user: null, authUser: null, error: error };
+    }
+    if (!user) return { user: null, authUser: null, error: "Missing user" };
+    return { user: user, authUser: authUser, error: null };
+  },
+  async getProjectFromAPIKey(apiKey) {
+    const { data: project, error } = await supabase
+      .from("projects")
+      .select("*")
+      .eq("api_key", apiKey)
+      .limit(1)
+      .maybeSingle();
+    if (error) {
+      console.error("Query failed:", error);
+      return { project: null, error: error };
+    }
+    if (!project) return { project: null, error: "Invalid API key" };
+    return { project: project, error: null };
+  },
+  // Returns all events from all projects associated with the user
+  async getEvents(user) {
+    const { data, error } = await supabase
+      .from("projects")
+      .select(
+        `
                 users_projects!inner(user_id),
                 events (*)
-            `)
-            .eq("users_projects.user_id", user.id)
-            .order("timestamp", { referencedTable: 'events', ascending: false });
-        if (error || !data) { console.error("Query failed:", error); return { events: null, error: error }; }
-        const events = data.flatMap(item => item.events || []) || [];
-        return { events: events, error: null };
-    },
-    // Returns all uptime checks from all projects associated with the user
-    async getUptimeLog(user) {
-        const { data, error } = await supabase
-            .from("projects").select(`
+            `,
+      )
+      .eq("users_projects.user_id", user.id)
+      .order("timestamp", { referencedTable: "events", ascending: false });
+    if (error || !data) {
+      console.error("Query failed:", error);
+      return { events: null, error: error };
+    }
+    const events = data.flatMap((item) => item.events || []) || [];
+    return { events: events.filter((event) => !event.resolved), error: null };
+  },
+  // Soft-deletes events by marking them resolved. Scoped to the user's own
+  // projects so a user cannot resolve another team's events.
+  async resolveEvents(user, ids) {
+    const { data: links, error } = await supabase
+      .from("users_projects")
+      .select("project_id")
+      .eq("user_id", user.id);
+    if (error) {
+      console.error("Query error:", error);
+      return error;
+    }
+    const projectIds = links.map((link) => link.project_id);
+    const { error: updateError } = await supabase
+      .from("events")
+      .update({ resolved: true })
+      .in("id", ids)
+      .in("project_id", projectIds);
+    if (updateError) {
+      console.error("Failed to resolve events:", updateError);
+      return updateError;
+    }
+    console.log("Events resolved");
+    return null;
+  },
+  // Returns all uptime checks from all projects associated with the user
+  async getUptimeLog(user) {
+    const { data, error } = await supabase
+      .from("projects")
+      .select(
+        `
                 users_projects!inner(user_id),
                 website_url,
                 uptime_log (*)

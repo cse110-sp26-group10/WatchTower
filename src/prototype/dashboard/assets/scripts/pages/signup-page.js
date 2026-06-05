@@ -1,4 +1,4 @@
-import { dataStore } from '../core/data-store.js';
+import { dataStore } from "../core/data-store.js";
 
 const SUN_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
   <circle cx="12" cy="12" r="5"/>
@@ -349,61 +349,66 @@ export class SignUpPage extends HTMLElement {
   }
 
   bindEvents() {
-    const form = this.querySelector('#signup-form');
-    const submitBtn = this.querySelector('#signup-submit');
-    const errorEl = this.querySelector('#signup-error');
-    const emailInput = this.querySelector('#signup-email');
-    const passwordInput = this.querySelector('#signup-password');
-    const confirmPasswordInput = this.querySelector('#signup-confirm-password');
-    const themeBtn = this.querySelector('#signup-theme-toggle');
+    const form = this.querySelector("#signup-form");
+    const submitBtn = this.querySelector("#signup-submit");
+    const errorEl = this.querySelector("#signup-error");
+    const emailInput = this.querySelector("#signup-email");
+    const passwordInput = this.querySelector("#signup-password");
+    const confirmPasswordInput = this.querySelector("#signup-confirm-password");
+    const themeBtn = this.querySelector("#signup-theme-toggle");
 
     const updateToggleUI = (isDark) => {
-      const sun = this.querySelector('#theme-icon-sun');
-      const moon = this.querySelector('#theme-icon-moon');
+      const sun = this.querySelector("#theme-icon-sun");
+      const moon = this.querySelector("#theme-icon-moon");
       if (!sun || !moon) return;
       if (isDark) {
-        moon.style.background = 'var(--wt-surface)';
-        moon.style.color = 'var(--wt-text)';
-        sun.style.background = 'transparent';
-        sun.style.color = 'var(--wt-text-3)';
+        moon.style.background = "var(--wt-surface)";
+        moon.style.color = "var(--wt-text)";
+        sun.style.background = "transparent";
+        sun.style.color = "var(--wt-text-3)";
       } else {
-        sun.style.background = 'var(--wt-surface)';
-        sun.style.color = 'var(--wt-text)';
-        moon.style.background = 'transparent';
-        moon.style.color = 'var(--wt-text-3)';
+        sun.style.background = "var(--wt-surface)";
+        sun.style.color = "var(--wt-text)";
+        moon.style.background = "transparent";
+        moon.style.color = "var(--wt-text-3)";
       }
     };
 
-    themeBtn?.addEventListener('click', () => {
+    themeBtn?.addEventListener("click", () => {
       const html = document.documentElement;
-      const isDark = html.dataset.theme?.includes('dark');
+      const isDark = html.dataset.theme?.includes("dark");
       const flags = [];
-      if (!isDark) flags.push('dark');
-      if (localStorage.getItem('wt_colorblind') === '1') flags.push('colorblind');
-      html.dataset.theme = flags.join(' ');
-      localStorage.setItem('wt_dark', isDark ? '0' : '1');
+      if (!isDark) flags.push("dark");
+      if (localStorage.getItem("wt_colorblind") === "1")
+        flags.push("colorblind");
+      html.dataset.theme = flags.join(" ");
+      localStorage.setItem("wt_dark", isDark ? "0" : "1");
       updateToggleUI(!isDark);
     });
 
-    updateToggleUI(document.documentElement.dataset.theme?.includes('dark'));
+    updateToggleUI(document.documentElement.dataset.theme?.includes("dark"));
 
     const setLoading = (isLoading) => {
       submitBtn.disabled = isLoading;
-      submitBtn.querySelector('.login-submit-label').textContent = isLoading ? 'Creating account...' : 'Create Account';
-      submitBtn.querySelector('.login-submit-spinner').hidden = !isLoading;
+      submitBtn.querySelector(".login-submit-label").textContent = isLoading
+        ? "Creating account..."
+        : "Create Account";
+      submitBtn.querySelector(".login-submit-spinner").hidden = !isLoading;
     };
 
     const showError = (message, fields = []) => {
       errorEl.textContent = message;
       errorEl.hidden = false;
-      fields.forEach((field) => field.classList.add('is-invalid'));
+      fields.forEach((field) => field.classList.add("is-invalid"));
       fields[0]?.focus();
     };
 
     const handleSubmit = async () => {
       errorEl.hidden = true;
-      errorEl.textContent = '';
-      [emailInput, passwordInput, confirmPasswordInput].forEach((field) => field.classList.remove('is-invalid'));
+      errorEl.textContent = "";
+      [emailInput, passwordInput, confirmPasswordInput].forEach((field) =>
+        field.classList.remove("is-invalid"),
+      );
 
       const email = emailInput.value.trim();
       const password = passwordInput.value;
@@ -411,47 +416,55 @@ export class SignUpPage extends HTMLElement {
       const emailIsValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
       if (!email || !password || !confirmPassword) {
-        showError('Please fill in all fields.', [emailInput, passwordInput, confirmPasswordInput].filter((field) => !field.value));
+        showError(
+          "Please fill in all fields.",
+          [emailInput, passwordInput, confirmPasswordInput].filter(
+            (field) => !field.value,
+          ),
+        );
         return;
       }
 
       if (!emailIsValid) {
-        showError('Please enter a valid email address.', [emailInput]);
+        showError("Please enter a valid email address.", [emailInput]);
         return;
       }
 
       if (password.length < 6) {
-        showError('Password must be at least 6 characters.', [passwordInput]);
+        showError("Password must be at least 6 characters.", [passwordInput]);
         return;
       }
 
       if (password !== confirmPassword) {
-        showError('Passwords do not match.', [passwordInput, confirmPasswordInput]);
-        confirmPasswordInput.value = '';
+        showError("Passwords do not match.", [
+          passwordInput,
+          confirmPasswordInput,
+        ]);
+        confirmPasswordInput.value = "";
         return;
       }
 
       const error = await dataStore.signUp(email, password);
       if (error) {
-        showError('Sign up failed');
+        showError("Sign up failed");
         return;
       }
 
       setLoading(true);
 
       setTimeout(() => {
-        localStorage.setItem('wt-auth', '1');
-        window.location.hash = '#/';
+        localStorage.setItem("wt-auth", "1");
+        window.location.hash = "#/";
         window.location.reload();
       }, 0);
     };
 
-    submitBtn?.addEventListener('click', handleSubmit);
+    submitBtn?.addEventListener("click", handleSubmit);
 
-    form?.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') handleSubmit();
+    form?.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") handleSubmit();
     });
   }
 }
 
-customElements.define('signup-page', SignUpPage);
+customElements.define("signup-page", SignUpPage);

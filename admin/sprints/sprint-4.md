@@ -28,16 +28,16 @@
 ## Sprint Backlog
 | ID | Task | Assignee(s) | Status | Notes |
 |----|------|-------------|--------|-------|
-| T01 | Complete backend–frontend integration (connect new UI to endpoints) | Han Yang-Lin, Kevin Wang, Jensen Guo | 🔲 Not Started | High priority integration; ensure ready for demo |
-| T02 | Write ADR for notification system (NodeMailer / ntfy) | Han Yang-Lin, Kevin Wang | 🔲 Not Started | Backend documentation deliverable |
-| T03 | Update Supabase ADR to include auth reasoning | Han Yang-Lin, Kevin Wang | 🔲 Not Started | Add detailed architectural justification for built-in auth |
+| T01 | Complete backend–frontend integration (connect new UI to endpoints) | Han Yang-Lin, Kevin Wang, Jensen Guo | ✅ Done | High priority integration; ensure ready for demo |
+| T02 | Write ADR for notification system (NodeMailer / ntfy) | Han Yang-Lin, Kevin Wang | ✅ Done | Backend documentation deliverable |
+| T03 | Update Supabase ADR to include auth reasoning | Han Yang-Lin, Kevin Wang | 🔄 In Progress | Add detailed architectural justification for built-in auth |
 | T04 | Finish small UI fixes, polish app/cards to look professional | Jensen Guo | 🔲 Not Started | Detail-oriented; grounded in developer user research/needs |
-| T05 | Merge browser-type detection PR and validate in dashboard | Evan Marriott, Nicole Sutedja | 🔲 Not Started | Core lead verification |
+| T05 | Merge browser-type detection PR and validate in dashboard | Evan Marriott, Nicole Sutedja | ✅ Done | Core lead verification |
 | T06 | Implement screen/display size tracking for error events | Evan Marriott, Nicole Sutedja | 🔲 Not Started | Track display context at time of error |
-| T07 | Finalize PR structure and close completed GitHub Issues | Evan Marriott, Nicole Sutedja | 🔲 Not Started | Align issue tracker with final repository state |
-| T08 | Write "definition of done" into process docs | Evan Marriott, Nicole Sutedja | 🔲 Not Started | Core process documentation |
-| T09 | Finalize CI pipeline additions (dependency check, changelog, formatting) & open PR from testing branch | Benedict Luis, Aron Wu | 🔲 Not Started | Ensure everything is safely merged into main |
-| T10 | Check and update all Scrum Master docs, repo tasks, metrics, and issues | Benedict Luis, Aron Wu | 🔲 Not Started | Ensure metrics are current and tasks marked done if completed |
+| T07 | Finalize PR structure and close completed GitHub Issues | Evan Marriott, Nicole Sutedja | ✅ Done | Align issue tracker with final repository state |
+| T08 | Write "definition of done" into process docs | Evan Marriott, Nicole Sutedja | ✅ Done | Core process documentation |
+| T09 | Finalize CI pipeline additions (dependency check, changelog, formatting) & open PR from testing branch | Benedict Luis, Aron Wu | ✅ Done | Merged via PR #83; dependency + Prettier on `main` |
+| T10 | Check and update all Scrum Master docs, repo tasks, metrics, and issues | Benedict Luis, Aron Wu | 🔄 In Progress | ci-plan + standup updated; metrics and GitHub issues still open |
 | T11 | Rename `prototype` folder and update lint/test paths | Kaley Chung, Prakhar Shah, Bethany Miyamoto | 🔲 Not Started | Structural path updates |
 | T12 | Validate mobile responsiveness across screen sizes | Kaley Chung, Prakhar Shah, Bethany Miyamoto | 🔲 Not Started | Use testing tool from Audria's Slack notes |
 | T13 | Finalize accessibility features (zoom 200%, ARIA, alt tags, colorblind/light-dark mode) | Kaley Chung, Prakhar Shah, Bethany Miyamoto | 🔲 Not Started | Comprehensive accessibility pass |
@@ -57,16 +57,16 @@
 ### Stand-up 1 — 06/02/2026
 | Name | Did | Doing | Blockers |
 |------|-----|-------|----------|
-| Nicole Sutedja | | | |
-| Evan Marriott | | | |
-| Jensen Guo | | | |
-| Han Yang-Lin | | | |
-| Kevin Wang | | | |
-| Benedict Luis | | | |
+| Nicole Sutedja | Finished adding icons/sidebar changes into UI, created & delegated tasks, started Wiki | Continue with UI polishes in feat/ui-polish | Midterm |
+| Evan Marriott | Merged PRs into main for the dashboard and errors or test app, refactored src folder to have the folder name for the watchtower be “app” instead of prototype | continue refining documentation and PRs | midterm tomorrow |
+| Jensen Guo | UI tweaks (emphasizing error number, fixing hamburger menu), repo cleanup, code comments | Ensure CSS consistency, make branding stronger, documentation | Finals |
+| Han Yang-Lin | Finished integrating the frontend with the backend. Added project filter dropdown that stays updated with the existing list of projects. Updated uptime card with removed project filter, added margins, and fixed checkmark for indicating selection | Add auth reasoning to Supabase ADR | CSE 120 project |
+| Kevin Wang | asking for feedback from the prof | polish the frontend | other ddls and final |
+| Benedict Luis | Went to prof Powell for feedback and started working on audit scrum master doc | Finish issue #86 | Finals and projects |
 | Aron Wu | | | |
-| Kaley Chung | | | |
+| Kaley Chung | Fix the mobile and validate mobile responsiveness across screen sizes (use the tool from Audria's Slack notes) and add Figma to the repo | Delegate tasks and deadlines for demo prep team | midterms |
 | Prakhar Shah | | | |
-| Bethany Miyamoto | | | |
+| Bethany Miyamoto | task for next sprint assigned | repo clean up and dry run | midterm and projects |
 
 ### Stand-up 2 — 06/04/2026
 | Name | Did | Doing | Blockers |

@@ -48,9 +48,18 @@
 
 | Name | Did | Doing | Blockers |
 |------|-----|-------|----------|
-| | | | |
+| Nicole Sutedja | | | |
+| Kaley Chung | | | |
+| Jensen Guo | | | |
+| Prakhar Shah | | | |
+| Bethany Miyamoto | | | |
+| Kevin Wang | | | |
+| Han Yang-Lin | | | |
+| Aron Wu | | | |
+| Benedict Luis | | | |
+| Evan Marriott | | | |
 
-### Stand-up 2 — MM/DD/YYYY
+### Stand-up 2 — MM/DD/yYYY
 
 | Name | Did | Doing | Blockers |
 |------|-----|-------|----------|

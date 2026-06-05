@@ -1,6 +1,6 @@
-import { dataStore } from './data-store.js';
+import { dataStore } from "./data-store.js";
 
-let activeDeploymentId = 'all';
+let activeDeploymentId = "all";
 const listeners = new Set();
 
 function notify() {
@@ -18,11 +18,13 @@ export const deploymentScope = {
   },
 
   get deployment() {
-    return activeDeploymentId === 'all' ? null : dataStore.getDeployment(activeDeploymentId);
+    return activeDeploymentId === "all"
+      ? null
+      : dataStore.getDeployment(activeDeploymentId);
   },
 
   set(id) {
-    activeDeploymentId = id || 'all';
+    activeDeploymentId = id || "all";
     notify();
   },
 

@@ -31,3 +31,6 @@ test-results/
 # Logs
 npm-debug.log*
 *.log
+
+# Local git worktrees
+.worktrees/

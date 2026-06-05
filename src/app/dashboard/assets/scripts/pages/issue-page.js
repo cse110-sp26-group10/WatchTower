@@ -1,6 +1,5 @@
-import { dataStore } from '../core/data-store.js';
-import { relativeTime } from '../core/formatters.js';
-
+import { dataStore } from "../core/data-store.js";
+import { relativeTime } from "../core/formatters.js";
 
 /**
  * Page for individual issue view
@@ -15,29 +14,30 @@ export class IssuePage extends HTMLElement {
   }
 
   render() {
-    const id = this._route?.params.get('id');
+    const id = this._route?.params.get("id");
     const event = id ? dataStore.getEvent(id) : null;
 
-    const page = document.createElement('div');
-    page.className = 'page-stack';
+    const page = document.createElement("div");
+    page.className = "page-stack";
 
-    const back = document.createElement('a');
-    back.className = 'back-link';
-    back.href = '#/errors';
-    back.textContent = 'back to signals';
+    const back = document.createElement("a");
+    back.className = "back-link";
+    back.href = "#/errors";
+    back.textContent = "back to signals";
 
-    const panel = document.createElement('section');
-    panel.className = 'panel';
+    const panel = document.createElement("section");
+    panel.className = "panel";
 
     if (!event) {
-      panel.textContent = 'Signal not found.';
+      panel.textContent = "Signal not found.";
     } else {
-      const title = document.createElement('h1');
-      title.textContent = event.metadata?.message || event.metadata?.comment || event.event_type;
+      const title = document.createElement("h1");
+      title.textContent =
+        event.metadata?.message || event.metadata?.comment || event.event_type;
 
-      const meta = document.createElement('p');
-      meta.className = 'event-meta';
-      meta.textContent = `${event.pathname || '-'} - ${relativeTime(event.timestamp)} - ${event.id}`;
+      const meta = document.createElement("p");
+      meta.className = "event-meta";
+      meta.textContent = `${event.pathname || "-"} - ${relativeTime(event.timestamp)} - ${event.id}`;
 
       panel.append(title, meta);
     }
@@ -47,4 +47,4 @@ export class IssuePage extends HTMLElement {
   }
 }
 
-customElements.define('issue-page', IssuePage);
+customElements.define("issue-page", IssuePage);

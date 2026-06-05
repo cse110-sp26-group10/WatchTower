@@ -1,14 +1,14 @@
-import { deploymentScope } from '../core/deployment-scope.js';
-import { getEventById, getHomeDashboardData } from '../core/dashboard-data.js';
-import '../components/activity-list.js';
-import '../components/dashboard-banner.js';
-import '../components/dashboard-styles.js';
-import '../components/error-detail-modal.js';
-import '../components/error-list.js';
-import '../components/panel-section.js';
-import '../components/path-count-list.js';
-import '../components/summary-metrics.js';
-import '../components/uptime-card.js';
+import { deploymentScope } from "../core/deployment-scope.js";
+import { getEventById, getHomeDashboardData } from "../core/dashboard-data.js";
+import "../components/activity-list.js";
+import "../components/dashboard-banner.js";
+import "../components/dashboard-styles.js";
+import "../components/error-detail-modal.js";
+import "../components/error-list.js";
+import "../components/panel-section.js";
+import "../components/path-count-list.js";
+import "../components/summary-metrics.js";
+import "../components/uptime-card.js";
 
 export class HomePage extends HTMLElement {
   constructor() {
@@ -22,7 +22,7 @@ export class HomePage extends HTMLElement {
     this.render();
     this.cacheElements();
 
-    if (deploymentScope && typeof deploymentScope.subscribe === 'function') {
+    if (deploymentScope && typeof deploymentScope.subscribe === "function") {
       this.unsubscribe = deploymentScope.subscribe(() => {
         this.updatePageData();
       });
@@ -30,16 +30,16 @@ export class HomePage extends HTMLElement {
       this.updatePageData();
     }
 
-    this.addEventListener('error-selected', this.handleErrorSelected);
+    this.addEventListener("error-selected", this.handleErrorSelected);
   }
 
   disconnectedCallback() {
     this.unsubscribe?.();
-    this.removeEventListener('error-selected', this.handleErrorSelected);
+    this.removeEventListener("error-selected", this.handleErrorSelected);
   }
 
   render() {
-    this.className = 'dashboard-viewport';
+    this.className = "dashboard-viewport";
     this.innerHTML = `
       <dashboard-banner></dashboard-banner>
       <summary-metrics></summary-metrics>
@@ -72,13 +72,13 @@ export class HomePage extends HTMLElement {
   }
 
   cacheElements() {
-    this.metrics = this.querySelector('summary-metrics');
-    this.uptimeCard = this.querySelector('#home-uptime');
-    this.errorList = this.querySelector('#home-errors');
-    this.loadPaths = this.querySelector('#home-load-paths');
-    this.clickPaths = this.querySelector('#home-click-paths');
-    this.activityList = this.querySelector('#home-activity');
-    this.errorModal = this.querySelector('#home-error-modal');
+    this.metrics = this.querySelector("summary-metrics");
+    this.uptimeCard = this.querySelector("#home-uptime");
+    this.errorList = this.querySelector("#home-errors");
+    this.loadPaths = this.querySelector("#home-load-paths");
+    this.clickPaths = this.querySelector("#home-click-paths");
+    this.activityList = this.querySelector("#home-activity");
+    this.errorModal = this.querySelector("#home-error-modal");
   }
 
   updatePageData() {
@@ -97,4 +97,4 @@ export class HomePage extends HTMLElement {
   }
 }
 
-customElements.define('home-page', HomePage);
+customElements.define("home-page", HomePage);

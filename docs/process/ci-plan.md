@@ -1,56 +1,44 @@
-# CI Plan — Sprint 1
+# CI Plan
 
-**Status:** Planning only — no GitHub Actions workflows are implemented yet.
+**Status:** Implemented on `main`. The pipeline includes linting, unit tests, E2E tests, dependency audit, and Prettier formatting checks. The extended CI work from Sprint 4 T09 was merged in PR #83 on June 1, 2026.
 
 ---
 
 ## Goal
 
-Define what the WatchTower CI pipeline should eventually check so that it can be implemented incrementally starting in Sprint 2.
+Run automated checks on every push and pull request to `main` so regressions are caught before merge.
 
 ---
 
-## Planned Pipeline Steps
+## Current pipeline (`main`)
 
-### 1. HTML Validation
-- Use an HTML validator (e.g., `html-validate` or the W3C validator CLI) to catch structural errors in `index.html` and any other HTML files.
+Workflow: `.github/workflows/ci.yml`
 
-### 2. CSS Linting
-- Run a CSS linter (e.g., `stylelint`) to enforce consistent style rules and catch invalid property values.
+| Job | Command / tool |
+|-----|----------------|
+| Lint | `npm run lint` (ESLint, html-validate, Stylelint) |
+| Dependency check | `npm audit --audit-level=critical` |
+| Code formatting | `npx prettier@3.8.3 --check "src/**/*.{html,js,css}" "tests/**/*.js"` |
+| Unit tests | `npm run test:unit` (Vitest) |
+| E2E tests | `npm run test:e2e` (Playwright, Chromium) |
 
-### 3. JavaScript Linting
-- Run `eslint` on `app.js`, `data.js`, and any other JS files to catch syntax errors, undefined variables, and style issues.
-- Config should enforce no `var`, consistent semicolons, and JSDoc presence on exported functions.
-
-### 4. Unit Tests
-- Run JavaScript unit tests using a lightweight test runner (e.g., Jest or plain Node `assert`).
-- Initially targets filter functions, signal-to-deployment matching logic, and data formatting utilities.
-
-### 5. Link Check (Optional)
-- Check internal links in documentation files to catch broken `docs/` references.
+The CI jobs are ordered so linting, dependency checks, and formatting run before the test jobs. This catches simpler issues first before running the full test suite.
 
 ---
 
-## Trigger Conditions
+## Changelog
 
-| Event | Pipeline |
-|-------|----------|
-| Pull request opened or updated | Run all steps |
-| Push to `main` | Run all steps |
-| Manual trigger | Run all steps |
+Changelog updates are handled through the team process and PR template (`docs/pr-template.md`). This is not currently enforced as a CI job. The Sprint 4 testing/CI update is included in `docs/specs/CHANGELOG.md`.
 
 ---
 
-## Sprint 1 Status
+## Local commands (match CI)
 
-No CI workflow file exists yet. This document captures the intent so the team can implement the pipeline in Sprint 2 without re-planning from scratch.
-
-The workflow file will live at `.github/workflows/ci.yml` when created.
-
----
-
-## Open Questions
-
-- Will we use Jest or a lighter test runner given the no-framework constraint?
-- Should the HTML validator run against the deployed page or the raw file?
-- Who is responsible for maintaining the CI configuration as the project grows?
+```bash
+npm ci
+npm run lint
+npm audit --audit-level=critical
+npx prettier@3.8.3 --check "src/**/*.{html,js,css}" "tests/**/*.js"
+npm run test:unit
+npx playwright install chromium
+npm run test:e2e

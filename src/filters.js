@@ -27,9 +27,7 @@ export function filterByEventType(events, eventType) {
  * @returns {Array}
  */
 export function filterByDeployment(events, deploymentId) {
-  return events.filter(
-    (e) => e.deployment?.id === deploymentId
-  );
+  return events.filter((e) => e.deployment?.id === deploymentId);
 }
 
 /**
@@ -67,9 +65,7 @@ export function filterByStatus(issues, status) {
 export function filterByRecency(events, minutes) {
   const cutoff = new Date(Date.now() - minutes * 60 * 1000);
 
-  return events.filter(
-    (e) => new Date(e.timestamp) >= cutoff
-  );
+  return events.filter((e) => new Date(e.timestamp) >= cutoff);
 }
 
 /**
@@ -115,24 +111,18 @@ export function applyFilters(events, criteria = {}) {
   if (criteria.deploymentId)
     result = filterByDeployment(result, criteria.deploymentId);
 
-  if (criteria.severity)
-    result = filterBySeverity(result, criteria.severity);
+  if (criteria.severity) result = filterBySeverity(result, criteria.severity);
 
   if (criteria.eventType)
     result = filterByEventType(result, criteria.eventType);
 
-  if (criteria.status)
-    result = filterByStatus(result, criteria.status);
+  if (criteria.status) result = filterByStatus(result, criteria.status);
 
   if (criteria.recentMinutes)
     result = filterByRecency(result, criteria.recentMinutes);
 
   if (criteria.from || criteria.to)
-    result = filterByDateRange(
-      result,
-      criteria.from,
-      criteria.to
-    );
+    result = filterByDateRange(result, criteria.from, criteria.to);
 
   return result;
 }

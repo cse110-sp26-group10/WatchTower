@@ -1,4 +1,4 @@
-import { relativeTime } from '../core/formatters.js';
+import { relativeTime } from "../core/formatters.js";
 
 /**
  * Component that lists errors, grouping identical ones
@@ -17,70 +17,70 @@ export class ErrorList extends HTMLElement {
     this.replaceChildren();
 
     if (!this._errors?.length) {
-      this.appendEmptyState('No active system errors found.');
+      this.appendEmptyState("No active system errors found.");
       return;
     }
 
     for (const group of this.groupErrors(this._errors)) {
       const { error, count } = group;
-      const row = document.createElement('button');
-      row.className = 'interactive-data-row error-click-target-btn';
-      row.type = 'button';
+      const row = document.createElement("div");
+      row.className = "interactive-data-row error-click-target-btn";
+      row.setAttribute("role", "button");
+      row.tabIndex = 0;
       row.dataset.errorId = error.id;
-      row.addEventListener('click', () => this.dispatchErrorSelected(error.id));
+      row.addEventListener("click", () => this.dispatchErrorSelected(error.id));
 
-      const left = document.createElement('div');
-      left.className = 'row-left-group';
+      const left = document.createElement("div");
+      left.className = "row-left-group";
 
-      const severity = document.createElement('span');
-      severity.style.color = this.getSeverityColor(error);
-      severity.style.fontWeight = '700';
-      severity.style.fontFamily = 'monospace';
-      severity.style.fontSize = '11px';
-      severity.textContent = `[${error.metadata?.severity?.toUpperCase() || 'CRITICAL'}]`;
+      const severity = document.createElement("span");
+      severity.className = `severity-label ${this.getSeverityClass(error)}`;
+      severity.textContent = `[${error.metadata?.severity?.toUpperCase() || "CRITICAL"}]`;
 
-      const details = document.createElement('div');
-      details.className = 'row-details-wrapper';
+      const details = document.createElement("div");
+      details.className = "row-details-wrapper";
 
-      const message = document.createElement('span');
-      message.className = 'row-primary-text';
-      message.textContent = error.metadata?.message || 'Error Event';
+      const message = document.createElement("span");
+      message.className = "row-primary-text";
+      message.textContent = error.metadata?.message || "Error Event";
 
-      const path = document.createElement('span');
-      path.className = 'row-secondary-text';
-      path.textContent = `Path: ${error.pathname || '-'}`;
+      const path = document.createElement("span");
+      path.className = "row-secondary-text";
+      path.textContent = `Path: ${error.pathname || "-"}`;
 
       details.append(message, path);
       left.append(severity, details);
       row.append(left);
 
       // Right-side group: occurrence count (when stacked) + latest timestamp
-      const right = document.createElement('div');
-      right.style.display = 'flex';
-      right.style.alignItems = 'center';
-      right.style.gap = '8px';
+      const right = document.createElement("div");
+      right.className = "row-inline-group";
 
       if (count > 1) {
-        const countBadge = document.createElement('span');
-        countBadge.style.background = 'var(--wt-surface)';
-        countBadge.style.color = 'var(--wt-text)';
-        countBadge.style.fontWeight = '700';
-        countBadge.style.fontSize = '11px';
-        countBadge.style.padding = '2px 6px';
-        countBadge.style.borderRadius = 'var(--wt-radius-sm)';
-        countBadge.style.border = '1px solid var(--wt-border)';
+        const countBadge = document.createElement("span");
+        countBadge.className = "count-badge";
         countBadge.textContent = `×${count}`;
         countBadge.title = `${count} occurrences`;
         right.append(countBadge);
       }
 
-      const timestamp = document.createElement('span');
-      timestamp.className = 'row-right-timestamp';
+      const timestamp = document.createElement("span");
+      timestamp.className = "row-right-timestamp";
       timestamp.textContent = relativeTime(error.timestamp);
       right.append(timestamp);
 
       row.append(right);
       this.append(row);
+
+      const fixBtn = document.createElement("button");
+      fixBtn.type = "button";
+      fixBtn.className = "fix-error-btn";
+      fixBtn.textContent = "Mark as Fixed";
+      fixBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        this.resolveError(group);
+      });
+      right.append(fixBtn);
     }
   }
 
@@ -89,15 +89,16 @@ export class ErrorList extends HTMLElement {
   groupErrors(errors) {
     const groups = new Map();
     for (const error of errors) {
-      const severity = error.metadata?.severity?.toLowerCase() || 'critical';
-      const message = error.metadata?.message || 'Error Event';
-      const key = `${severity}|${message}|${error.pathname || '-'}`;
+      const severity = error.metadata?.severity?.toLowerCase() || "critical";
+      const message = error.metadata?.message || "Error Event";
+      const key = `${severity}|${message}|${error.pathname || "-"}`;
 
       const existing = groups.get(key);
       if (!existing) {
-        groups.set(key, { error, count: 1 });
+        groups.set(key, { error, count: 1, ids: [error.id] });
       } else {
         existing.count += 1;
+        existing.ids.push(error.id);
         // Keep whichever occurrence is newest as the representative.
         if (new Date(error.timestamp) > new Date(existing.error.timestamp)) {
           existing.error = error;
@@ -108,26 +109,37 @@ export class ErrorList extends HTMLElement {
   }
 
   appendEmptyState(message) {
-    const empty = document.createElement('div');
-    empty.style.padding = '12px';
-    empty.style.textAlign = 'center';
-    empty.style.color = 'var(--wt-text-3)';
+    const empty = document.createElement("div");
+    empty.className = "list-empty";
     empty.textContent = message;
     this.append(empty);
   }
 
-  getSeverityColor(error) {
-    return error.metadata?.severity?.toLowerCase() === 'warning'
-      ? 'var(--wt-warning)'
-      : 'var(--wt-danger)';
+  getSeverityClass(error) {
+    return error.metadata?.severity?.toLowerCase() === "warning"
+      ? "is-warning"
+      : "is-critical";
   }
 
   dispatchErrorSelected(errorId) {
-    this.dispatchEvent(new CustomEvent('error-selected', {
-      bubbles: true,
-      detail: { errorId },
-    }));
+    this.dispatchEvent(
+      new CustomEvent("error-selected", {
+        bubbles: true,
+        detail: { errorId },
+      }),
+    );
+  }
+
+  // Resolve every occurrence in the group so the row does not reappear on the
+  // next fetch. The errors page listens for this and calls the data store.
+  resolveError(group) {
+    this.dispatchEvent(
+      new CustomEvent("error-resolve", {
+        bubbles: true,
+        detail: { ids: group.ids },
+      }),
+    );
   }
 }
 
-customElements.define('error-list', ErrorList);
+customElements.define("error-list", ErrorList);
