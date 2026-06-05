@@ -96,6 +96,21 @@ export function calculateAverageLatency(pageLoads) {
   return Math.round(totalLatency / pageLoads.length);
 }
 
+// Avg-load-time color thresholds (ms). load_time is full page navigation time:
+// under ~1s feels snappy, over ~3s is where users start to bail. Tune here.
+const LOAD_TIME_GOOD_MS = 1000;
+const LOAD_TIME_BAD_MS = 3000;
+
+/**
+ * Map an average load time (ms) to a card state: green below the good
+ * threshold, red above the bad threshold, yellow in between.
+ */
+export function loadTimeState(ms) {
+  if (ms < LOAD_TIME_GOOD_MS) return "success";
+  if (ms > LOAD_TIME_BAD_MS) return "danger";
+  return "warning";
+}
+
 /**
  * Count events by pathname.
  */
@@ -105,6 +120,73 @@ export function groupEventsByPath(events) {
     counts[path] = (counts[path] || 0) + 1;
     return counts;
   }, {});
+}
+
+const ACTIVITY_BUCKET_COUNT = 12;
+const ONE_DAY_MS = 86400000;
+
+/**
+ * Format a bucket's start time. Uses a date label for ranges spanning more
+ * than a couple of days, otherwise a clock time.
+ */
+function formatBucketLabel(time, spanMs) {
+  const date = new Date(time);
+  if (spanMs > 2 * ONE_DAY_MS) {
+    return date.toLocaleDateString([], { month: "short", day: "numeric" });
+  }
+  return date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+}
+
+/**
+ * Split the events' time range into evenly sized buckets and summarize each.
+ * Returns an array (oldest first) of { label, count, avgLoadTime }, where
+ * avgLoadTime is null for buckets without page loads. Empty array when there
+ * are no timestamped events.
+ */
+export function bucketActivityOverTime(
+  events,
+  pageLoads,
+  bucketCount = ACTIVITY_BUCKET_COUNT,
+) {
+  const times = events.map(getEventTime).filter((time) => time > 0);
+  if (!times.length) return [];
+
+  const min = Math.min(...times);
+  const max = Math.max(...times);
+  const span = max - min;
+  const size = span > 0 ? span / bucketCount : 1;
+
+  const buckets = Array.from({ length: bucketCount }, (_, i) => ({
+    start: min + i * size,
+    count: 0,
+    loadSum: 0,
+    loadCount: 0,
+  }));
+
+  const indexFor = (time) =>
+    span > 0 ? Math.min(bucketCount - 1, Math.floor((time - min) / size)) : 0;
+
+  for (const event of events) {
+    const time = getEventTime(event);
+    if (time > 0) buckets[indexFor(time)].count += 1;
+  }
+  for (const load of pageLoads) {
+    const time = getEventTime(load);
+    const loadTime = load.metadata?.load_time;
+    if (time > 0 && typeof loadTime === "number") {
+      const bucket = buckets[indexFor(time)];
+      bucket.loadSum += loadTime;
+      bucket.loadCount += 1;
+    }
+  }
+
+  return buckets.map((bucket) => ({
+    label: formatBucketLabel(bucket.start, span),
+    count: bucket.count,
+    avgLoadTime: bucket.loadCount
+      ? Math.round(bucket.loadSum / bucket.loadCount)
+      : null,
+  }));
 }
 
 /**
@@ -162,12 +244,20 @@ export function getHomeDashboardData(
     loadPaths: groupEventsByPath(pageLoads),
     clickPaths: groupEventsByPath(clicks),
     metrics: [
-      { label: "Errors", value: errors.length, state: "danger" },
+      {
+        label: "Errors",
+        value: errors.length,
+        state: errors.length ? "danger" : "success",
+      },
       {
         label: "Avg Load Time",
         value: pageLoads.length
           ? `${calculateAverageLatency(pageLoads)}ms`
           : "-",
+        state: pageLoads.length
+          ? loadTimeState(calculateAverageLatency(pageLoads))
+          : undefined,
+        fill: true,
       },
       { label: "Page Loads", value: pageLoads.length },
       { label: "Clicks", value: clicks.length },
@@ -238,11 +328,15 @@ export function getErrorsDashboardData(
   return {
     errors,
     metrics: [
-      { label: "Total Errors", value: severityCounts.total, state: "danger" },
+      {
+        label: "Total Errors",
+        value: severityCounts.total,
+        state: severityCounts.total ? "danger" : "success",
+      },
       {
         label: "Critical Errors",
         value: severityCounts.critical,
-        state: "danger",
+        state: severityCounts.critical ? "danger" : "success",
       },
       { label: "Warnings", value: severityCounts.warnings, state: "warning" },
     ],
@@ -267,6 +361,9 @@ export function getFeedbackDashboardData(
       ).toFixed(1)
     : "-";
 
+  const lowRatings = ratings.filter((rating) => rating <= 2).length;
+  const highRatings = ratings.filter((rating) => rating >= 4).length;
+
   return {
     surveys,
     metrics: [
@@ -274,17 +371,17 @@ export function getFeedbackDashboardData(
       {
         label: "Avg Rating",
         value: averageRating === "-" ? "-" : `${averageRating}/5`,
-        state: "warning",
+        state: averageRating === "-" ? undefined : "warning",
       },
       {
         label: "Low Ratings",
-        value: ratings.filter((rating) => rating <= 2).length,
-        state: "danger",
+        value: lowRatings,
+        state: lowRatings ? "danger" : undefined,
       },
       {
         label: "High Ratings",
-        value: ratings.filter((rating) => rating >= 4).length,
-        state: "success",
+        value: highRatings,
+        state: highRatings ? "success" : undefined,
       },
     ],
   };
@@ -299,6 +396,7 @@ export function getActivityDashboardData(
 ) {
   const events = getScopedEvents(deploymentId, projectId);
   const { pageLoads, clicks } = splitEventsByType(events);
+  const timeline = bucketActivityOverTime(events, pageLoads);
 
   return {
     events,
@@ -306,6 +404,14 @@ export function getActivityDashboardData(
     clicks,
     loadPaths: groupEventsByPath(pageLoads),
     clickPaths: groupEventsByPath(clicks),
+    activityOverTime: timeline.map((bucket) => ({
+      label: bucket.label,
+      value: bucket.count,
+    })),
+    loadTimeTrend: timeline.map((bucket) => ({
+      label: bucket.label,
+      value: bucket.avgLoadTime,
+    })),
     metrics: [
       { label: "Total Activity", value: events.length },
       { label: "Page Loads", value: pageLoads.length },
@@ -315,6 +421,10 @@ export function getActivityDashboardData(
         value: pageLoads.length
           ? `${calculateAverageLatency(pageLoads)}ms`
           : "-",
+        state: pageLoads.length
+          ? loadTimeState(calculateAverageLatency(pageLoads))
+          : undefined,
+        fill: true,
       },
     ],
   };

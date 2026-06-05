@@ -517,6 +517,18 @@ export const dataStore = {
     return null;
   },
 
+  async resolveErrors(ids) {
+    const { error } = await postToServer("/api/events/resolve", { ids });
+    if (error) {
+      console.log("Error resolve failed:", error);
+      return error;
+    }
+    console.log("Errors resolved successfully");
+    await this.updateEvents();
+    document.dispatchEvent(new CustomEvent("watchtower:data-update"));
+    return null;
+  },
+
   async updateNotifyMethods(methods) {
     const { error } = await postToServer("/api/notifications/methods", {
       methods,

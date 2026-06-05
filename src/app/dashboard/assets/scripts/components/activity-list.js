@@ -8,9 +8,6 @@ export class ActivityList extends HTMLElement {
   }
 
   connectedCallback() {
-    this.style.display = "flex";
-    this.style.flexDirection = "column";
-    this.style.gap = "8px";
     this.render();
   }
 
@@ -19,8 +16,7 @@ export class ActivityList extends HTMLElement {
 
     if (!this._events?.length) {
       const empty = document.createElement("div");
-      empty.style.color = "var(--wt-text-3)";
-      empty.style.fontSize = "12px";
+      empty.className = "activity-empty";
       empty.textContent = "No recent activity logs stream";
       this.append(empty);
       return;
@@ -29,8 +25,7 @@ export class ActivityList extends HTMLElement {
     for (const event of this._events.slice(0, 4)) {
       const isError = event.event_type === "error";
       const row = document.createElement(isError ? "button" : "div");
-      row.className = "interactive-data-row";
-      row.style.padding = "8px 12px";
+      row.className = "interactive-data-row is-compact";
 
       if (isError) {
         row.classList.add("error-click-target-btn");
@@ -42,25 +37,16 @@ export class ActivityList extends HTMLElement {
       }
 
       const body = document.createElement("div");
-      body.style.display = "flex";
-      body.style.alignItems = "center";
-      body.style.gap = "8px";
-      body.style.minWidth = "0";
+      body.className = `activity-event-body ${this.getTypeClass(event.event_type)}`;
 
-      const typeColor = this.getTypeColor(event.event_type);
       const dot = document.createElement("span");
-      dot.style.width = "6px";
-      dot.style.height = "6px";
-      dot.style.backgroundColor = typeColor;
-      dot.style.borderRadius = "50%";
-      dot.style.flexShrink = "0";
+      dot.className = "activity-event-dot";
 
       const label = document.createElement("span");
-      label.className = "row-primary-text";
-      label.style.fontSize = "12px";
+      label.className = "row-primary-text activity-event-label";
 
       const type = document.createElement("b");
-      type.style.color = typeColor;
+      type.className = "activity-event-type";
       type.textContent = event.event_type.toUpperCase();
 
       label.append(
@@ -73,11 +59,11 @@ export class ActivityList extends HTMLElement {
     }
   }
 
-  getTypeColor(type) {
-    if (type === "error") return "var(--wt-danger)";
-    if (type === "page_load") return "var(--wt-success)";
-    if (type === "survey") return "var(--wt-warning)";
-    return "var(--wt-info)";
+  getTypeClass(type) {
+    if (type === "error") return "is-error";
+    if (type === "page_load") return "is-page-load";
+    if (type === "survey") return "is-survey";
+    return "is-info";
   }
 
   dispatchErrorSelected(errorId) {

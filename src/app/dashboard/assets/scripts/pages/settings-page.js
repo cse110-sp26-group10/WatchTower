@@ -73,169 +73,66 @@ export class SettingsPage extends HTMLElement {
         <button class="settings-save" id="settings-save" type="button">
           <span class="settings-save-label">Save preferences</span>
         </button>
+
+        <hr class="settings-divider" />
+
+        <div class="settings-section">
+          <h2 class="settings-section-title">Appearance</h2>
+          <div class="settings-row">
+            <div>
+              <span class="settings-row-label">Theme</span>
+              <span class="settings-row-desc">Switch between light and dark mode.</span>
+            </div>
+            <button class="settings-theme-btn" id="settings-theme-btn" type="button">
+              <span id="settings-theme-label">Light</span>
+            </button>
+          </div>
+        </div>
+
+        <hr class="settings-divider" />
+
+        <div class="settings-section">
+          <h2 class="settings-section-title">Account</h2>
+          <div class="settings-row">
+            <div>
+              <span class="settings-row-label">Log out</span>
+              <span class="settings-row-desc">Sign out of your WatchTower account.</span>
+            </div>
+            <button class="settings-logout-btn" id="settings-logout-btn" type="button">Log out</button>
+          </div>
+        </div>
       </div>
-
-      <style>
-        /* Center the card within the page (scoped to this element only) */
-        settings-page.dashboard-viewport {
-          align-items: center;
-          justify-content: center;
-          min-height: calc(100vh - 3.5rem);
-        }
-
-        .settings-card {
-          width: 100%;
-          max-width: 32rem;
-          background-color: var(--wt-surface);
-          border: 1px solid var(--wt-border);
-          border-radius: 0;
-          padding: 1.5rem;
-        }
-
-        .settings-title {
-          margin: 0;
-          font-size: 1.25rem;
-          color: var(--wt-text);
-        }
-
-        .settings-subtitle {
-          margin: 0.25rem 0 1.25rem;
-          font-size: 0.875rem;
-          color: var(--wt-text-2);
-        }
-
-        .settings-ntfy {
-          margin-bottom: 1.25rem;
-          padding: 0.875rem 1rem;
-          border: 1px solid var(--wt-border);
-          border-radius: 0;
-          background-color: var(--wt-surface-2);
-        }
-
-        .settings-ntfy-label {
-          display: block;
-          font-size: 0.8125rem;
-          font-weight: 500;
-          color: var(--wt-text-2);
-          margin-bottom: 0.5rem;
-        }
-
-        .settings-ntfy-row {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-        }
-
-        .settings-ntfy-topic {
-          flex: 1;
-          min-width: 0;
-          overflow-wrap: anywhere;
-          font-family: var(--font-mono, monospace);
-          font-size: 0.8125rem;
-          color: var(--wt-text);
-        }
-
-        .settings-ntfy-copy {
-          flex-shrink: 0;
-          padding: 0.375rem 0.75rem;
-          border: 1px solid var(--wt-border);
-          border-radius: var(--wt-radius-md);
-          background: transparent;
-          color: var(--wt-text-2);
-          font: inherit;
-          font-size: 0.8125rem;
-          cursor: pointer;
-          transition: all 0.15s ease;
-        }
-
-        .settings-ntfy-copy:hover {
-          background-color: var(--color-active-bg);
-          color: var(--color-active-text);
-        }
-
-        .settings-ntfy-hint {
-          margin: 0.5rem 0 0;
-          font-size: 0.8125rem;
-          color: var(--wt-text-3);
-        }
-
-        .settings-methods {
-          display: flex;
-          flex-direction: column;
-          gap: 0.75rem;
-          margin: 0;
-          padding: 0;
-          border: none;
-        }
-
-        .settings-method {
-          display: flex;
-          align-items: flex-start;
-          gap: 0.75rem;
-          padding: 0.875rem 1rem;
-          border: 1px solid var(--wt-border);
-          border-radius: 0;
-          background-color: var(--wt-surface-2);
-          cursor: pointer;
-          transition: border-color 0.15s, box-shadow 0.15s;
-        }
-
-        .settings-method:hover {
-          border-color: var(--color-active);
-        }
-
-        .settings-method input {
-          margin-top: 0.15rem;
-          width: 1rem;
-          height: 1rem;
-          accent-color: var(--color-active);
-          cursor: pointer;
-        }
-
-        .settings-method-text {
-          display: flex;
-          flex-direction: column;
-        }
-
-        .settings-method-label {
-          font-weight: 500;
-          color: var(--wt-text);
-        }
-
-        .settings-method-desc {
-          font-size: 0.8125rem;
-          color: var(--wt-text-3);
-        }
-
-        /* Mirrors the .login-error convention used elsewhere */
-        .settings-status {
-          margin: 0.75rem 0 0;
-          font-size: 0.8125rem;
-          color: var(--wt-danger);
-        }
-
-        .settings-status.is-success { color: var(--wt-success); }
-
-        .settings-save {
-          margin-top: 1.25rem;
-          padding: 0.625rem 1.25rem;
-          border: none;
-          border-radius: var(--wt-radius-md);
-          background-color: var(--color-active);
-          color: #fff;
-          font: inherit;
-          font-weight: 600;
-          cursor: pointer;
-          transition: opacity 0.15s;
-        }
-
-        .settings-save:hover { opacity: 0.9; }
-        .settings-save:disabled { opacity: 0.6; cursor: default; }
-      </style>
-    `;
+`;
   }
 
   bindEvents() {
+    // Theme toggle
+    const themeBtn = this.querySelector("#settings-theme-btn");
+    const themeLabel = this.querySelector("#settings-theme-label");
+    const updateThemeLabel = () => {
+      const current =
+        document.documentElement.getAttribute("data-theme") || "light";
+      themeLabel.textContent = current === "dark" ? "Dark" : "Light";
+    };
+    updateThemeLabel();
+    themeBtn?.addEventListener("click", () => {
+      const current =
+        document.documentElement.getAttribute("data-theme") || "light";
+      const next = current === "dark" ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", next);
+      updateThemeLabel();
+    });
+
+    // Logout
+    const logoutBtn = this.querySelector("#settings-logout-btn");
+    logoutBtn?.addEventListener("click", async () => {
+      logoutBtn.disabled = true;
+      logoutBtn.textContent = "Logging out…";
+      await dataStore.logOut();
+      localStorage.removeItem("wt-auth");
+      window.location.reload();
+    });
+
     const copyBtn = this.querySelector("#settings-ntfy-copy");
     copyBtn?.addEventListener("click", async () => {
       const topic =

@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="assets/styles/styles.css" />
     <script
       src="../app/tracker/watchtower.js"
-      data-apikey="00000000-0000-0000-0000-000000000001"
+      data-apikey="00000000-0000-4000-8000-000000000001"
     ></script>
     <script>
       if (
@@ -15,7 +15,7 @@
         window.location.hostname === "127.0.0.1"
       ) {
         window.__WATCHTOWER_CONFIG__.apiKey =
-          "00000000-0000-0000-0000-000000000000";
+          "00000000-0000-4000-8000-000000000000";
       }
     </script>
   </head>
@@ -31,6 +31,23 @@
       >
     </nav>
     <div id="product-container"></div>
+    <div class="error-zone">
+      <p>WatchTower test tools — trigger errors for dashboard testing</p>
+      <button
+        type="button"
+        class="btn btn-danger"
+        onclick="triggerRangeError()"
+      >
+        Trigger RangeError
+      </button>
+      <button
+        type="button"
+        class="btn btn-danger"
+        onclick="triggerCallUndefined()"
+      >
+        Trigger Call Undefined
+      </button>
+    </div>
     <footer class="footer">
       Drape Test Store — WatchTower integration test
     </footer>

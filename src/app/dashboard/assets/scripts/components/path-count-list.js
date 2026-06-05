@@ -25,8 +25,7 @@ export class PathCountList extends HTMLElement {
 
     if (!entries.length) {
       const empty = document.createElement("div");
-      empty.style.color = "var(--wt-text-3)";
-      empty.style.fontSize = "12px";
+      empty.className = "activity-empty";
       empty.textContent =
         this.getAttribute("empty-message") || "No activity tracked";
       this.append(empty);
@@ -35,23 +34,14 @@ export class PathCountList extends HTMLElement {
 
     for (const [path, count] of entries) {
       const row = document.createElement("div");
-      row.className = "interactive-data-row";
-      row.style.padding = "8px 12px";
+      row.className = "interactive-data-row is-compact";
 
       const label = document.createElement("span");
-      label.className = "row-primary-text";
-      label.style.fontFamily = "monospace";
-      label.style.fontSize = "12px";
+      label.className = "row-primary-text path-count-label";
       label.textContent = path;
 
       const badge = document.createElement("span");
-      badge.style.background = "var(--wt-surface)";
-      badge.style.color = "var(--wt-text)";
-      badge.style.fontWeight = "700";
-      badge.style.fontSize = "11px";
-      badge.style.padding = "2px 6px";
-      badge.style.borderRadius = "var(--wt-radius-sm)";
-      badge.style.border = "1px solid var(--wt-border)";
+      badge.className = "count-badge";
       badge.textContent = count;
 
       row.append(label, badge);

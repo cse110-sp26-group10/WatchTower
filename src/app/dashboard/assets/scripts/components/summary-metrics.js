@@ -9,7 +9,11 @@ export class SummaryMetrics extends HTMLElement {
 
   set metrics(value) {
     this.items = [
-      { label: "Errors", value: value?.errors || 0, state: "danger" },
+      {
+        label: "Errors",
+        value: value?.errors || 0,
+        state: value?.errors ? "danger" : "success",
+      },
       {
         label: "Avg Load Time",
         value: value?.pageLoads ? `${value.avgLatency}ms` : "-",
@@ -34,8 +38,30 @@ export class SummaryMetrics extends HTMLElement {
       const card = document.createElement("div");
       const classes = ["metric-card-tile"];
       if (item.state === "danger") classes.push("danger-state");
-      if (/errors?/i.test(item.label)) classes.push("error-metric");
+      if (item.state === "success") classes.push("success-state");
+      const isError = /errors?/i.test(item.label);
+      // Headline cards tint the whole card: the errors tiles, plus any card that
+      // opts in with `fill` (e.g. Avg Load Time). Everything else just colors the
+      // number. Red whole-card stays reserved for the errors tiles.
+      const fillCard = isError || item.fill;
+      if (fillCard && item.state === "success") classes.push("success-metric");
+      if (isError && item.state === "danger") classes.push("error-metric");
       card.className = classes.join(" ");
+
+      // Errors tile opens the errors page; the rest open the activity page.
+      const targetHash = isError ? "#/errors" : "#/activity";
+      card.setAttribute("role", "link");
+      card.tabIndex = 0;
+      const navigate = () => {
+        window.location.hash = targetHash;
+      };
+      card.addEventListener("click", navigate);
+      card.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          navigate();
+        }
+      });
 
       const title = document.createElement("span");
       title.className = "metric-card-title";
@@ -43,7 +69,7 @@ export class SummaryMetrics extends HTMLElement {
 
       const value = document.createElement("span");
       value.className = "metric-card-value";
-      if (item.state === "warning") value.style.color = "var(--wt-warning)";
+      if (item.state === "warning") card.classList.add("warning-state");
       value.textContent = item.value;
 
       card.append(title, value);

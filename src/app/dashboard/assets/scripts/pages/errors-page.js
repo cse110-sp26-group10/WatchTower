@@ -4,7 +4,7 @@ import {
   getErrorsDashboardData,
   getEventById,
 } from "../core/dashboard-data.js";
-import "../components/dashboard-styles.js";
+import { dataStore } from "../core/data-store.js";
 import "../components/error-detail-modal.js";
 import "../components/error-list.js";
 import "../components/panel-section.js";
@@ -15,6 +15,9 @@ export class ErrorsPage extends HTMLElement {
     super();
     this.handleErrorSelected = (event) => {
       this.openErrorModal(event.detail?.errorId);
+    };
+    this.handleErrorResolve = (event) => {
+      dataStore.resolveErrors(event.detail?.ids);
     };
   }
 
@@ -37,12 +40,14 @@ export class ErrorsPage extends HTMLElement {
     }
     this.updatePageData();
     this.addEventListener("error-selected", this.handleErrorSelected);
+    this.addEventListener("error-resolve", this.handleErrorResolve);
   }
 
   disconnectedCallback() {
     this.projectUnsubscribe?.();
     this.deploymentUnsubscribe?.();
     this.removeEventListener("error-selected", this.handleErrorSelected);
+    this.removeEventListener("error-resolve", this.handleErrorResolve);
   }
 
   render() {
@@ -55,7 +60,6 @@ export class ErrorsPage extends HTMLElement {
       </panel-section>
 
       <error-detail-modal id="errors-page-modal"></error-detail-modal>
-      <dashboard-styles></dashboard-styles>
     `;
   }
 

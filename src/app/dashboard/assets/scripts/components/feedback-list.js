@@ -32,16 +32,11 @@ export class FeedbackList extends HTMLElement {
       details.className = "row-details-wrapper";
 
       const stars = document.createElement("span");
-      stars.style.color = "var(--wt-warning)";
-      stars.style.fontWeight = "700";
-      stars.style.fontSize = "12px";
-      stars.style.letterSpacing = "2px";
+      stars.className = "feedback-stars";
       stars.textContent = starsForRating(survey.metadata?.rating || 0);
 
       const comment = document.createElement("span");
-      comment.className = "row-primary-text";
-      comment.style.fontStyle = "italic";
-      comment.style.fontWeight = "500";
+      comment.className = "row-primary-text feedback-comment";
       comment.textContent = `"${survey.metadata?.message || "No text comment provided."}"`;
 
       details.append(stars, comment);
@@ -53,9 +48,7 @@ export class FeedbackList extends HTMLElement {
 
   appendEmptyState(message) {
     const empty = document.createElement("div");
-    empty.style.padding = "12px";
-    empty.style.textAlign = "center";
-    empty.style.color = "var(--wt-text-3)";
+    empty.className = "list-empty";
     empty.textContent = message;
     this.append(empty);
   }

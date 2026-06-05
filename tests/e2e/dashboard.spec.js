@@ -30,7 +30,9 @@ test.describe("Dashboard — authenticated", () => {
   test("renders sidebar navigation links", async ({ page }) => {
     await page.goto("/#/");
     await expect(page.getByRole("link", { name: "Overview" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Errors" })).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: "Errors", exact: true }),
+    ).toBeVisible();
     await expect(page.getByRole("link", { name: "Activity" })).toBeVisible();
   });
 

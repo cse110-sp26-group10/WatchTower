@@ -1,7 +1,6 @@
 import { projectScope } from "../core/project-scope.js";
 import { deploymentScope } from "../core/deployment-scope.js";
 import { getFeedbackDashboardData } from "../core/dashboard-data.js";
-import "../components/dashboard-styles.js";
 import "../components/feedback-list.js";
 import "../components/panel-section.js";
 import "../components/summary-metrics.js";
@@ -41,7 +40,6 @@ export class FeedbackPage extends HTMLElement {
         <feedback-list id="feedback-page-list"></feedback-list>
       </panel-section>
 
-      <dashboard-styles></dashboard-styles>
     `;
   }
 
