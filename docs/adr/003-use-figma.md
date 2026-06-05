@@ -2,7 +2,7 @@
 
 ## Context and Problem Statement
 
-The UI/UX of a software is a core part that can make or break a user's experience. Therefore, it makes sense to design and draft the frontend design of the software before starting on any HTML. This way, the team can visualize the software during the process of its creation. Additionally, the creation of the page also helps the team understand the flow and architecture of the software.
+Before writing any HTML, the team needed a way to agree on what the dashboard should look like and how users move through it. Designing in a shared tool first lets us catch layout and flow problems before they become code problems.
 
 
 ## Considered Options
