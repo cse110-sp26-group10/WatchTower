@@ -38,12 +38,12 @@ export class AppTopbar extends HTMLElement {
           </button>
 
           <div class="topbar-filter-group">
-            <label class="topbar-filter-label">Project:</label>
+            <label class="topbar-filter-label" for="project-filter">Project:</label>
             <project-filter></project-filter>
           </div>
 
           <div class="topbar-filter-group">
-            <label class="topbar-filter-label">Deployment:</label>
+            <label class="topbar-filter-label" for="deployment-filter">Deployment:</label>
             <deployment-filter></deployment-filter>
             <span id="header-metadata-strip" class="topbar-metadata-strip"></span>
           </div>

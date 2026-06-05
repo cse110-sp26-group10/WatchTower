@@ -18,6 +18,9 @@
   --brand-indigo-soft: #e9eef8;
   --brand-gold-soft: #fff6d6;
   --brand-orange-soft: #fff0e3;
+  --brand-orange-contrast: #AD5400;
+  --brand-indigo-contrast: #2C519B;
+  --brand-gold-contrast: #8A6700;
 
   /* Status colors */
   --color-ok: #2e7d32;
@@ -25,10 +28,10 @@
   --color-ok-text: #1b5e20;
   --color-warn: var(--brand-orange);
   --color-warn-bg: var(--brand-orange-soft);
-  --color-warn-text: #9a4a00;
+  --color-warn-text: var(--brand-gold-contrast);
   --color-crit: #d32f2f;
   --color-crit-bg: #fde8e8;
-  --color-crit-text: #c62828;
+  --color-crit-text: #d12424;
   --color-active: var(--brand-indigo);
   --color-active-bg: var(--brand-indigo-soft);
   --color-active-text: var(--brand-indigo);
@@ -40,11 +43,11 @@
   --wt-border: #c8d2e1;
   --wt-text: var(--brand-prussian);
   --wt-text-2: #4a5b73;
-  --wt-text-3: #8190a5;
-  --wt-danger: #d32f2f;
-  --wt-warning: var(--brand-orange);
+  --wt-text-3: #616264;
+  --wt-danger: #b42828;
+  --wt-warning: var(--brand-gold-contrast);
   --wt-success: #2e7d32;
-  --wt-info: var(--brand-aqua);
+  --wt-info: var(--brand-indigo-contrast);
   --wt-link: var(--brand-indigo);
   --wt-link-hover: #123f86;
   --wt-focus-ring: rgb(0 200 255 / 24%);
@@ -72,8 +75,8 @@
   --wt-border: #383d48;
   --wt-text: #f6fbff;
   --wt-text-2: #bcc3ce;
-  --wt-text-3: #828b9a;
-  --wt-danger: #f25c5c;
+  --wt-text-3: #a0aabc;
+  --wt-danger: #FF7A7A;
   --wt-warning: var(--brand-gold);
   --wt-success: #47cf8e;
   --wt-info: var(--brand-aqua);
@@ -89,9 +92,9 @@
   --color-warn: var(--brand-gold);
   --color-warn-bg: var(--brand-gold-soft);
   --color-warn-text: #ffd866;
-  --color-crit: #f25c5c;
+  --color-crit: #FF7A7A;
   --color-crit-bg: #331818;
-  --color-crit-text: #f25c5c;
+  --color-crit-text: #FF7A7A;
   --color-active: var(--brand-aqua);
   --color-active-bg: #24313d;
   --color-active-text: var(--brand-aqua);
@@ -710,6 +713,7 @@ body {
 .workspace-panel-hint {
   font-size: 0.6875rem;
   color: var(--wt-text-3);
+  font-style: italic
 }
 
 /* Data Lists */
