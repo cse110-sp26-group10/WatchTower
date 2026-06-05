@@ -6,12 +6,12 @@ DECLARE
   v_project_name_local TEXT := 'Local Test App';
   v_website_url_local TEXT := 'http://127.0.0.1:5500/src/test-app/';
   v_project_id_local INT;
-  v_project_api_key_local UUID := '00000000-0000-4000-8000-000000000000';
+  v_project_api_key_local UUID := '00000000-0000-0000-0000-000000000000';
   -- Deployed project
   v_project_name_deployed TEXT := 'Deployed Test App';
   v_website_url_deployed TEXT := 'https://cse110-sp26-group10.github.io/WatchTower/src/test-app/';
   v_project_id_deployed INT;
-  v_project_api_key_deployed UUID := '00000000-0000-4000-8000-000000000001';
+  v_project_api_key_deployed UUID := '00000000-0000-0000-0000-000000000001';
   -- Test user
   v_auth_id_test UUID := '10000000-0000-0000-0000-000000000000';
   v_alert_id_test UUID := '20000000-0000-0000-0000-000000000000';
