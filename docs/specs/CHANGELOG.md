@@ -1,6 +1,18 @@
 # Changelog
 All team members must document any notable changes to the WatchTower project in this file and use [Semantic Versioning](https://semver.org/): `MAJOR.MINOR.PATCH`
 
+## [0.4.1] - 2026-06-04
+
+### Added
+- Backend implementation of project sharing with permission levels Owner, Co-Owner, and Viewer.
+
+### Changed
+- Deployment filter to update when receiving data from the server.
+
+### Fixed
+- UUID regex to comply with the format used by Supabase.
+- Favicon and logo paths to work in deployed app.
+
 ## [0.4.0] - 2026-06-03
 
 ### Added
