@@ -2,20 +2,21 @@
 
 ## Context and Problem Statement
 
-The WatchTower platform requires a robust, centralized database to store configuration data, analytical metrics, user permissions, and structured audit logs. As the service scales, we need a solution that guarantees transactional integrity (ACID) for relational structures while remaining flexible enough to handle varied and evolving operational payload formats without constant schema migrations. Should we prioritize a traditional relational database engine or a document-oriented model to balance structured relational integrity with semi-structured payload flexibility?
+WatchTower needs a database to store events, uptime logs, and user data. We expected the event schema to stay mostly fixed (event type, timestamp, project ID) but the metadata payload attached to each event could vary significantly depending on what the tracker captures. We needed something that handles structured relational data without forcing us to redesign the schema every time the payload shape changed.
 
 ## Considered Options
 
-* PostgreSQL (Object-Relational DBMS with native JSONB support)
-* MongoDB (Document-Oriented NoSQL Database)
+* PostgreSQL (relational, with JSONB support for flexible columns)
+* MongoDB (document-oriented, schema-free)
 
 ## Decision Outcome
 
-Chosen option: **"PostgreSQL"**, because it provides the optimal balance between relational consistency and schemaless flexibility via its mature `jsonb` data type. While MongoDB natively handles unstructured documents, PostgreSQL allows us to maintain strict foreign-key relations, strong consistency guarantees, and relational data integrity across core entities while effortlessly indexing, querying, and formatting flexible JSON data structures where required. This eliminates the need to maintain an exclusively document-based schema or sacrifice relational safety.
+Chosen option: "PostgreSQL", because it covers both needs at once. Core entities like projects, events, and users stay in normal relational tables with foreign keys and strict types, while variable metadata goes into a JSONB column that can be queried and indexed without a schema migration every time the payload changes. MongoDB would handle the flexible data fine but gives up the relational guarantees we rely on for user-project relationships and event ordering.
 
-## Consequences
+### Consequences
 
-* **Good, because:** We achieve seamless handling of dynamic metadata payloads using `jsonb` indexing capabilities (such as GIN filters) without abandoning SQL standard relational mechanics.
-* **Good, because:** Operational management, query construction, and cross-table reporting are significantly simplified under a unified SQL parser.
-* **Bad, because:** Writing advanced queries that manipulate deeply nested `jsonb` arrays can sometimes lead to more complex, syntax-heavy SQL expressions compared to MongoDB's native aggregation pipeline.
-* **Bad, because:** Scale-out architecture (sharding) requires more deliberate infrastructure planning compared to MongoDB's built-in horizontal clustering.
+* Good, because we get foreign key constraints and relational integrity for the parts of the schema that shouldn't change
+* Good, because JSONB lets us store variable event metadata without altering the schema
+* Good, because the team already knows SQL, so there is no extra learning curve
+* Bad, because deeply nested JSONB queries get verbose compared to MongoDB's aggregation pipeline
+* Bad, because horizontal scaling requires more planning than MongoDB's built-in sharding
