@@ -10,9 +10,9 @@
   --color-crit: #d32f2f;
   --color-crit-bg: #fde8e8;
   --color-crit-text: #c62828;
-  --color-active: #1A2F5A;
+  --color-active: #1a2f5a;
   --color-active-bg: #e8f0fe;
-  --color-active-text: #1A2F5A;
+  --color-active-text: #1a2f5a;
 
   /* Surfaces and text */
   --wt-bg: #f3f4f6;
@@ -58,7 +58,7 @@
   --color-crit-bg: #331818;
   --color-crit-text: #f25c5c;
   --color-active: #5b8dee;
-  --color-active-bg: #1A2F5A; 
+  --color-active-bg: #1a2f5a;
   --color-active-text: #5b8dee;
 }
 
@@ -201,7 +201,10 @@ body {
   background: transparent;
   color: var(--wt-text-3);
   cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease;
   padding: 0;
   pointer-events: auto !important;
   opacity: 1 !important;
