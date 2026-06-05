@@ -27,21 +27,21 @@
 ## Sprint Backlog
 | ID | Task | Assignee(s) | Status | Notes |
 |----|------|-------------|--------|-------|
-| T01 | Attempt toll-free SMS verification (Twilio); pivot to ntfy + email if unresolved by Thursday | Han Yang-Lin | ✅ Done | Twilio dropped — pivoted to nodemailer (Gmail SMTP) + ntfy push |
-| T02 | Implement user login using Supabase built-in auth | Han Yang-Lin | ✅ Done | Auth working with email/password; sessions via HttpOnly cookies |
-| T03 | Frontend refactor — single index.html with per-page JS files and reusable components | Jensen Guo, Bethany Miyamoto | ✅ Done | Full SPA refactor with JS router and web components |
-| T04 | Implement new UI from Figma wireframes | Xuanye Wang, Bethany Miyamoto, Nicole Sutedja | ✅ Done | Dark/light mode, collapsible sidebar, and updated layout implemented |
-| T05 | Open PR for browser-type detection feature (already on branch) | Evan Marriott | ✅ Done | parseBrowser() merged; browser stored as JSONB and shown in issue detail |
-| T06 | Implement screen/display size tracking for error events | Evan Marriott | 🔲 Not Started | Deprioritized — carried into Sprint 4 |
-| T07 | Add more error types to the test app | Evan Marriott | ✅ Done | TypeError, ReferenceError, RangeError, URIError, and unhandled rejections added |
-| T08 | Update & close completed GitHub Issues; add new issues for this sprint | Evan Marriott | ✅ Done | Issues triaged and updated |
-| T09 | Add dependency checking, changelog check, and code formatting to CI pipeline | Aron Wu, Benedict Luis | ✅ Done | npm audit and Prettier check added to CI |
-| T10 | Write new tests for recently added features | Aron Wu, Benedict Luis | ✅ Done | Unit tests for auth, notification, and uptime check behavior added |
-| T11 | Test dashboard responsiveness across multiple screen sizes | Prakhar Shah, Kaley Chung | ✅ Done | Responsive layout verified; hamburger menu working on small screens |
-| T12 | Accessibility: zoom to 200%, ARIA live regions, proper image alt tags | Prakhar Shah | ✅ Done | ARIA live regions and zoom-friendly layout in place |
-| T13 | Accessibility: colorblind themes and light/dark mode | Prakhar Shah, Kaley Chung | ✅ Done | Colorblind mode and dark/light toggle working via localStorage flags |
-| T14 | Research additional app feature ideas | Kaley Chung | ✅ Done | Feature ideas documented; contributed to accessibility testing |
-| T15 | Cross-team check-ins and project management | Nicole Sutedja | ✅ Done | Ongoing check-ins held throughout sprint |
+| T01 | Attempt toll-free SMS verification (Twilio); pivot to Google API email if unresolved by Thursday | Han Yang-Lin | 🔲 Not Started | Trial account limitation — can only send to virtual number currently |
+| T02 | Implement user login using Supabase built-in auth | Han Yang-Lin | 🔲 Not Started | Supabase migration makes this significantly simpler |
+| T03 | Frontend refactor — single index.html with per-page JS files and reusable components | Jensen Guo, Bethany Miyamoto | 🔲 Not Started | Coordinate closely to avoid merge conflicts |
+| T04 | Implement new UI from Figma wireframes | Xuanye Wang, Bethany Miyamoto, Nicole Sutedja | 🔲 Not Started | Nicole recruiting one available member to assist |
+| T05 | Open PR for browser-type detection feature (already on branch) | Evan Marriott | 🔲 Not Started | Professor requested: detect Firefox vs. Chrome etc. at time of error |
+| T06 | Implement screen/display size tracking for error events | Evan Marriott | 🔲 Not Started | Capture whether error occurred on phone vs. desktop |
+| T07 | Add more error types to the test app | Evan Marriott | 🔲 Not Started | Targeting today or tomorrow |
+| T08 | Update & close completed GitHub Issues; add new issues for this sprint | Evan Marriott | 🔲 Not Started | 11 issues currently open; some may already be complete |
+| T09 | Add dependency checking, changelog check, and code formatting to CI pipeline | Aron Wu, Benedict Luis | 🔲 Not Started | Implement on testing branch first, then open PR |
+| T10 | Write new tests for recently added features | Aron Wu, Benedict Luis | 🔲 Not Started | Continue from previous sprint's testing work |
+| T11 | Test dashboard responsiveness across multiple screen sizes | Prakhar Shah, Kaley Chung | 🔲 Not Started | Find tool referenced by Audreya in Slack/meeting notes |
+| T12 | Accessibility: zoom to 200%, ARIA live regions, proper image alt tags | Prakhar Shah | 🔲 Not Started | 4–5 user stories cover these requirements |
+| T13 | Accessibility: colorblind themes and light/dark mode | Prakhar Shah, Kaley Chung | 🔲 Not Started | In existing user stories |
+| T14 | Research additional app feature ideas | Kaley Chung | 🔲 Not Started | Flex task — contribute to accessibility/UI testing as needed |
+| T15 | Cross-team check-ins and project management | Nicole Sutedja | 🔲 Not Started | Ongoing throughout sprint |
 
 > Status options: 🔲 Not Started · 🔄 In Progress · ✅ Done · 🚫 Blocked
 
@@ -51,7 +51,7 @@
 | Name | Did | Doing | Blockers |
 |------|-----|-------|----------|
 | Nicole Sutedja | added sprint 3 md and organized docs, researched sms & decided on ntfy, finished Wireframes details | implement frontend design into app | waiting on code to be ready in new dashboard branch |
-| Kaley Chung | Asked Powell key points of accessibility and  communicated more potential features to add | Research more about accessibility and responsiveness | Quiz |
+| Kaley Chung | Asked Powell key points of accessibility and  communicated more potential features to add | Research more about accessibility and responsiveness | Quiz |
 | Jensen Guo | finish architecture skeleton for refactor, attend professor office hours | implement new frontend design | Midterm tomorrow |
 | Prakhar Shah | started working on adding accessibility to the dashboard through ARIA, zoom, colorblind theme etc | start testing on different screens | Quiz + midterms |
 | Bethany Miyamoto | research about notification, coordinating development design process | start coding the new pages on frontend in accordance with the wireframes | None |
@@ -98,55 +98,52 @@
 | Use Supabase built-in auth for user login | Supabase migration (completed last sprint) makes this low-effort; avoids building custom auth | |
 | Sprint deadline: Friday 05/30 | Final sprint — tasks not done by Friday must be completed before next sprint review; this week determines final project quality | |
 | Add suggested mid-sprint deadlines going forward | Work has been back-loaded in previous sprints; internal checkpoints will help distribute effort more evenly | |
-| Pivot from Twilio to ntfy + nodemailer for notifications | Twilio toll-free SMS verification could not be completed within the sprint window; ntfy (free push notifications via HTTP) and Gmail SMTP via nodemailer were faster to set up and met the professor's requirement for out-of-dashboard alerts | [ADR 007](/docs/adr/007-use-email-and-ntfy-for-notifications.md) |
 
 ---
 ## Sprint Review
 ### What was completed:
-- Twilio SMS dropped mid-sprint; pivoted to nodemailer (Gmail SMTP) and ntfy push notifications, both working by end of sprint
-- User login and sign-up implemented using Supabase auth with HttpOnly cookie sessions
-- Frontend completely rewritten as a SPA with a JS hash router and reusable web components (sidebar, topbar, uptime card, error list, etc.)
-- New dashboard UI implemented from Figma wireframes, including dark/light mode and collapsible hamburger sidebar for small screens
-- Browser type detection merged; browser field stored in the database and displayed in the issue detail view
-- Error deduplication: identical errors grouped by message and stack signature
-- Accessibility: colorblind theme, ARIA live regions, and zoom-friendly layout added
-- Unit tests written for authentication flow, notification delivery, and uptime check behavior
-- CI: npm dependency audit and Prettier formatting check added to the pipeline
+- Implemented major frontend updates, including the new dashboard UI, login/signup pages, projects page, hamburger navigation, dark/light mode, and mobile responsiveness improvements.
+- Added backend support for user login, project creation/deletion, user profile fetching, and project fetching.
+- Built notification backend work for email and ntfy alerts.
+- Added more error types to the test app.
+- Improved CI/testing work, including dependency checks, formatting checks, JSDoc validation, changelog updates, tracker tests, user auth/login/notification tests, and updated unit/E2E tests after the dashboard prototype merge.
+- Opened PRs for test/CI work and dashboard test alignment.
 
 ### What was not completed:
-- Screen/display size tracking for error events (T06)
+- Full frontend-backend integration was not fully finished.
+- Large monitor responsiveness still needed more adjustment.
+- Some login/auth testing depended on the frontend-backend auth flow becoming stable.
+- Some CI/test PR work still needed review, fixes, or merging.
+- SMS/Twilio notification work was not fully resolved and shifted toward email/ntfy alternatives.
 
 ### Reason(s):
-- T06 was deprioritized after the Twilio pivot consumed more backend time than expected; the feature requires tracking viewport dimensions at error time and was not worth rushing at the end of the sprint
+- Several tasks depended on other features being finished first, especially frontend-backend integration and authentication.
+- The dashboard prototype merge caused test updates, merge conflicts, and alignment work.
+- SMS/Twilio had limitations, so the team had to pivot toward other notification options.
+- Midterms, finals, interviews, travel, and personal conflicts limited availability during the sprint.
 
 ---
 ## Sprint Retrospective
 ### What went well:
-- The Twilio pivot happened early enough that notifications were still done by the sprint deadline
-- SPA refactor ended up much cleaner than the old multi-page approach
-- Cross-team communication was noticeably better than last sprint
-- Accessibility features were completed in one focused push
+The team made strong progress across multiple areas of the project. The frontend became much closer to the final demo design, the backend gained important auth and project-management features, and the testing/CI work became more complete. Team members also communicated across frontend, backend, and testing to keep the project moving despite many parallel tasks.
 
 ### What didn't go well:
-- Stand-ups 2 and 3 weren't filled in at the time; had to reconstruct them later
-- T06 (screen size tracking) got dropped without a deliberate decision to drop it
-- Some back-loading again, especially on the backend auth and frontend wiring
+Some work was still back-loaded toward the end of the sprint, which made merge conflicts and test alignment harder. A lot of features were being developed at the same time, so integration became a bottleneck. School deadlines also made it harder for everyone to stay fully available.
 
 ### What we'll do differently:
-- Fill out stand-up entries the same day, not at the end of the sprint
-- When a task is deprioritized mid-sprint, call it out explicitly in the stand-up instead of letting it quietly slip
-- Identify scope cuts earlier when the sprint is crowded
+For the next sprint, we should create smaller PRs, set clearer mid-sprint checkpoints, and integrate frontend/backend changes earlier instead of waiting until the end. We should also lock down shared interfaces sooner so testing can begin earlier and avoid being blocked by unstable feature branches.
+Also do more documentation and keeping up to update the newer ADRs.
 
 ---
 ## Metrics
 | Metric | Value |
 |--------|-------|
 | Tasks Planned | 15 |
-| Tasks Completed | 14 |
-| PRs Opened | 10 |
-| PRs Merged | 10 |
-| Lines of Code Added | ~3,200 |
-| Unit Tests Written | 18 |
+| Tasks Completed | 10 |
+| PRs Opened | |
+| PRs Merged | |
+| Lines of Code Added | |
+| Unit Tests Written | Multiple tests added for tracker, auth/login, notifications, Event.js, and dashboard routes |
 
 ---
 ## Notes & Misc
@@ -174,7 +171,7 @@
 * Coordinate with Jensen and Bethany on refactor
 
 > [@Han Yang-Lin](https://10-devs.slack.com/team/U0ARM5P534Z)
-* Attempt toll-free SMS verification (Twilio); if unresolved by Thursday -> pivot to email via Google API
+* Attempt toll-free SMS verification (Twilio); if unresolved by Thursday → pivot to email via Google API
 * Implement user login using Supabase built-in auth
 
 > [@Aron Wu](https://10-devs.slack.com/team/U0AQSQS5R9D)

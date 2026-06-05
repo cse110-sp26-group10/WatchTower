@@ -16,7 +16,7 @@ Chosen option: **Vanilla HTML, CSS, and JavaScript**, because the course explici
 
 ### Consequences
 
-* Good, because no build step or bundler is required, so files can be opened directly in a browser.
+* Good, because no build step or bundler is required — files can be opened directly in a browser.
 * Good, because all team members can contribute without framework-specific knowledge.
 * Good, because the output is easy to deploy on GitHub Pages or Cloudflare Pages without configuration.
 * Bad, because scaling to a large, component-heavy UI will require more manual DOM management.
