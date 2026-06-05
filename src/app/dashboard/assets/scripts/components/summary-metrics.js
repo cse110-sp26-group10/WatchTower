@@ -36,7 +36,7 @@ export class SummaryMetrics extends HTMLElement {
 
     for (const item of items) {
       const card = document.createElement("div");
-      const classes = ["metric-card-tile"];
+      const classes = ["dashboard-surface", "metric-card-tile"];
       if (item.state === "danger") classes.push("danger-state");
       if (item.state === "success") classes.push("success-state");
       const isError = /errors?/i.test(item.label);
