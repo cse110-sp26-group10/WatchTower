@@ -1,6 +1,7 @@
 import { projectScope } from "../core/project-scope.js";
 import { deploymentScope } from "../core/deployment-scope.js";
 import { getEventById, getHomeDashboardData } from "../core/dashboard-data.js";
+import { dataStore } from "../core/data-store.js";
 import "../components/activity-list.js";
 import "../components/dashboard-banner.js";
 import "../components/error-detail-modal.js";
@@ -15,6 +16,9 @@ export class HomePage extends HTMLElement {
     super();
     this.handleErrorSelected = (event) => {
       this.openErrorModal(event.detail?.errorId);
+    };
+    this.handleErrorResolve = (event) => {
+      dataStore.resolveErrors(event.detail?.ids);
     };
   }
 
@@ -33,12 +37,14 @@ export class HomePage extends HTMLElement {
     }
     this.updatePageData();
     this.addEventListener("error-selected", this.handleErrorSelected);
+    this.addEventListener("error-resolve", this.handleErrorResolve);
   }
 
   disconnectedCallback() {
     this.projectUnsubscribe?.();
     this.deploymentUnsubscribe?.();
     this.removeEventListener("error-selected", this.handleErrorSelected);
+    this.removeEventListener("error-resolve", this.handleErrorResolve);
   }
 
   render() {

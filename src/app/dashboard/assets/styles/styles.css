@@ -497,6 +497,28 @@ body {
   font-weight: 900;
 }
 
+.metric-card-tile.success-state .metric-card-value {
+  color: var(--wt-success);
+}
+
+.metric-card-tile.success-metric {
+  background: linear-gradient(
+    135deg,
+    var(--color-ok-bg) 0%,
+    var(--wt-surface) 62%
+  );
+  border-color: var(--wt-success);
+  box-shadow: 0 0.625rem 1.5rem rgb(46 125 50 / 18%);
+}
+
+.metric-card-tile.success-metric .metric-card-title {
+  color: var(--wt-success);
+}
+
+.metric-card-tile.success-metric .metric-card-value {
+  font-weight: 900;
+}
+
 .dashboard-double-row {
   display: flex;
   flex-wrap: wrap;
@@ -695,6 +717,18 @@ body {
   border: 1px solid var(--wt-border);
   cursor: pointer;
   white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Let the message side shrink/ellipsize so the timestamp + Fix button stay
+   inside the card instead of overflowing its right edge. */
+.error-click-target-btn .row-left-group {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.error-click-target-btn .row-inline-group {
+  flex-shrink: 0;
 }
 
 .fix-error-btn:hover {
