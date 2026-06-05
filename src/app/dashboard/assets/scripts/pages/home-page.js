@@ -80,6 +80,7 @@ export class HomePage extends HTMLElement {
   }
 
   cacheElements() {
+    this.banner = this.querySelector("dashboard-banner");
     this.metrics = this.querySelector("summary-metrics");
     this.uptimeCard = this.querySelector("#home-uptime");
     this.errorList = this.querySelector("#home-errors");
@@ -92,6 +93,7 @@ export class HomePage extends HTMLElement {
   updatePageData() {
     const data = getHomeDashboardData();
 
+    this.banner.healthy = data.uptime?.isHealthy;
     this.metrics.items = data.metrics;
     this.errorList.errors = data.errors;
     this.loadPaths.pathCounts = data.loadPaths;

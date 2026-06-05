@@ -257,6 +257,7 @@ export function getHomeDashboardData(
         state: pageLoads.length
           ? loadTimeState(calculateAverageLatency(pageLoads))
           : undefined,
+        fill: true,
       },
       { label: "Page Loads", value: pageLoads.length },
       { label: "Clicks", value: clicks.length },
@@ -360,6 +361,9 @@ export function getFeedbackDashboardData(
       ).toFixed(1)
     : "-";
 
+  const lowRatings = ratings.filter((rating) => rating <= 2).length;
+  const highRatings = ratings.filter((rating) => rating >= 4).length;
+
   return {
     surveys,
     metrics: [
@@ -367,17 +371,17 @@ export function getFeedbackDashboardData(
       {
         label: "Avg Rating",
         value: averageRating === "-" ? "-" : `${averageRating}/5`,
-        state: "warning",
+        state: averageRating === "-" ? undefined : "warning",
       },
       {
         label: "Low Ratings",
-        value: ratings.filter((rating) => rating <= 2).length,
-        state: "danger",
+        value: lowRatings,
+        state: lowRatings ? "danger" : undefined,
       },
       {
         label: "High Ratings",
-        value: ratings.filter((rating) => rating >= 4).length,
-        state: "success",
+        value: highRatings,
+        state: highRatings ? "success" : undefined,
       },
     ],
   };
@@ -420,6 +424,7 @@ export function getActivityDashboardData(
         state: pageLoads.length
           ? loadTimeState(calculateAverageLatency(pageLoads))
           : undefined,
+        fill: true,
       },
     ],
   };

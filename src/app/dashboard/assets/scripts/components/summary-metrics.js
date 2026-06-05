@@ -38,10 +38,13 @@ export class SummaryMetrics extends HTMLElement {
       const card = document.createElement("div");
       const classes = ["metric-card-tile"];
       if (item.state === "danger") classes.push("danger-state");
-      // Any green (success) card gets the same whole-card green treatment as the
-      // errors tile: no-error errors card, and fast avg-load-time card.
-      if (item.state === "success") classes.push("success-state", "success-metric");
+      if (item.state === "success") classes.push("success-state");
       const isError = /errors?/i.test(item.label);
+      // Headline cards tint the whole card: the errors tiles, plus any card that
+      // opts in with `fill` (e.g. Avg Load Time). Everything else just colors the
+      // number. Red whole-card stays reserved for the errors tiles.
+      const fillCard = isError || item.fill;
+      if (fillCard && item.state === "success") classes.push("success-metric");
       if (isError && item.state === "danger") classes.push("error-metric");
       card.className = classes.join(" ");
 

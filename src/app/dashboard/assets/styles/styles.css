@@ -372,21 +372,34 @@ body {
   border-radius: 50%;
 }
 
-.status-indicator-dot.online {
-  background-color: var(--wt-success);
-}
-
 .disruption-announcement {
-  color: var(--wt-danger);
   font-weight: 700;
   font-size: 0.8125rem;
   letter-spacing: 0.02em;
 }
 
 .status-indicator-label {
-  color: var(--wt-success);
   font-size: 0.8125rem;
   letter-spacing: 0.05em;
+}
+
+/* Status colors are driven by the banner state: green when live, red when down. */
+.deployment-banner-strip.is-live .status-indicator-dot {
+  background-color: var(--wt-success);
+}
+
+.deployment-banner-strip.is-live .status-indicator-label,
+.deployment-banner-strip.is-live .disruption-announcement {
+  color: var(--wt-success);
+}
+
+.deployment-banner-strip.is-down .status-indicator-dot {
+  background-color: var(--wt-danger);
+}
+
+.deployment-banner-strip.is-down .status-indicator-label,
+.deployment-banner-strip.is-down .disruption-announcement {
+  color: var(--wt-danger);
 }
 
 /* Summary Metrics */
