@@ -38,12 +38,11 @@ export class SummaryMetrics extends HTMLElement {
       const card = document.createElement("div");
       const classes = ["metric-card-tile"];
       if (item.state === "danger") classes.push("danger-state");
-      if (item.state === "success") classes.push("success-state");
+      // Any green (success) card gets the same whole-card green treatment as the
+      // errors tile: no-error errors card, and fast avg-load-time card.
+      if (item.state === "success") classes.push("success-state", "success-metric");
       const isError = /errors?/i.test(item.label);
-      // The errors tile turns green when there are no errors (success state).
-      if (isError) {
-        classes.push(item.state === "success" ? "success-metric" : "error-metric");
-      }
+      if (isError && item.state === "danger") classes.push("error-metric");
       card.className = classes.join(" ");
 
       // Errors tile opens the errors page; the rest open the activity page.

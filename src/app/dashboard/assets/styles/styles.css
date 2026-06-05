@@ -502,13 +502,7 @@ body {
 }
 
 .metric-card-tile.success-metric {
-  background: linear-gradient(
-    135deg,
-    var(--color-ok-bg) 0%,
-    var(--wt-surface) 62%
-  );
   border-color: var(--wt-success);
-  box-shadow: 0 0.625rem 1.5rem rgb(46 125 50 / 18%);
 }
 
 .metric-card-tile.success-metric .metric-card-title {

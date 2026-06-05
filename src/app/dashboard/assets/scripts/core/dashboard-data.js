@@ -96,6 +96,21 @@ export function calculateAverageLatency(pageLoads) {
   return Math.round(totalLatency / pageLoads.length);
 }
 
+// Avg-load-time color thresholds (ms). load_time is full page navigation time:
+// under ~1s feels snappy, over ~3s is where users start to bail. Tune here.
+const LOAD_TIME_GOOD_MS = 1000;
+const LOAD_TIME_BAD_MS = 3000;
+
+/**
+ * Map an average load time (ms) to a card state: green below the good
+ * threshold, red above the bad threshold, yellow in between.
+ */
+export function loadTimeState(ms) {
+  if (ms < LOAD_TIME_GOOD_MS) return "success";
+  if (ms > LOAD_TIME_BAD_MS) return "danger";
+  return "warning";
+}
+
 /**
  * Count events by pathname.
  */
@@ -239,6 +254,9 @@ export function getHomeDashboardData(
         value: pageLoads.length
           ? `${calculateAverageLatency(pageLoads)}ms`
           : "-",
+        state: pageLoads.length
+          ? loadTimeState(calculateAverageLatency(pageLoads))
+          : undefined,
       },
       { label: "Page Loads", value: pageLoads.length },
       { label: "Clicks", value: clicks.length },
@@ -399,6 +417,9 @@ export function getActivityDashboardData(
         value: pageLoads.length
           ? `${calculateAverageLatency(pageLoads)}ms`
           : "-",
+        state: pageLoads.length
+          ? loadTimeState(calculateAverageLatency(pageLoads))
+          : undefined,
       },
     ],
   };
