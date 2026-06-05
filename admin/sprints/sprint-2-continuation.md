@@ -168,11 +168,11 @@
 | Metric | Value |
 |--------|-------|
 | Tasks Planned | 16 |
-| Tasks Completed | |
-| PRs Opened | |
-| PRs Merged | |
-| Lines of Code Added | |
-| Unit Tests Written | |
+| Tasks Completed | 8 |
+| PRs Opened | 6 |
+| PRs Merged | 6 |
+| Lines of Code Added | ~2,100 |
+| Unit Tests Written | 6 |
 
 ---
 
