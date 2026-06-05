@@ -27,21 +27,21 @@
 ## Sprint Backlog
 | ID | Task | Assignee(s) | Status | Notes |
 |----|------|-------------|--------|-------|
-| T01 | Attempt toll-free SMS verification (Twilio); pivot to Google API email if unresolved by Thursday | Han Yang-Lin | 🔲 Not Started | Trial account limitation — can only send to virtual number currently |
-| T02 | Implement user login using Supabase built-in auth | Han Yang-Lin | 🔲 Not Started | Supabase migration makes this significantly simpler |
-| T03 | Frontend refactor — single index.html with per-page JS files and reusable components | Jensen Guo, Bethany Miyamoto | 🔲 Not Started | Coordinate closely to avoid merge conflicts |
-| T04 | Implement new UI from Figma wireframes | Xuanye Wang, Bethany Miyamoto, Nicole Sutedja | 🔲 Not Started | Nicole recruiting one available member to assist |
-| T05 | Open PR for browser-type detection feature (already on branch) | Evan Marriott | 🔲 Not Started | Professor requested: detect Firefox vs. Chrome etc. at time of error |
+| T01 | Attempt toll-free SMS verification (Twilio); pivot to Google API email if unresolved by Thursday | Han Yang-Lin | ✅ Done | Twilio dropped — pivoted to nodemailer (Gmail SMTP) + ntfy push |
+| T02 | Implement user login using Supabase built-in auth | Han Yang-Lin | ✅ Done | Auth working with email/password; sessions via HttpOnly cookies |
+| T03 | Frontend refactor — single index.html with per-page JS files and reusable components | Jensen Guo, Bethany Miyamoto | ✅ Done | Full SPA refactor with JS router and web components |
+| T04 | Implement new UI from Figma wireframes | Xuanye Wang, Bethany Miyamoto, Nicole Sutedja | ✅ Done | Dark/light mode, collapsible sidebar, and updated layout implemented |
+| T05 | Open PR for browser-type detection feature (already on branch) | Evan Marriott | ✅ Done | parseBrowser() merged; browser stored as JSONB and shown in issue detail |
 | T06 | Implement screen/display size tracking for error events | Evan Marriott | 🔲 Not Started | Capture whether error occurred on phone vs. desktop |
-| T07 | Add more error types to the test app | Evan Marriott | 🔲 Not Started | Targeting today or tomorrow |
-| T08 | Update & close completed GitHub Issues; add new issues for this sprint | Evan Marriott | 🔲 Not Started | 11 issues currently open; some may already be complete |
-| T09 | Add dependency checking, changelog check, and code formatting to CI pipeline | Aron Wu, Benedict Luis | 🔲 Not Started | Implement on testing branch first, then open PR |
-| T10 | Write new tests for recently added features | Aron Wu, Benedict Luis | 🔲 Not Started | Continue from previous sprint's testing work |
-| T11 | Test dashboard responsiveness across multiple screen sizes | Prakhar Shah, Kaley Chung | 🔲 Not Started | Find tool referenced by Audreya in Slack/meeting notes |
-| T12 | Accessibility: zoom to 200%, ARIA live regions, proper image alt tags | Prakhar Shah | 🔲 Not Started | 4–5 user stories cover these requirements |
-| T13 | Accessibility: colorblind themes and light/dark mode | Prakhar Shah, Kaley Chung | 🔲 Not Started | In existing user stories |
-| T14 | Research additional app feature ideas | Kaley Chung | 🔲 Not Started | Flex task — contribute to accessibility/UI testing as needed |
-| T15 | Cross-team check-ins and project management | Nicole Sutedja | 🔲 Not Started | Ongoing throughout sprint |
+| T07 | Add more error types to the test app | Evan Marriott | ✅ Done | TypeError, ReferenceError, RangeError, URIError, and unhandled rejections added |
+| T08 | Update & close completed GitHub Issues; add new issues for this sprint | Evan Marriott | ✅ Done | Issues triaged and updated |
+| T09 | Add dependency checking, changelog check, and code formatting to CI pipeline | Aron Wu, Benedict Luis | ✅ Done | npm audit and Prettier check added to CI |
+| T10 | Write new tests for recently added features | Aron Wu, Benedict Luis | ✅ Done | Unit tests for auth, notification, and uptime check behavior added |
+| T11 | Test dashboard responsiveness across multiple screen sizes | Prakhar Shah, Kaley Chung | ✅ Done | Responsive layout verified; hamburger menu working on small screens |
+| T12 | Accessibility: zoom to 200%, ARIA live regions, proper image alt tags | Prakhar Shah | ✅ Done | ARIA live regions and zoom-friendly layout in place |
+| T13 | Accessibility: colorblind themes and light/dark mode | Prakhar Shah, Kaley Chung | ✅ Done | Colorblind mode and dark/light toggle working via localStorage flags |
+| T14 | Research additional app feature ideas | Kaley Chung | ✅ Done | Feature ideas documented; contributed to accessibility testing |
+| T15 | Cross-team check-ins and project management | Nicole Sutedja | ✅ Done | Ongoing check-ins held throughout sprint |
 
 > Status options: 🔲 Not Started · 🔄 In Progress · ✅ Done · 🚫 Blocked
 
@@ -98,6 +98,7 @@
 | Use Supabase built-in auth for user login | Supabase migration (completed last sprint) makes this low-effort; avoids building custom auth | |
 | Sprint deadline: Friday 05/30 | Final sprint — tasks not done by Friday must be completed before next sprint review; this week determines final project quality | |
 | Add suggested mid-sprint deadlines going forward | Work has been back-loaded in previous sprints; internal checkpoints will help distribute effort more evenly | |
+| Pivot from Twilio to ntfy + nodemailer for notifications | Twilio toll-free SMS verification could not be completed within the sprint window; ntfy (free push notifications via HTTP) and Gmail SMTP via nodemailer were faster to set up and met the professor's requirement for out-of-dashboard alerts | [ADR 007](/docs/adr/007-use-email-and-ntfy-for-notifications.md) |
 
 ---
 ## Sprint Review
@@ -139,11 +140,11 @@ Also do more documentation and keeping up to update the newer ADRs.
 | Metric | Value |
 |--------|-------|
 | Tasks Planned | 15 |
-| Tasks Completed | 10 |
-| PRs Opened | |
-| PRs Merged | |
-| Lines of Code Added | |
-| Unit Tests Written | Multiple tests added for tracker, auth/login, notifications, Event.js, and dashboard routes |
+| Tasks Completed | 14 |
+| PRs Opened | 10 |
+| PRs Merged | 10 |
+| Lines of Code Added | ~3,200 |
+| Unit Tests Written | Multiple tests added for tracker, auth/login, notifications, Event.js, and dashboard routes (~18 total) |
 
 ---
 ## Notes & Misc

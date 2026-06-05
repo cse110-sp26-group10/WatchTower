@@ -171,9 +171,9 @@
 |--------|-------|
 | Tasks Planned | 15 |
 | Tasks Completed | 9 |
-| PRs Opened | |
-| PRs Merged | |
-| Lines of Code Added | |
+| PRs Opened | 4 |
+| PRs Merged | 4 |
+| Lines of Code Added | ~900 |
 | Unit Tests Written | 0 |
 
 ---
