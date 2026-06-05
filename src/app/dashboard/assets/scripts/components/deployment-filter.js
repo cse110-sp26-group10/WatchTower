@@ -22,12 +22,23 @@ export class DeploymentFilter extends HTMLElement {
     });
 
     document.addEventListener("watchtower:data-update", () => {
-      const deployments = new Set(dataStore.getDeployments().map(deployment => deployment.id)).add(ALL_ID);
-      const options = new Set(Array.from(this.selectElement.options).map(select => isNaN(select.value) ? select.value : select.value));
-      if (deployments.size === options.size && deployments.isSubsetOf(options)) { // If the two sets are identical (no change occurred)
+      const deployments = new Set(
+        dataStore.getDeployments().map((deployment) => deployment.id),
+      ).add(ALL_ID);
+      const options = new Set(
+        Array.from(this.selectElement.options).map((select) =>
+          isNaN(select.value) ? select.value : select.value,
+        ),
+      );
+      if (
+        deployments.size === options.size &&
+        deployments.isSubsetOf(options)
+      ) {
+        // If the two sets are identical (no change occurred)
         return;
       }
-      if (!deployments.has(deploymentScope.id)) { // Selected deployment no longer exists
+      if (!deployments.has(deploymentScope.id)) {
+        // Selected deployment no longer exists
         deploymentScope.set(ALL_ID);
       }
       if (this.selectElement) {
