@@ -53,7 +53,7 @@ export class LoginPage extends HTMLElement {
         <nav class="login-nav">
           <a class="login-nav-brand" href="#">
             <img
-              src="/src/app/dashboard/public/logo.svg"
+              src="public/logo.svg"
               alt="WatchTower logo"
               class="login-nav-logo"
               onerror="this.hidden=true"
@@ -77,7 +77,7 @@ export class LoginPage extends HTMLElement {
           <div class="login-hero" aria-hidden="true">
             <div class="login-hero-inner">
               <div class="login-tower-graphic">
-                <img src="/src/app/dashboard/public/logo.svg" alt="WatchTower" />
+                <img src="public/logo.svg" alt="WatchTower" />
               </div>
               <p class="login-tagline">See what's on fire<br>before your users do.</p>
             </div>
