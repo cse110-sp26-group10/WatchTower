@@ -57,31 +57,20 @@
 ### Stand-up 1 — 06/03/2026
 | Name | Did | Doing | Blockers |
 |------|-----|-------|----------|
-<<<<<<< Updated upstream
 | Nicole Sutedja | Finished adding icons/sidebar changes into UI, created & delegated tasks, started Wiki | Continue with UI polishes in feat/ui-polish | Midterm |
-=======
-| Nicole Sutedja | research brand color integration with real apps, checked on the progress of peoples tasks, start assigning test team to demo prep, check with backend for final tasks | help with frontend polishing, finalize repo structure and documentation | Finals |
->>>>>>> Stashed changes
 | Evan Marriott | Merged PRs into main for the dashboard and errors or test app, refactored src folder to have the folder name for the watchtower be “app” instead of prototype | continue refining documentation and PRs | midterm tomorrow |
 | Jensen Guo | UI tweaks (emphasizing error number, fixing hamburger menu), repo cleanup, code comments | Ensure CSS consistency, make branding stronger, documentation | Finals |
 | Han Yang-Lin | Finished integrating the frontend with the backend. Added project filter dropdown that stays updated with the existing list of projects. Updated uptime card with removed project filter, added margins, and fixed checkmark for indicating selection | Add auth reasoning to Supabase ADR | CSE 120 project |
 | Kevin Wang | asking for feedback from the prof | polish the frontend | other ddls and final |
 | Benedict Luis | Went to prof Powell for feedback and started working on audit scrum master doc | Finish issue #86 | Finals and projects |
-<<<<<<< Updated upstream
 | Aron Wu | confirmed CI pipeline passing end to end | review test coverage gaps, help with scrum docs | None |
 | Kaley Chung | Fix the mobile and validate mobile responsiveness across screen sizes (use the tool from Audria's Slack notes) and add Figma to the repo | Delegate tasks and deadlines for demo prep team | midterms |
 | Prakhar Shah | reviewed outstanding sprint 4 tasks, confirmed sprint 3 accessibility features are working | begin documentation audit across sprints, ADRs, and GENAI log | None |
-=======
-| Aron Wu | Went to prof oh, started adding completion comments to all uncommented issues | Finish adding completion comments to all uncommented issues | None |
-| Kaley Chung | Fix the mobile and validate mobile responsiveness across screen sizes (use the tool from Audria's Slack notes) and add Figma to the repo | Delegate tasks and deadlines for demo prep team | midterms |
-| Prakhar Shah | Finalize accessibility features: zoom 200%, ARIA, alt tags, light-dark mode | start auditing all documentation for TA | Finals |
->>>>>>> Stashed changes
 | Bethany Miyamoto | task for next sprint assigned | repo clean up and dry run | midterm and projects |
 
 ### Stand-up 2 — 06/04/2026
 | Name | Did | Doing | Blockers |
 |------|-----|-------|----------|
-<<<<<<< Updated upstream
 | Nicole Sutedja | continued cross-team check-ins, reviewed pending PRs | finalize any remaining frontend tasks before code freeze | None |
 | Evan Marriott | backfilled CHANGELOG entries for v0.2.1, v0.3.0, and v0.4.0 | finish PR triage, continue closing and updating GitHub issues | None |
 | Jensen Guo | deleted unused pages, fixed hamburger menu position, emphasized errors styling, cleaned up frontend documentation and dead imports | wrap up any remaining UI polish before code freeze | None |
@@ -92,18 +81,6 @@
 | Kaley Chung | validated mobile responsiveness across screen sizes, cross-checked features against requirements spec | continue demo readiness work, help with dry-run prep | None |
 | Prakhar Shah | audited sprint docs, ADRs, and GENAI log — filled in empty stand-up entries, fixed ADR language and incomplete sections | finish remaining documentation gaps, update README | None |
 | Bethany Miyamoto | verified responsiveness on multiple viewport widths, reviewed open and closed GitHub issues for detail | help with demo dry-run prep and any remaining cleanup | None |
-=======
-| Nicole Sutedja | | | |
-| Evan Marriott | made UI changes for settings menu and hamburger menu on desktop, merged code into main, cleaned up repo by deleting old branches | continue working on UI improvements and documentation | Final studying |
-| Jensen Guo | | | |
-| Han Yang-Lin | | | |
-| Kevin Wang | | | |
-| Benedict Luis | | | |
-| Aron Wu | | | |
-| Kaley Chung | | | |
-| Prakhar Shah | Audit all documentation (sprints, ADRs, changelog, AI use log, etc) | Update README and project setup docs and start working in wiki | Finals |
-| Bethany Miyamoto | | | |
->>>>>>> Stashed changes
 
 ### Stand-up 3 — 06/06/2026
 | Name | Did | Doing | Blockers |
@@ -130,35 +107,52 @@
 ---
 ## Sprint Review
 ### What was completed:
--
+- The main backend–frontend integration work was completed, so the app is now connected to live backend data.
+- The notification system was added and documented with email and ntfy support.
+- Browser-type detection was merged and checked in the dashboard.
+- A lot of final UI polish was completed, including responsiveness fixes, sidebar updates, layout cleanup, and app directory restructuring.
+- The CI pipeline additions were finished and merged, including dependency checking and Prettier formatting checks.
+- Sprint/process documentation was updated as part of the final Sprint 4 closeout work.
 
 ### What was not completed:
--
+- Screen/display size tracking for error events was not started.
+- The final demo dry-run and demo video are still scheduled before code freeze.
+- Some final documentation cleanup, issue-board comments, metrics, and scope checks are still in progress.
+- The Supabase ADR still needs the final auth reasoning details
 
 ### Reason(s):
--
+- Sprint 4 had a lot of final integration, documentation, polish, and demo-readiness work happening at the same time.
+- Some items depend on the final team update, the demo dry-run, and the last GitHub issue-board cleanup.
+- Standup 3 and some final metrics should be filled in after the next team update instead of guessing early
 
 ---
 ## Sprint Retrospective
 ### What went well:
--
+- The team made strong progress on connecting the frontend and backend.
+- CI/testing work was finished and merged into main.
+- The app became more polished and demo-ready through UI fixes, responsiveness work, and cleanup.
+- Team members were actively reviewing docs, PRs, issues, and final requirements.
 
 ### What didn't go well:
--
+- Some sprint documentation and GitHub issue statuses were not updated as consistently during the sprint.
+- A few tasks stayed open late because they depended on final review, demo prep, or code freeze timing.
+- Final metrics and issue comments still needed manual cleanup near the end.
 
 ### What we'll do differently:
--
+- Update sprint docs and issue statuses more regularly during the sprint.
+- Track metrics earlier instead of waiting until the end.
+- Add final issue comments and remaining-work notes as part of the normal PR/issue closeout process.
 
 ---
 ## Metrics
 | Metric | Value |
 |--------|-------|
 | Tasks Planned | 21 |
-| Tasks Completed | |
-| PRs Opened | |
-| PRs Merged | |
-| Lines of Code Added | |
-| Unit Tests Written | |
+| Tasks Completed | 12 |
+| PRs Opened | 4 |
+| PRs Merged | 4 |
+| Lines of Code Added | 13,984 |
+| Unit Tests Written | 0 new unit test written|
 
 ---
 ## Notes & Misc
