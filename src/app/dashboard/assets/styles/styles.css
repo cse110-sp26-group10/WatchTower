@@ -18,9 +18,9 @@
   --brand-indigo-soft: #e9eef8;
   --brand-gold-soft: #fff6d6;
   --brand-orange-soft: #fff0e3;
-  --brand-orange-contrast: #AD5400;
-  --brand-indigo-contrast: #2C519B;
-  --brand-gold-contrast: #8A6700;
+  --brand-orange-contrast: #ad5400;
+  --brand-indigo-contrast: #2c519b;
+  --brand-gold-contrast: #8a6700;
 
   /* Status colors */
   --color-ok: #2e7d32;
@@ -76,7 +76,7 @@
   --wt-text: #f6fbff;
   --wt-text-2: #bcc3ce;
   --wt-text-3: #a0aabc;
-  --wt-danger: #FF7A7A;
+  --wt-danger: #ff7a7a;
   --wt-warning: var(--brand-gold);
   --wt-success: #47cf8e;
   --wt-info: var(--brand-aqua);
@@ -92,9 +92,9 @@
   --color-warn: var(--brand-gold);
   --color-warn-bg: var(--brand-gold-soft);
   --color-warn-text: #ffd866;
-  --color-crit: #FF7A7A;
+  --color-crit: #ff7a7a;
   --color-crit-bg: #331818;
-  --color-crit-text: #FF7A7A;
+  --color-crit-text: #ff7a7a;
   --color-active: var(--brand-aqua);
   --color-active-bg: #24313d;
   --color-active-text: var(--brand-aqua);
@@ -716,7 +716,7 @@ body {
 .workspace-panel-hint {
   font-size: 0.6875rem;
   color: var(--wt-text-3);
-  font-style: italic
+  font-style: italic;
 }
 
 /* Data Lists */
