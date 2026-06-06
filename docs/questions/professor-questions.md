@@ -1,10 +1,10 @@
 # Questions for Professor Powell
 
-##**Sprint 1 — Leadership Questions**
+## Sprint 1 — Leadership Questions
 
 ---
 
-## Product Scope
+### Product Scope
 
 1. The course MVP definition asks us to focus on errors, performance degradation, upset user signals, and build/deployment signals. How strictly should we scope the prototype to these four areas, or is it acceptable to explore adjacent signals if they naturally fit?
 
@@ -14,7 +14,7 @@
 
 ---
 
-## Operational Stability and Complexity
+### Operational Stability and Complexity
 
 4. The team is intentionally trying to avoid over-engineering. What is the biggest mistake you've seen teams make when they try to build too much too fast in a course project like this?
 
@@ -24,7 +24,7 @@
 
 ---
 
-## Risk and Prioritization
+### Risk and Prioritization
 
 7. If we cannot complete every planned MVP feature by the end of the quarter, what should we protect first — a clean working core or a broader set of partially working features?
 
@@ -32,7 +32,7 @@
 
 ---
 
-## Team Structure and Process
+### Team Structure and Process
 
 9. How much process overhead is appropriate for a team our size? We are doing standups, sprint planning, TA syncs, and documentation. Is there anything we are missing or anything we should reduce?
 
