@@ -1,7 +1,7 @@
 # Changelog
 All team members must document any notable changes to the WatchTower project in this file and use [Semantic Versioning](https://semver.org/): `MAJOR.MINOR.PATCH`
 
-## [0.4.1] - 2026-06-04
+## [0.4.1] - 2026-06-04 (PR 104, PR 103)
 
 ### Added
 - Backend implementation of project sharing with permission levels Owner, Co-Owner, and Viewer. New server endpoints `/api/projects/share` (accepts project id, user id, permission level) and `/api/projects/unshare` (accepts project id, user id) are created.
@@ -12,8 +12,10 @@ All team members must document any notable changes to the WatchTower project in 
 ### Fixed
 - UUID regex to comply with the format used by Supabase.
 - Favicon and logo paths to work in deployed app.
+- Restored test-app error flows used for testing and demo scenarios.
+- Fixed CI and E2E issues after restoring test-app error behavior.
 
-## [0.4.0] - 2026-06-03
+## [0.4.0] - 2026-06-03 (PR #97)
 
 ### Added
 - Settings page for managing notification preferences (email and ntfy), viewing the ntfy topic ID, and copying the project API key to clipboard.
@@ -42,7 +44,7 @@ All team members must document any notable changes to the WatchTower project in 
 - Removed unused pages and dead code from the dashboard.
 - Fixed timeout duration inconsistency between the settings page and the server.
 
-## [0.3.0] - 2026-06-03
+## [0.3.0] - 2026-06-03 (PR #83)
 
 ### Added
 - Restructured frontend to a Single Page Application (SPA) with a JavaScript router, per-page JS modules, and reusable web components (sidebar, topbar, uptime card, error list, feedback list, summary metrics, modals).
