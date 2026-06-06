@@ -1,6 +1,6 @@
 # Questions for Professor Powell
 
-**Sprint 1 — Leadership Questions**
+##**Sprint 1 — Leadership Questions**
 
 ---
 
