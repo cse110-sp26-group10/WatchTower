@@ -31,11 +31,10 @@ export class AppTopbar extends HTMLElement {
     this.innerHTML = `
       <header class="topbar">
         <div class="topbar-left">
-          <button class="menu-toggle-btn" id="mobile-menu-trigger" aria-label="Toggle navigation menu">
-            <span class="menu-toggle-line"></span>
-            <span class="menu-toggle-line"></span>
-            <span class="menu-toggle-line"></span>
-          </button>
+          <a href="#/" class="brand-name" style="display: flex; align-items: center; gap: 0.5rem; text-decoration: none;">
+            <img src="public/logo.svg" alt="WatchTower logo" style="height: 1.75rem; width: auto;">
+            <span style="color: var(--wt-text); font-weight: 700; font-size: 1.15rem;">WatchTower</span>
+          </a>
 
           <div class="topbar-filter-group">
             <label class="topbar-filter-label" for="project-filter">Project:</label>

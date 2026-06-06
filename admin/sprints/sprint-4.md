@@ -28,59 +28,60 @@
 ## Sprint Backlog
 | ID | Task | Assignee(s) | Status | Notes |
 |----|------|-------------|--------|-------|
-| T01 | Complete backend–frontend integration (connect new UI to endpoints) | Han Yang-Lin, Kevin Wang, Jensen Guo | 🔲 Not Started | High priority integration; ensure ready for demo |
-| T02 | Write ADR for notification system (NodeMailer / ntfy) | Han Yang-Lin, Kevin Wang | 🔲 Not Started | Backend documentation deliverable |
-| T03 | Update Supabase ADR to include auth reasoning | Han Yang-Lin, Kevin Wang | 🔲 Not Started | Add detailed architectural justification for built-in auth |
-| T04 | Finish small UI fixes, polish app/cards to look professional | Jensen Guo | 🔲 Not Started | Detail-oriented; grounded in developer user research/needs |
-| T05 | Merge browser-type detection PR and validate in dashboard | Evan Marriott, Nicole Sutedja | 🔲 Not Started | Core lead verification |
+| T01 | Complete backend–frontend integration (connect new UI to endpoints) | Han Yang-Lin, Kevin Wang, Jensen Guo | ✅ Done | High priority integration; ensure ready for demo |
+| T02 | Write ADR for notification system (NodeMailer / ntfy) | Han Yang-Lin, Kevin Wang | ✅ Done | Backend documentation deliverable |
+| T03 | Update Supabase ADR to include auth reasoning | Han Yang-Lin, Kevin Wang | 🔄 In Progress | Add detailed architectural justification for built-in auth |
+| T04 | Finish small UI fixes, polish app/cards to look professional | Jensen Guo | ✅ Done | Rounded corners removed, error emphasis improved, survey message fixed |
+| T05 | Merge browser-type detection PR and validate in dashboard | Evan Marriott, Nicole Sutedja | ✅ Done | Core lead verification |
 | T06 | Implement screen/display size tracking for error events | Evan Marriott, Nicole Sutedja | 🔲 Not Started | Track display context at time of error |
-| T07 | Finalize PR structure and close completed GitHub Issues | Evan Marriott, Nicole Sutedja | 🔲 Not Started | Align issue tracker with final repository state |
-| T08 | Write "definition of done" into process docs | Evan Marriott, Nicole Sutedja | 🔲 Not Started | Core process documentation |
+| T07 | Finalize PR structure and close completed GitHub Issues | Evan Marriott, Nicole Sutedja | ✅ Done | Align issue tracker with final repository state |
+| T08 | Write "definition of done" into process docs | Evan Marriott, Nicole Sutedja | ✅ Done | Core process documentation |
 | T09 | Finalize CI pipeline additions (dependency check, changelog, formatting) & open PR from testing branch | Benedict Luis, Aron Wu | ✅ Done | Merged via PR #83; dependency + Prettier on `main` |
 | T10 | Check and update all Scrum Master docs, repo tasks, metrics, and issues | Benedict Luis, Aron Wu | 🔄 In Progress | ci-plan + standup updated; metrics and GitHub issues still open |
-| T11 | Rename `prototype` folder and update lint/test paths | Kaley Chung, Prakhar Shah, Bethany Miyamoto | 🔲 Not Started | Structural path updates |
-| T12 | Validate mobile responsiveness across screen sizes | Kaley Chung, Prakhar Shah, Bethany Miyamoto | 🔲 Not Started | Use testing tool from Audria's Slack notes |
-| T13 | Finalize accessibility features (zoom 200%, ARIA, alt tags, colorblind/light-dark mode) | Kaley Chung, Prakhar Shah, Bethany Miyamoto | 🔲 Not Started | Comprehensive accessibility pass |
-| T14 | Update README and project setup docs to reflect Supabase and current architecture | Kaley Chung, Prakhar Shah, Bethany Miyamoto | 🔲 Not Started | Essential documentation alignment |
-| T15 | Ensure all tasks are majority completed / adjust to MVP scope if blocked | Kaley Chung, Prakhar Shah, Bethany Miyamoto | 🔲 Not Started | Surface blocks early and adapt actively |
-| T16 | Cross-check everything against Audria's original requirements spec | Kaley Chung, Prakhar Shah, Bethany Miyamoto | 🔲 Not Started | Verification pass to ensure 100% compliance |
-| T17 | Repo cleanup: dead code, stale branches, unused files | Kaley Chung, Prakhar Shah, Bethany Miyamoto | 🔲 Not Started | Make the codebase highly presentable for final review |
-| T18 | Demo dry-run: walk full app flow end-to-end before submission | Kaley Chung, Prakhar Shah, Bethany Miyamoto | 🔲 Not Started | Full app flow verification |
-| T19 | Check previous PRs and GitHub Issues to add more detail if necessary | Kaley Chung, Prakhar Shah, Bethany Miyamoto | 🔲 Not Started | Contextual tracking audit |
-| T20 | Audit all documentation (sprints, ADRs, changelog, AI use log, etc.) | Kaley Chung, Prakhar Shah, Bethany Miyamoto | 🔲 Not Started | Every single field filled out and current |
-| T21 | Ensure demo video is made on time and fully edited | Kaley Chung, Prakhar Shah, Bethany Miyamoto | 🔲 Not Started | Final video production deliverable |
+| T11 | Rename `prototype` folder and update lint/test paths | Kaley Chung, Prakhar Shah, Bethany Miyamoto | ✅ Done | `src/app/` is now the primary directory; prototype archived |
+| T12 | Validate mobile responsiveness across screen sizes | Kaley Chung, Prakhar Shah, Bethany Miyamoto | ✅ Done | Hamburger menu position fixed; tested on multiple viewport widths |
+| T13 | Finalize accessibility features (zoom 200%, ARIA, alt tags, colorblind/light-dark mode) | Kaley Chung, Prakhar Shah, Bethany Miyamoto | ✅ Done | All accessibility features in place from Sprint 3; verified this sprint |
+| T14 | Update README and project setup docs to reflect Supabase and current architecture | Kaley Chung, Prakhar Shah, Bethany Miyamoto | ✅ Done | README updated with current setup instructions |
+| T15 | Ensure all tasks are majority completed / adjust to MVP scope if blocked | Kaley Chung, Prakhar Shah, Bethany Miyamoto | 🔄 In Progress | Tracking blockers actively |
+| T16 | Cross-check everything against Audria's original requirements spec | Kaley Chung, Prakhar Shah, Bethany Miyamoto | 🔄 In Progress | In progress |
+| T17 | Repo cleanup: dead code, stale branches, unused files | Kaley Chung, Prakhar Shah, Bethany Miyamoto | ✅ Done | Unused pages deleted; frontend docs and dead imports removed |
+| T18 | Demo dry-run: walk full app flow end-to-end before submission | Kaley Chung, Prakhar Shah, Bethany Miyamoto | 🔲 Not Started | Scheduled before code freeze |
+| T19 | Check previous PRs and GitHub Issues to add more detail if necessary | Kaley Chung, Prakhar Shah, Bethany Miyamoto | 🔄 In Progress | In progress |
+| T20 | Audit all documentation (sprints, ADRs, changelog, AI use log, etc.) | Kaley Chung, Prakhar Shah, Bethany Miyamoto | 🔄 In Progress | In progress — all sprint docs and ADRs being reviewed and filled out |
+| T21 | Ensure demo video is made on time and fully edited | Kaley Chung, Prakhar Shah, Bethany Miyamoto | 🔲 Not Started | Scheduled before code freeze |
 
 > Status options: 🔲 Not Started · 🔄 In Progress · ✅ Done · 🚫 Blocked
 
 ---
 ## Stand-ups
-### Stand-up 1 — 06/02/2026
+### Stand-up 1 — 06/03/2026
 | Name | Did | Doing | Blockers |
 |------|-----|-------|----------|
-| Nicole Sutedja | | | |
-| Evan Marriott | | | |
-| Jensen Guo | | | |
-| Han Yang-Lin | | | |
-| Kevin Wang | | | |
-| Benedict Luis | | | |
-| Aron Wu | | | |
-| Kaley Chung | | | |
-| Prakhar Shah | | | |
-| Bethany Miyamoto | | | |
+| Nicole Sutedja | research brand color integration with real apps, checked on the progress of peoples tasks, start assigning test team to demo prep, check with backend for final tasks | help with frontend polishing, finalize repo structure and documentation | finals |
+| Evan Marriott | Merged PRs into main for the dashboard and errors or test app, refactored src folder to have the folder name for the watchtower be “app” instead of prototype | continue refining documentation and PRs | midterm tmrw |
+| Jensen Guo | UI tweaks (emphasizing error number, fixing hamburger menu), repo cleanup, code comments | Ensure CSS consistency, make branding stronger, documentation | Finals |
+| Han Yang-Lin | Finished integrating the frontend with the backend. Added project filter dropdown that stays updated with the existing list of projects. Updated uptime card with removed project filter, added margins, and fixed checkmark for indicating selection | Add auth reasoning to Supabase ADR | CSE 120 project |
+| Kevin Wang | asking for feedback from the prof | polish the frontend | other ddls and final |
+| Benedict Luis | Went to prof Powell's OH for feedback and started working on audit scrum | Finish issue #86 | Finals and projects |
+| Aron Wu | Went to prof oh, started adding completion comments to all uncommented issues | Finish adding completion comments to all uncommented issues | none |
+| Kaley Chung | Fix the mobile and validate mobile responsiveness across screen sizes (use the tool from Audria's Slack notes) and add Figma to the repo | Delegate tasks and deadlines for demo prep team | midterms |
+| Prakhar Shah | Finalize accessibility features: zoom 200%, ARIA, alt tags, light-dark mode | start auditing all documentation for TA | Finals |
+| Bethany Miyamoto | task for next sprint assigned | repo clean up and dry run | midterm and projects |
 
-### Stand-up 2 — 06/04/2026
+### Stand-up 2 — 06/05/2026
 | Name | Did | Doing | Blockers |
 |------|-----|-------|----------|
 | Nicole Sutedja | | | |
-| Evan Marriott | | | |
-| Jensen Guo | | | |
-| Han Yang-Lin | | | |
-| Kevin Wang | | | |
-| Benedict Luis | | | |
+| Evan Marriott | made UI changes for settings menu and hamburger menu on desktop, merged code into main, cleaned up repo by deleting old branches | continue working on UI improvements and documentation | final studying |
+| Jensen Guo | Tweak frontend so that the brand colors are more emphasized | More frontend polishing | Finals |
+| Han Yang-Lin | Implemented project sharing server endpoints, and fixed UUID regex, fixed deployment filter, and favicon and logo paths | Update project documentation | Finals |
+| Kevin Wang | refined some of the frontend | further polish the frontend | final |
+| Benedict Luis | update Changelog + sprint-4.md (final sprint doc) + TECH_SPEC.md. Fixed tampered data in sprint-4.md | finish up left issues and wrapping up docs | Studying for finals |
 | Aron Wu | | | |
-| Kaley Chung | | | |
-| Prakhar Shah | | | |
-| Bethany Miyamoto | | | |
+| Kaley Chung | Tried to delegate the mobile responsivness task | Add user persona (Figma) to repo and ensure all tasks are majority completed | Fever, midterms, quizzes, and finals |
+| Prakhar Shah | Audit all documentation (sprints, ADRs, changelog, AI use log, etc.) | Update README and project setup docs and start working in wiki | Finals |
+| Bethany Miyamoto | repo cleanup and added more detail to PR and issues | demo dry run | finals |
+
 
 ### Stand-up 3 — 06/06/2026
 | Name | Did | Doing | Blockers |
@@ -100,40 +101,59 @@
 ## Decisions Made
 | Decision | Rationale | ADR Link |
 |----------|-----------|----------|
-| | | |
+| Add permission levels (Owner, Co-Owner, Viewer) to project sharing | Sharing a project should let the owner control what the other person can do; Viewer covers read-only use and Co-Owner allows management tasks | |
+| Scope project filter to the top bar, not individual cards | Filtering by project at the top level scopes all dashboard cards at once, which is cleaner than per-card dropdowns | |
+| Prefix ntfy topic names with "WatchTower/" | Makes the WatchTower notification channel clearly identifiable in the ntfy app alongside other subscriptions | |
 
 ---
 ## Sprint Review
 ### What was completed:
--
+- The main backend–frontend integration work was completed, so the app is now connected to live backend data.
+- The notification system was added and documented with email and ntfy support.
+- Browser-type detection was merged and checked in the dashboard.
+- A lot of final UI polish was completed, including responsiveness fixes, sidebar updates, layout cleanup, and app directory restructuring.
+- The CI pipeline additions were finished and merged, including dependency checking and Prettier formatting checks.
+- Sprint/process documentation was updated as part of the final Sprint 4 closeout work.
 
 ### What was not completed:
--
+- Screen/display size tracking for error events was not started.
+- The final demo dry-run and demo video are still scheduled before code freeze.
+- Some final documentation cleanup, issue-board comments, metrics, and scope checks are still in progress.
+- The Supabase ADR still needs the final auth reasoning details
 
 ### Reason(s):
--
+- Sprint 4 had a lot of final integration, documentation, polish, and demo-readiness work happening at the same time.
+- Some items depend on the final team update, the demo dry-run, and the last GitHub issue-board cleanup.
+- Standup 3 and some final metrics should be filled in after the next team update instead of guessing early
 
 ---
 ## Sprint Retrospective
 ### What went well:
--
+- The team made strong progress on connecting the frontend and backend.
+- CI/testing work was finished and merged into main.
+- The app became more polished and demo-ready through UI fixes, responsiveness work, and cleanup.
+- Team members were actively reviewing docs, PRs, issues, and final requirements.
 
 ### What didn't go well:
--
+- Some sprint documentation and GitHub issue statuses were not updated as consistently during the sprint.
+- A few tasks stayed open late because they depended on final review, demo prep, or code freeze timing.
+- Final metrics and issue comments still needed manual cleanup near the end.
 
 ### What we'll do differently:
--
+- Update sprint docs and issue statuses more regularly during the sprint.
+- Track metrics earlier instead of waiting until the end.
+- Add final issue comments and remaining-work notes as part of the normal PR/issue closeout process.
 
 ---
 ## Metrics
 | Metric | Value |
 |--------|-------|
 | Tasks Planned | 21 |
-| Tasks Completed | |
-| PRs Opened | |
-| PRs Merged | |
-| Lines of Code Added | |
-| Unit Tests Written | |
+| Tasks Completed | 12 |
+| PRs Opened | 4 |
+| PRs Merged | 4 |
+| Lines of Code Added | 13,984 |
+| Unit Tests Written | 0 new unit test written|
 
 ---
 ## Notes & Misc
@@ -171,3 +191,42 @@
 * Run end-to-end demo dry-runs
 * Audit and flesh out detail on previous PRs, GitHub Issues, and all documentation fields
 * Record, edit, and submit final demo video on time
+
+---
+### Demo Prep Timeline
+
+**Thursday (EOD)**
+
+@Kaley Chung
+* Validate mobile responsiveness across screen sizes (use the tool from Audria's Slack notes)
+* Add Figma into the repo
+
+@Prakhar Shah
+* Finalize accessibility features: zoom 200%, ARIA, alt tags, colorblind/light-dark mode
+
+**Friday (EOD)**
+
+@Kaley Chung
+* Ensure all tasks are majority completed — if something is blocked, surface it early and adjust to MVP scope
+
+@Prakhar Shah
+* Audit all documentation (sprints, ADRs, changelog, AI use log, etc.) — every field filled out, all docs current
+
+@Bethany Miyamoto
+* Repo cleanup: dead code, stale branches, unused files — make it presentable
+* Check all previous PRs and GitHub Issues — add more detail if necessary
+
+**Saturday (EOD)**
+
+@Kaley Chung
+* Cross-check everything against Audria's original requirements spec
+
+@Prakhar Shah
+* Update README and project setup docs to reflect Supabase and current architecture
+* Wiki for the repo
+
+@Bethany Miyamoto
+* Demo dry-run: walk the full app flow end-to-end before submission
+
+@Aron Wu
+* Ensure demo video is made on time and edited

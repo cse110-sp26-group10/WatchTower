@@ -67,9 +67,7 @@ export class TimeSeriesChart extends HTMLElement {
 
     // Baseline axis.
     const axisY = PAD.top + PLOT_H;
-    svg.appendChild(
-      line(PAD.left, axisY, PAD.left + PLOT_W, axisY, "ts-axis"),
-    );
+    svg.appendChild(line(PAD.left, axisY, PAD.left + PLOT_W, axisY, "ts-axis"));
 
     if (this.variant === "line") {
       this.renderLine(svg, values, maxValue, series);
@@ -104,7 +102,8 @@ export class TimeSeriesChart extends HTMLElement {
 
   renderLine(svg, values, maxValue, series) {
     const n = values.length;
-    const xFor = (i) => (n === 1 ? PAD.left + PLOT_W / 2 : PAD.left + (i / (n - 1)) * PLOT_W);
+    const xFor = (i) =>
+      n === 1 ? PAD.left + PLOT_W / 2 : PAD.left + (i / (n - 1)) * PLOT_W;
     const yFor = (value) => PAD.top + PLOT_H - (value / maxValue) * PLOT_H;
 
     // Split into contiguous segments so null gaps break the line.
@@ -113,7 +112,10 @@ export class TimeSeriesChart extends HTMLElement {
       if (segment.length > 1) {
         const polyline = document.createElementNS(SVG_NS, "polyline");
         polyline.setAttribute("class", "ts-line");
-        polyline.setAttribute("points", segment.map((p) => `${p.x},${p.y}`).join(" "));
+        polyline.setAttribute(
+          "points",
+          segment.map((p) => `${p.x},${p.y}`).join(" "),
+        );
         svg.appendChild(polyline);
       }
       segment = [];
