@@ -86,7 +86,7 @@
 | Kevin Wang | the email and ntfy notification backend | connect the frontend and backend | other ddls |
 | Han Yang-Lin | Added server endpoints for fetching user profile and projects, and creating and deleting projects. Refactored backend to use dbHelper for database operations. Started integrating frontend and backend | Connect the frontend and backend | Interview and midterm |
 | Aron Wu | Added unit tests for user authentication, login, and notification, opened PR for merging tests + ci | Review PR, fix failing ci elements and merge | midterm |
-| Benedict Luis | Finished aligning tests after the dashboard prototype merge. Updated Event.js and unit/E2E tests, kept Evan’s auth/home setup, added hash route and login gate coverage, pushed fix/tests-align-main and opened the PR for aliign event validation and dashboard tests | Watch CI and fix any failures. Coordinate with Aron on the separate feat/testing-ci PR if needed. Start login/auth tests once Han’s frontend-backend auth flow is stable | Family urgency and Finals |
+| Benedict Luis | Finished aligning tests after the dashboard prototype merge. Updated Event.js and unit/E2E tests, kept Evan’s auth/home setup, added hash route and login gate coverage, pushed fix/tests-align-main and opened the PR for aliign event validation and dashboard tests | midterm |
 | Evan Marriott | added more errors to test app | continue to work on repo structure | Finals coming up |
 
 ---
