@@ -57,30 +57,31 @@
 ### Stand-up 1 — 06/03/2026
 | Name | Did | Doing | Blockers |
 |------|-----|-------|----------|
-| Nicole Sutedja | Finished adding icons/sidebar changes into UI, created & delegated tasks, started Wiki | Continue with UI polishes in feat/ui-polish | Midterm |
-| Evan Marriott | Merged PRs into main for the dashboard and errors or test app, refactored src folder to have the folder name for the watchtower be “app” instead of prototype | continue refining documentation and PRs | midterm tomorrow |
+| Nicole Sutedja | research brand color integration with real apps, checked on the progress of peoples tasks, start assigning test team to demo prep, check with backend for final tasks | help with frontend polishing, finalize repo structure and documentation | finals |
+| Evan Marriott | Merged PRs into main for the dashboard and errors or test app, refactored src folder to have the folder name for the watchtower be “app” instead of prototype | continue refining documentation and PRs | midterm tmrw |
 | Jensen Guo | UI tweaks (emphasizing error number, fixing hamburger menu), repo cleanup, code comments | Ensure CSS consistency, make branding stronger, documentation | Finals |
 | Han Yang-Lin | Finished integrating the frontend with the backend. Added project filter dropdown that stays updated with the existing list of projects. Updated uptime card with removed project filter, added margins, and fixed checkmark for indicating selection | Add auth reasoning to Supabase ADR | CSE 120 project |
 | Kevin Wang | asking for feedback from the prof | polish the frontend | other ddls and final |
-| Benedict Luis | Went to prof Powell for feedback and started working on audit scrum master doc | Finish issue #86 | Finals and projects |
-| Aron Wu | confirmed CI pipeline passing end to end | review test coverage gaps, help with scrum docs | None |
+| Benedict Luis | Went to prof Powell's OH for feedback and started working on audit scrum | Finish issue #86 | Finals and projects |
+| Aron Wu | Went to prof oh, started adding completion comments to all uncommented issues | Finish adding completion comments to all uncommented issues | none |
 | Kaley Chung | Fix the mobile and validate mobile responsiveness across screen sizes (use the tool from Audria's Slack notes) and add Figma to the repo | Delegate tasks and deadlines for demo prep team | midterms |
-| Prakhar Shah | reviewed outstanding sprint 4 tasks, confirmed sprint 3 accessibility features are working | begin documentation audit across sprints, ADRs, and GENAI log | None |
+| Prakhar Shah | Finalize accessibility features: zoom 200%, ARIA, alt tags, light-dark mode | start auditing all documentation for TA | Finals |
 | Bethany Miyamoto | task for next sprint assigned | repo clean up and dry run | midterm and projects |
 
-### Stand-up 2 — 06/04/2026
+### Stand-up 2 — 06/05/2026
 | Name | Did | Doing | Blockers |
 |------|-----|-------|----------|
-| Nicole Sutedja | continued cross-team check-ins, reviewed pending PRs | finalize any remaining frontend tasks before code freeze | None |
-| Evan Marriott | backfilled CHANGELOG entries for v0.2.1, v0.3.0, and v0.4.0 | finish PR triage, continue closing and updating GitHub issues | None |
-| Jensen Guo | deleted unused pages, fixed hamburger menu position, emphasized errors styling, cleaned up frontend documentation and dead imports | wrap up any remaining UI polish before code freeze | None |
-| Han Yang-Lin | fixed survey message display, added project filter to top bar, implemented project sharing with permission levels (Owner, Co-Owner, Viewer), fixed API key in tracker.js | do a final backend review before code freeze | None |
-| Kevin Wang | coordinated with Han on permission levels; tested sharing and unsharing flows | confirm feature works end to end across different permission levels | None |
-| Benedict Luis | updated sprint docs and worked on scrum master checklist | finish metric updates and review all documentation fields | None |
-| Aron Wu | reviewed CI pipeline, confirmed all checks still passing after new commits | help with any remaining test coverage or docs | None |
-| Kaley Chung | validated mobile responsiveness across screen sizes, cross-checked features against requirements spec | continue demo readiness work, help with dry-run prep | None |
-| Prakhar Shah | audited sprint docs, ADRs, and GENAI log — filled in empty stand-up entries, fixed ADR language and incomplete sections | finish remaining documentation gaps, update README | None |
-| Bethany Miyamoto | verified responsiveness on multiple viewport widths, reviewed open and closed GitHub issues for detail | help with demo dry-run prep and any remaining cleanup | None |
+| Nicole Sutedja | | | |
+| Evan Marriott | made UI changes for settings menu and hamburger menu on desktop, merged code into main, cleaned up repo by deleting old branches | continue working on UI improvements and documentation | final studying |
+| Jensen Guo | Tweak frontend so that the brand colors are more emphasized | More frontend polishing | Finals |
+| Han Yang-Lin | Implemented project sharing server endpoints, and fixed UUID regex, fixed deployment filter, and favicon and logo paths | Update project documentation | Finals |
+| Kevin Wang | refined some of the frontend | further polish the frontend | final |
+| Benedict Luis | update Changelog + sprint-4.md (final sprint doc) + TECH_SPEC.md. Fixed tampered data in sprint-4.md | finish up left issues and wrapping up docs | Studying for finals |
+| Aron Wu | | | |
+| Kaley Chung | Tried to delegate the mobile responsivness task | Add user persona (Figma) to repo and ensure all tasks are majority completed | Fever, midterms, quizzes, and finals |
+| Prakhar Shah | Audit all documentation (sprints, ADRs, changelog, AI use log, etc.) | Update README and project setup docs and start working in wiki | Finals |
+| Bethany Miyamoto | repo cleanup and added more detail to PR and issues | demo dry run | finals |
+
 
 ### Stand-up 3 — 06/06/2026
 | Name | Did | Doing | Blockers |
