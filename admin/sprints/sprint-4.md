@@ -54,23 +54,34 @@
 
 ---
 ## Stand-ups
-### Stand-up 1 — 06/02/2026
+### Stand-up 1 — 06/03/2026
 | Name | Did | Doing | Blockers |
 |------|-----|-------|----------|
+<<<<<<< Updated upstream
 | Nicole Sutedja | Finished adding icons/sidebar changes into UI, created & delegated tasks, started Wiki | Continue with UI polishes in feat/ui-polish | Midterm |
+=======
+| Nicole Sutedja | research brand color integration with real apps, checked on the progress of peoples tasks, start assigning test team to demo prep, check with backend for final tasks | help with frontend polishing, finalize repo structure and documentation | Finals |
+>>>>>>> Stashed changes
 | Evan Marriott | Merged PRs into main for the dashboard and errors or test app, refactored src folder to have the folder name for the watchtower be “app” instead of prototype | continue refining documentation and PRs | midterm tomorrow |
 | Jensen Guo | UI tweaks (emphasizing error number, fixing hamburger menu), repo cleanup, code comments | Ensure CSS consistency, make branding stronger, documentation | Finals |
 | Han Yang-Lin | Finished integrating the frontend with the backend. Added project filter dropdown that stays updated with the existing list of projects. Updated uptime card with removed project filter, added margins, and fixed checkmark for indicating selection | Add auth reasoning to Supabase ADR | CSE 120 project |
 | Kevin Wang | asking for feedback from the prof | polish the frontend | other ddls and final |
 | Benedict Luis | Went to prof Powell for feedback and started working on audit scrum master doc | Finish issue #86 | Finals and projects |
+<<<<<<< Updated upstream
 | Aron Wu | confirmed CI pipeline passing end to end | review test coverage gaps, help with scrum docs | None |
 | Kaley Chung | Fix the mobile and validate mobile responsiveness across screen sizes (use the tool from Audria's Slack notes) and add Figma to the repo | Delegate tasks and deadlines for demo prep team | midterms |
 | Prakhar Shah | reviewed outstanding sprint 4 tasks, confirmed sprint 3 accessibility features are working | begin documentation audit across sprints, ADRs, and GENAI log | None |
+=======
+| Aron Wu | Went to prof oh, started adding completion comments to all uncommented issues | Finish adding completion comments to all uncommented issues | None |
+| Kaley Chung | Fix the mobile and validate mobile responsiveness across screen sizes (use the tool from Audria's Slack notes) and add Figma to the repo | Delegate tasks and deadlines for demo prep team | midterms |
+| Prakhar Shah | Finalize accessibility features: zoom 200%, ARIA, alt tags, light-dark mode | start auditing all documentation for TA | Finals |
+>>>>>>> Stashed changes
 | Bethany Miyamoto | task for next sprint assigned | repo clean up and dry run | midterm and projects |
 
 ### Stand-up 2 — 06/04/2026
 | Name | Did | Doing | Blockers |
 |------|-----|-------|----------|
+<<<<<<< Updated upstream
 | Nicole Sutedja | continued cross-team check-ins, reviewed pending PRs | finalize any remaining frontend tasks before code freeze | None |
 | Evan Marriott | backfilled CHANGELOG entries for v0.2.1, v0.3.0, and v0.4.0 | finish PR triage, continue closing and updating GitHub issues | None |
 | Jensen Guo | deleted unused pages, fixed hamburger menu position, emphasized errors styling, cleaned up frontend documentation and dead imports | wrap up any remaining UI polish before code freeze | None |
@@ -81,6 +92,18 @@
 | Kaley Chung | validated mobile responsiveness across screen sizes, cross-checked features against requirements spec | continue demo readiness work, help with dry-run prep | None |
 | Prakhar Shah | audited sprint docs, ADRs, and GENAI log — filled in empty stand-up entries, fixed ADR language and incomplete sections | finish remaining documentation gaps, update README | None |
 | Bethany Miyamoto | verified responsiveness on multiple viewport widths, reviewed open and closed GitHub issues for detail | help with demo dry-run prep and any remaining cleanup | None |
+=======
+| Nicole Sutedja | | | |
+| Evan Marriott | made UI changes for settings menu and hamburger menu on desktop, merged code into main, cleaned up repo by deleting old branches | continue working on UI improvements and documentation | Final studying |
+| Jensen Guo | | | |
+| Han Yang-Lin | | | |
+| Kevin Wang | | | |
+| Benedict Luis | | | |
+| Aron Wu | | | |
+| Kaley Chung | | | |
+| Prakhar Shah | Audit all documentation (sprints, ADRs, changelog, AI use log, etc) | Update README and project setup docs and start working in wiki | Finals |
+| Bethany Miyamoto | | | |
+>>>>>>> Stashed changes
 
 ### Stand-up 3 — 06/06/2026
 | Name | Did | Doing | Blockers |
