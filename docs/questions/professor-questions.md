@@ -1,7 +1,6 @@
 # Questions for Professor Powell
 
 **Sprint 1 — Leadership Questions**
-**Prepared by:** Evan Marriott
 
 ---
 
@@ -37,4 +36,46 @@
 
 9. How much process overhead is appropriate for a team our size? We are doing standups, sprint planning, TA syncs, and documentation. Is there anything we are missing or anything we should reduce?
 
-10. What is the best way to make sure all team members are contributing meaningfully across different roles — frontend, research, product, QA — without creating bottlenecks?
+10. What is the best way to make sure all team members are contributing meaningfully across different roles — frontend, research, product, QA — without creating bottlenecks?  
+
+## Sprint 2 — Authentication and Backend
+ 
+---
+ 
+### Authentication
+6. We are planning to use Supabase for authentication. Are there any security patterns or constraints you want us to follow, or is the implementation largely our call?
+7. How much of the backend complexity should be exposed to the frontend at this stage — should we keep things loosely coupled from the start, or is tight integration acceptable for now?
+---
+ 
+### Code Quality
+8. How detailed should our JSDoc comments be? Are public APIs sufficient, or do you expect all functions including internal helpers to be documented?
+9. For a team our size, what is the right level of CI infrastructure to have in place by mid-quarter — for example, lint checks, unit tests, and automated formatting?
+---
+ 
+## Sprint 3 — Frontend, Notifications, and Refactoring
+ 
+---
+ 
+### Notifications
+10. We have decided to use ntfy for push notifications, alongside potential SMS and email support. Do you have a preference for notification delivery, or should we support multiple channels from the start?
+11. What is the minimum viable notification flow you would expect to see working by end of Sprint 3 — just the backend trigger, or a full end-to-end alert reaching a user?
+---
+ 
+### Frontend and Accessibility
+12. How closely should the implemented UI match our wireframes? Is design flexibility acceptable during development, or should we treat wireframes as a strict specification?
+13. You gave us guidance on accessibility during office hours. What is the minimum bar you expect — for example, WCAG 2.1 AA compliance? Should colorblind themes and ARIA support be fully in scope this sprint?
+14. We are doing a significant frontend refactor this sprint alongside new feature work. What is your guidance on managing that risk — should the old branch stay live until the new one is fully tested?
+---
+ 
+## Sprint 4 — Testing, Polish, and Delivery
+---
+ 
+### Testing
+15. What are your expectations for test coverage — is there a minimum percentage, or are there specific critical paths such as login, notifications, and the dashboard that you want fully covered?
+16. For end-to-end tests, do you have a preferred framework such as Playwright or Cypress, or is that left to us?
+---
+ 
+### Final Deliverable
+17. How much weight does the final PR structure and code review quality carry relative to the working product itself?
+18. What does a complete Sprint 4 look like to you — feature freeze, passing CI, updated documentation, or all of the above?
+19. If we cannot finish every planned feature by the end of the quarter, what should we protect first — a clean working core, or a broader set of partially working features?
