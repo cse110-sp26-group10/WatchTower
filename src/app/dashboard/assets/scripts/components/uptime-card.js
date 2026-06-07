@@ -254,14 +254,21 @@ export class UptimeCard extends HTMLElement {
 
     const identity = document.createElement("div");
     identity.className = "uptime-identity";
-    identity.innerHTML = `
-      <h3>${uptime.name}</h3>
-      <p>${uptime.category} <span aria-hidden="true">•</span> ${uptime.url}</p>
-    `;
+    const name = document.createElement("h3");
+    name.textContent = uptime.name;
+    const details = document.createElement("p");
+    details.append(uptime.category || "");
+    const separator = document.createElement("span");
+    separator.setAttribute("aria-hidden", "true");
+    separator.textContent = " - ";
+    details.append(separator, uptime.url || "");
+    identity.append(name, details);
 
     const status = document.createElement("span");
     status.className = `uptime-status ${uptime.isHealthy ? "is-healthy" : "is-down"}`;
-    status.innerHTML = `<span class="uptime-status-dot"></span>${uptime.isHealthy ? "Healthy" : "Down"}`;
+    const statusDot = document.createElement("span");
+    statusDot.className = "uptime-status-dot";
+    status.append(statusDot, uptime.isHealthy ? "Healthy" : "Down");
 
     top.append(identity, status);
     body.append(top);
@@ -278,21 +285,21 @@ export class UptimeCard extends HTMLElement {
     const bars = document.createElement("div");
     bars.className = "uptime-bars";
     bars.setAttribute("aria-label", `${uptime.uptimePercent}% uptime`);
-    bars.innerHTML = uptime.checks
-      .map(
-        (c) => `
-      <span
-        class="uptime-bar ${c.is_up ? "is-up" : "is-down"}"
-        title="${c.is_up ? "Up" : "Down"} — ${c.status || "unknown"}"
-      ></span>
-    `,
-      )
-      .join("");
+    for (const check of uptime.checks) {
+      const bar = document.createElement("span");
+      bar.className = `uptime-bar ${check.is_up ? "is-up" : "is-down"}`;
+      bar.title = `${check.is_up ? "Up" : "Down"} - ${check.status || "unknown"}`;
+      bars.append(bar);
+    }
     body.append(bars);
 
     const range = document.createElement("div");
     range.className = "uptime-range";
-    range.innerHTML = `<span>${uptime.rangeStartLabel}</span><span>${uptime.rangeEndLabel}</span>`;
+    const start = document.createElement("span");
+    start.textContent = uptime.rangeStartLabel;
+    const end = document.createElement("span");
+    end.textContent = uptime.rangeEndLabel;
+    range.append(start, end);
     body.append(range);
   }
 

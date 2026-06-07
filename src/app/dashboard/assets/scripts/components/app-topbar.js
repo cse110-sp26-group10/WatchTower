@@ -51,28 +51,46 @@ export class AppTopbar extends HTMLElement {
           </div>
         </div>
         <div class="topbar-right">
-          <span class="topbar-user-email">${dataStore.getProfile().email}</span>
+          <span class="topbar-user-email" id="topbar-user-email"></span>
         </div>
       </header>
     `;
+    this.querySelector("#topbar-user-email").textContent =
+      dataStore.getProfile()?.email || "";
   }
 
   updateActiveMetadata() {
     const metaContainer = this.querySelector("#header-metadata-strip");
     if (!metaContainer) return;
+    metaContainer.replaceChildren();
 
     const currentDep = deploymentScope.deployment;
     if (!currentDep || deploymentScope.id === "all") {
-      metaContainer.innerHTML = `<span class="metadata-muted">All active clusters monitored</span>`;
+      const muted = document.createElement("span");
+      muted.className = "metadata-muted";
+      muted.textContent = "All active clusters monitored";
+      metaContainer.append(muted);
       return;
     }
 
-    metaContainer.innerHTML = `
-      <span class="metadata-badge">version: <b>${currentDep.version}</b></span>
-      <span class="metadata-badge">commit: <b>${currentDep.commit_hash}</b></span>
-      <span class="metadata-badge">deployed: <b>${relativeTime(currentDep.deployed_at)}</b></span>
-    `;
+    metaContainer.append(
+      createMetadataBadge("version", currentDep.version),
+      createMetadataBadge("commit", currentDep.commit_hash),
+      createMetadataBadge("deployed", relativeTime(currentDep.deployed_at)),
+    );
   }
+}
+
+function createMetadataBadge(label, value) {
+  const badge = document.createElement("span");
+  badge.className = "metadata-badge";
+  badge.append(`${label}: `);
+
+  const strong = document.createElement("b");
+  strong.textContent = value || "-";
+  badge.append(strong);
+
+  return badge;
 }
 
 customElements.define("app-topbar", AppTopbar);

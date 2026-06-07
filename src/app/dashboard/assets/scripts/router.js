@@ -4,6 +4,8 @@
  * @returns router instance
  */
 export function createRouter({ routes, outlet }) {
+  let activePage = null;
+
   function getRoute() {
     const hash = window.location.hash.slice(1);
     const [path = "/", query = ""] = hash.split("?");
@@ -21,19 +23,21 @@ export function createRouter({ routes, outlet }) {
 
     const page = new Page();
     page.route = route;
+    activePage = page;
     target.replaceChildren(page);
     document.dispatchEvent(
       new CustomEvent("watchtower:route-change", { detail: route }),
     );
-
-    document.addEventListener("watchtower:data-update", () => {
-      if (page.updatePageData) page.updatePageData();
-    });
   }
 
   return {
     start() {
       window.addEventListener("hashchange", render);
+      document.addEventListener("watchtower:data-update", () => {
+        if (activePage?.isConnected && activePage.updatePageData) {
+          activePage.updatePageData();
+        }
+      });
       if (!window.location.hash) {
         window.location.hash = "#/";
         return;

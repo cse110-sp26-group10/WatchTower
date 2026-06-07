@@ -28,7 +28,7 @@ if (localStorage.getItem("wt_colorblind") === "1") flags.push("colorblind");
 document.documentElement.dataset.theme = flags.join(" ");
 
 async function updateData() {
-  const error = await dataStore.update();
+  let error = await dataStore.update();
   if (typeof error === "number" && error === 401) {
     // Access token expired
     const refreshError = await dataStore.refreshSession();
@@ -37,7 +37,9 @@ async function updateData() {
       localStorage.removeItem("wt-auth");
       await dataStore.logOut();
       window.location.reload();
+      return;
     }
+    error = await dataStore.update();
   }
   if (error) {
     console.log("Data update failed:", error);

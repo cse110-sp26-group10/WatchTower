@@ -319,7 +319,8 @@ let PROJECTS = [
   },
 ];
 
-const projectById = (id) => PROJECTS.find((p) => p.id === id);
+const projectById = (id) =>
+  PROJECTS.find((p) => String(p.id) === String(id));
 
 let PROFILE = {
   email: "test@gmail.com",
@@ -330,12 +331,24 @@ let PROFILE = {
 
 //MOCK DATA END
 
+async function parseServerResponse(response) {
+  const text = await response.text();
+  if (!text) return null;
+
+  try {
+    return JSON.parse(text);
+  } catch (error) {
+    console.log("Server response was not valid JSON:", error);
+    return null;
+  }
+}
+
 async function getFromServer(path) {
   try {
     const response = await fetch(`${SERVER_URL}${path}`, {
       credentials: "include",
     });
-    const data = await response.json();
+    const data = await parseServerResponse(response);
     console.log("Response:", data);
     if (!response.ok) {
       return { data, error: response.status };
@@ -357,7 +370,7 @@ async function postToServer(path, body) {
       body: (body && JSON.stringify(body)) || undefined,
       credentials: "include",
     });
-    const data = await response.json();
+    const data = await parseServerResponse(response);
     console.log("Response:", data);
     if (!response.ok) {
       return { data, error: response.status };
@@ -377,9 +390,10 @@ function getDeploymentsFromEvents() {
   const deploymentIds = new Set();
   const deployments = [];
   EVENTS.forEach((event) => {
-    if (deploymentIds.has(event.deployment.id)) return;
-    deploymentIds.add(event.deployment.id);
-    deployments.push(event.deployment);
+    const deployment = event.deployment;
+    if (!deployment?.id || deploymentIds.has(deployment.id)) return;
+    deploymentIds.add(deployment.id);
+    deployments.push(deployment);
   });
   return deployments;
 }
@@ -422,10 +436,10 @@ export const dataStore = {
       return (
         (!projectTargetId ||
           projectTargetId === "all" ||
-          projectIdFromObj === projectTargetId) &&
+          String(projectIdFromObj) === String(projectTargetId)) &&
         (!deploymentTargetId ||
           deploymentTargetId === "all" ||
-          deploymentIdFromObj === deploymentTargetId)
+          String(deploymentIdFromObj) === String(deploymentTargetId))
       );
     });
   },

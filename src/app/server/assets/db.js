@@ -251,13 +251,20 @@ export const dbHelper = {
       return { project: null, error: error };
     }
     // Link project to user
-    const { error: relationError } = await supabase
+    let { error: relationError } = await supabase
       .from("users_projects")
       .insert({
         user_id: user.id,
         project_id: project.id,
         permission_level: "Owner",
       });
+    if (isMissingPermissionLevelError(relationError)) {
+      const { error } = await supabase.from("users_projects").insert({
+        user_id: user.id,
+        project_id: project.id,
+      });
+      relationError = error;
+    }
     if (relationError) {
       await supabase.from("projects").delete().eq("id", project.id); // Delete project if not linked to user successfully
       console.error("Failed to link project to user:", relationError);
@@ -283,10 +290,8 @@ export const dbHelper = {
       console.error("Failed to delete project:", notFoundMessage);
       return notFoundMessage;
     }
-    if (
-      user_project.permission_level === "Owner" ||
-      user_project.permission_level === "Co-Owner"
-    ) {
+    const permissionLevel = user_project.permission_level || "Owner";
+    if (permissionLevel === "Owner" || permissionLevel === "Co-Owner") {
       // Delete project
       const { error: deletionError } = await supabase
         .from("projects")
@@ -453,7 +458,7 @@ export const dbHelper = {
     return null;
   },
   async getProjects(user, permissionLevel) {
-    const { data, error } = await (permissionLevel
+    let { data, error } = await (permissionLevel
       ? supabase
           .from("users_projects")
           .select("projects(*)")
@@ -463,15 +468,28 @@ export const dbHelper = {
           .from("users_projects")
           .select("projects(*), permission_level")
           .eq("user_id", user.id));
+    if (isMissingPermissionLevelError(error)) {
+      const fallback = await supabase
+        .from("users_projects")
+        .select("projects(*)")
+        .eq("user_id", user.id);
+      data = fallback.data;
+      error = fallback.error;
+    }
     if (error || !data) {
       console.error("Query error:", error);
       return { projects: null, error: error };
     }
     return {
-      projects: data.map((entry) => ({
-        ...entry.projects,
-        permission_level: entry.permission_level || permissionLevel,
-      })),
+      projects: data
+        .map((entry) => ({
+          ...entry.projects,
+          permission_level: entry.permission_level || permissionLevel || "Owner",
+        }))
+        .filter(
+          (project) =>
+            !permissionLevel || project.permission_level === permissionLevel,
+        ),
       error: null,
     };
   },
@@ -520,3 +538,10 @@ export const dbHelper = {
     return null;
   },
 };
+
+function isMissingPermissionLevelError(error) {
+  return (
+    (error?.code === "42703" || error?.code === "PGRST204") &&
+    String(error.message || "").includes("permission_level")
+  );
+}
