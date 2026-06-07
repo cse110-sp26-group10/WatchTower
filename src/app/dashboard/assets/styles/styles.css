@@ -127,7 +127,7 @@ body {
   width: 100%;
 }
 
-@media (width <= 56.25rem) {
+@media (width <= 64rem) {
   .app-container {
     grid-template-columns: 1fr;
   }
@@ -1178,7 +1178,8 @@ activity-list {
   font-size: 0.8125rem;
   border: 1px solid var(--wt-border);
   white-space: pre-wrap;
-  word-break: break-all;
+  overflow-wrap: break-word;
+  word-break: normal;
 }
 
 .modal-detail-grid {
@@ -1833,14 +1834,14 @@ settings-page.dashboard-viewport {
 }
 
 /* Desktop Sidebar */
-@media (width > 56.25rem) {
+@media (width > 64rem) {
   .menu-toggle-btn {
     display: none;
   }
 }
 
 /* Mobile Menu Animation */
-@media (width <= 56.25rem) {
+@media (width <= 64rem) {
   .app-container:has(.sidebar.is-open) .menu-toggle-line:nth-child(1) {
     transform: rotate(45deg) translate(0.1875rem, 0.375rem);
   }
@@ -1918,13 +1919,119 @@ settings-page.dashboard-viewport {
   pointer-events: none;
 }
 
-@media (width <= 56.25rem) {
+@media (width <= 64rem) {
+  body {
+    overflow-x: clip;
+  }
+
   .app-container {
     grid-template-columns: 1fr;
   }
 
+  /* Topbar: stop horizontal overflow on phones */
   .topbar {
-    padding-left: 4rem;
+    padding: 0.75rem 0.75rem 0.75rem 4rem;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    overflow-x: clip;
+  }
+
+  .topbar-left {
+    flex-wrap: wrap;
+    width: 100%;
+    gap: 0.5rem;
+  }
+
+  .topbar-filter-group {
+    margin-left: 0;
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+
+  .topbar-filter-label {
+    flex-shrink: 0;
+  }
+
+  .topbar-metadata-strip {
+    display: none;
+  }
+
+  .filter-select {
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  /* New on ui-polish: user email in topbar-right */
+  .topbar-right {
+    flex: 1 1 100%;
+    margin-left: 0;
+    min-width: 0;
+  }
+
+  .topbar-user-email {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+
+  /* Error rows: wrap actions instead of forcing width */
+  .interactive-data-row.error-click-target-btn {
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .error-click-target-btn .row-left-group {
+    flex: 1 1 100%;
+  }
+
+  .error-click-target-btn .row-inline-group {
+    flex: 1 1 100%;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+  }
+
+  /* Error modal: fit phone viewport */
+  .error-detail-modal {
+    padding: 1rem;
+    overflow-y: auto;
+    align-items: flex-start;
+  }
+
+  .error-detail-card {
+    width: 100%;
+    max-width: none;
+    box-sizing: border-box;
+  }
+
+  .error-detail-header {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .modal-title-row {
+    flex-wrap: wrap;
+    min-width: 0;
+  }
+
+  .error-detail-title {
+    font-size: 0.875rem;
+    overflow-wrap: anywhere;
+  }
+
+  .modal-detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-deployment-badges {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .deployment-badge {
+    overflow-wrap: anywhere;
   }
 
   .sidebar {
