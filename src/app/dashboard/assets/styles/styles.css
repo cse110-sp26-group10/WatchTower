@@ -170,6 +170,13 @@ body {
   margin-left: auto;
 }
 
+.topbar-user-email {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--wt-brand-text);
+  white-space: nowrap;
+}
+
 .brand-name {
   color: var(--wt-text);
   font-weight: 700;

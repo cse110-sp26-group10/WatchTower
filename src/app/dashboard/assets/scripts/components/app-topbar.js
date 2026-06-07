@@ -1,5 +1,6 @@
 import { deploymentScope } from "../core/deployment-scope.js";
 import { relativeTime } from "../core/formatters.js";
+import { dataStore } from "../core/data-store.js"; 
 
 /**
  * App topbar. Has selectors for project and deployment information.
@@ -27,12 +28,11 @@ export class AppTopbar extends HTMLElement {
     this.unsubscribe?.();
   }
 
-
   render() {
     this.innerHTML = `
       <header class="topbar">
         <div class="topbar-left">
-          <!-- Commented out logo on top bar
+          <!-- Commented out logo on top bar (uncomment to show)
           <a href="#/" class="brand-name" style="display: flex; align-items: center; gap: 0.5rem; text-decoration: none;">
             <img src="public/logo.svg" alt="WatchTower logo" style="height: 1.75rem; width: auto;">
             <span style="color: var(--wt-text); font-weight: 700; font-size: 1.15rem;">WatchTower</span>
@@ -49,6 +49,9 @@ export class AppTopbar extends HTMLElement {
             <deployment-filter></deployment-filter>
             <span id="header-metadata-strip" class="topbar-metadata-strip"></span>
           </div>
+        </div>
+        <div class="topbar-right">
+          <span class="topbar-user-email">${dataStore.getProfile().email}</span>
         </div>
       </header>
     `;
