@@ -27,15 +27,18 @@ export class AppTopbar extends HTMLElement {
     this.unsubscribe?.();
   }
 
+
   render() {
     this.innerHTML = `
       <header class="topbar">
         <div class="topbar-left">
+          <!-- Commented out logo on top bar
           <a href="#/" class="brand-name" style="display: flex; align-items: center; gap: 0.5rem; text-decoration: none;">
             <img src="public/logo.svg" alt="WatchTower logo" style="height: 1.75rem; width: auto;">
             <span style="color: var(--wt-text); font-weight: 700; font-size: 1.15rem;">WatchTower</span>
           </a>
-
+          -->
+      
           <div class="topbar-filter-group">
             <label class="topbar-filter-label" for="project-filter">Project:</label>
             <project-filter></project-filter>
