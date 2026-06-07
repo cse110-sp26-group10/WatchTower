@@ -1,6 +1,6 @@
 import { deploymentScope } from "../core/deployment-scope.js";
 import { relativeTime } from "../core/formatters.js";
-import { dataStore } from "../core/data-store.js"; 
+import { dataStore } from "../core/data-store.js";
 
 /**
  * App topbar. Has selectors for project and deployment information.

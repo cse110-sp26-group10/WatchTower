@@ -87,14 +87,17 @@ export class TimeSeriesChart extends HTMLElement {
 
       // Calculate vertical percent from top edge to point the tooltip arrow beautifully
       const val = typeof point.value === "number" ? point.value : 0;
-      const pctFromTop = 100 - ((val / maxValue) * (PLOT_H / VIEW_H) * 100 + (PAD.bottom / VIEW_H) * 100);
+      const pctFromTop =
+        100 -
+        ((val / maxValue) * (PLOT_H / VIEW_H) * 100 +
+          (PAD.bottom / VIEW_H) * 100);
 
       // Instantly reverse tooltip if point sits near the header line to avoid hitting container constraints
       const shouldFlip = pctFromTop < 25;
 
       const tooltip = document.createElement("div");
       tooltip.className = `ts-grid-tooltip ${shouldFlip ? "is-flipped" : ""}`;
-      
+
       if (shouldFlip) {
         tooltip.style.top = `calc(${pctFromTop.toFixed(1)}% + 8px)`;
         tooltip.style.bottom = "auto";
@@ -109,13 +112,17 @@ export class TimeSeriesChart extends HTMLElement {
       `;
 
       cellAnchor.appendChild(tooltip);
-      
+
       // Let the HTML cell know which index it maps to so CSS can link hover states to SVG elements
       cellAnchor.addEventListener("mouseenter", () => {
-        svg.querySelectorAll(`.node-idx-${i}`).forEach(el => el.classList.add("is-hovered"));
+        svg
+          .querySelectorAll(`.node-idx-${i}`)
+          .forEach((el) => el.classList.add("is-hovered"));
       });
       cellAnchor.addEventListener("mouseleave", () => {
-        svg.querySelectorAll(`.node-idx-${i}`).forEach(el => el.classList.remove("is-hovered"));
+        svg
+          .querySelectorAll(`.node-idx-${i}`)
+          .forEach((el) => el.classList.remove("is-hovered"));
       });
 
       interactionGrid.appendChild(cellAnchor);

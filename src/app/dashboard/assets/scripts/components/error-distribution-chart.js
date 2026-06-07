@@ -8,7 +8,7 @@ const PALETTE = [
   "var(--brand-indigo-contrast, #2c519b)",
   "#a855f7", // Purple
   "#ec4899", // Pink
-  "#10b981"  // Emerald
+  "#10b981", // Emerald
 ];
 
 export class ErrorDistributionChart extends HTMLElement {
@@ -35,7 +35,7 @@ export class ErrorDistributionChart extends HTMLElement {
 
     // Step 1: Aggregate distributions by page pathname
     const pathCounts = {};
-    errors.forEach(err => {
+    errors.forEach((err) => {
       const path = err.pathname || "unknown";
       pathCounts[path] = (pathCounts[path] || 0) + 1;
     });
@@ -46,11 +46,13 @@ export class ErrorDistributionChart extends HTMLElement {
       .sort((a, b) => b.count - a.count);
 
     const totalErrors = sortedData.reduce((sum, item) => sum + item.count, 0);
-    
+
     // Group everything past the top 5 into "Other"
     let displaySlices = sortedData.slice(0, 5);
     if (sortedData.length > 5) {
-      const otherCount = sortedData.slice(5).reduce((sum, item) => sum + item.count, 0);
+      const otherCount = sortedData
+        .slice(5)
+        .reduce((sum, item) => sum + item.count, 0);
       displaySlices.push({ path: "Other Paths", count: otherCount });
     }
 
@@ -91,7 +93,13 @@ export class ErrorDistributionChart extends HTMLElement {
         sliceEl.setAttribute("class", `pie-slice-node node-idx-${idx}`);
         svg.appendChild(sliceEl);
       } else if (angle > 0) {
-        sliceEl = this._createArcPath(100, 100, 70, accumulatedAngle, accumulatedAngle + angle);
+        sliceEl = this._createArcPath(
+          100,
+          100,
+          70,
+          accumulatedAngle,
+          accumulatedAngle + angle,
+        );
         sliceEl.setAttribute("fill", color);
         sliceEl.setAttribute("class", `pie-slice-node node-idx-${idx}`);
         svg.appendChild(sliceEl);
@@ -115,11 +123,19 @@ export class ErrorDistributionChart extends HTMLElement {
 
       // Bridge connection: hovering items highlights corresponding SVG slices cleanly
       if (sliceEl) {
-        legendItem.addEventListener("mouseenter", () => sliceEl.classList.add("is-hovered"));
-        legendItem.addEventListener("mouseleave", () => sliceEl.classList.remove("is-hovered"));
-        
-        sliceEl.addEventListener("mouseenter", () => legendItem.classList.add("is-svg-hovered"));
-        sliceEl.addEventListener("mouseleave", () => legendItem.classList.remove("is-svg-hovered"));
+        legendItem.addEventListener("mouseenter", () =>
+          sliceEl.classList.add("is-hovered"),
+        );
+        legendItem.addEventListener("mouseleave", () =>
+          sliceEl.classList.remove("is-hovered"),
+        );
+
+        sliceEl.addEventListener("mouseenter", () =>
+          legendItem.classList.add("is-svg-hovered"),
+        );
+        sliceEl.addEventListener("mouseleave", () =>
+          legendItem.classList.remove("is-svg-hovered"),
+        );
       }
 
       legend.appendChild(legendItem);
@@ -137,14 +153,14 @@ export class ErrorDistributionChart extends HTMLElement {
     const y1 = cy + r * Math.sin(startAngle * rad);
     const x2 = cx + r * Math.cos(endAngle * rad);
     const y2 = cy + r * Math.sin(endAngle * rad);
-    
+
     const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
 
     const d = [
       `M ${cx} ${cy}`,
       `L ${x1} ${y1}`,
       `A ${r} ${r} 0 ${largeArcFlag} 1 ${x2} ${y2}`,
-      "Z"
+      "Z",
     ].join(" ");
 
     const path = document.createElementNS(SVG_NS, "path");

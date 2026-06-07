@@ -9,7 +9,7 @@ import "../components/error-detail-modal.js";
 import "../components/error-list.js";
 import "../components/panel-section.js";
 import "../components/summary-metrics.js";
-import "../components/error-trends-card.js"; 
+import "../components/error-trends-card.js";
 import "../components/error-distribution-chart.js";
 
 export class ErrorsPage extends HTMLElement {
@@ -254,7 +254,7 @@ export class ErrorsPage extends HTMLElement {
     this.metrics = this.querySelector("summary-metrics");
     this.errorList = this.querySelector("#errors-page-list");
     this.errorModal = this.querySelector("#errors-page-modal");
-    this.errorTrends = this.querySelector("#errors-page-trends"); 
+    this.errorTrends = this.querySelector("#errors-page-trends");
     this.errorDistribution = this.querySelector("#errors-page-distribution");
   }
 
@@ -262,7 +262,7 @@ export class ErrorsPage extends HTMLElement {
     const data = getErrorsDashboardData();
     this.metrics.items = data.metrics;
     this.errorList.errors = data.errors;
-    
+
     if (this.errorTrends) {
       this.errorTrends.errors = data.errors;
     }

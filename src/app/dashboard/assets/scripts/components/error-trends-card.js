@@ -1,11 +1,11 @@
-import { relativeTime } from "../core/formatters.js";
+//import { relativeTime } from "../core/formatters.js";
 
 const TIME_WINDOWS = [
-  { label: "Last 2 hours", hours: 2, buckets: 12 },   
-  { label: "Last 6 hours", hours: 6, buckets: 12 },   
-  { label: "Last 24 hours", hours: 24, buckets: 24 }, 
-  { label: "Last 7 days", hours: 168, buckets: 14 },  
-  { label: "Last 30 days", hours: 720, buckets: 30 }, 
+  { label: "Last 2 hours", hours: 2, buckets: 12 },
+  { label: "Last 6 hours", hours: 6, buckets: 12 },
+  { label: "Last 24 hours", hours: 24, buckets: 24 },
+  { label: "Last 7 days", hours: 168, buckets: 14 },
+  { label: "Last 30 days", hours: 720, buckets: 30 },
 ];
 
 const DEFAULT_WINDOW_INDEX = 2;
@@ -44,7 +44,8 @@ export class ErrorTrendsCard extends HTMLElement {
 
     if (!activeErrors.length) return null;
 
-    const bucketDuration = (currentWindow.hours * 60 * 60 * 1000) / currentWindow.buckets;
+    const bucketDuration =
+      (currentWindow.hours * 60 * 60 * 1000) / currentWindow.buckets;
     const buckets = Array.from({ length: currentWindow.buckets }, (_, i) => {
       const bucketStart = cutoff + i * bucketDuration;
       const bucketEnd = bucketStart + bucketDuration;
@@ -53,17 +54,17 @@ export class ErrorTrendsCard extends HTMLElement {
         end: bucketEnd,
         criticalCount: 0,
         warningCount: 0,
-        total: 0
+        total: 0,
       };
     });
 
     for (const err of activeErrors) {
       const time = new Date(err.timestamp).getTime();
       const severity = err.metadata?.severity?.toLowerCase() || "critical";
-      
+
       const bucketIndex = Math.min(
         Math.floor((time - cutoff) / bucketDuration),
-        currentWindow.buckets - 1
+        currentWindow.buckets - 1,
       );
 
       if (bucketIndex >= 0 && bucketIndex < buckets.length) {
@@ -82,8 +83,11 @@ export class ErrorTrendsCard extends HTMLElement {
       buckets,
       maxTotal,
       totalCount: activeErrors.length,
-      rangeStartLabel: new Date(cutoff).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' }),
-      rangeEndLabel: "Now"
+      rangeStartLabel: new Date(cutoff).toLocaleTimeString(undefined, {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+      rangeEndLabel: "Now",
     };
   }
 
@@ -107,7 +111,9 @@ export class ErrorTrendsCard extends HTMLElement {
     const countBadge = document.createElement("span");
     countBadge.className = "trends-count-badge";
     countBadge.id = "trends-count-badge";
-    countBadge.textContent = trendData ? `${trendData.totalCount} events` : "0 events";
+    countBadge.textContent = trendData
+      ? `${trendData.totalCount} events`
+      : "0 events";
     filterBar.append(countBadge);
 
     const dropdowns = document.createElement("div");
@@ -131,13 +137,17 @@ export class ErrorTrendsCard extends HTMLElement {
 
     const badge = this.querySelector("#trends-count-badge");
     if (badge) {
-      badge.textContent = trendData ? `${trendData.totalCount} events` : "0 events";
+      badge.textContent = trendData
+        ? `${trendData.totalCount} events`
+        : "0 events";
     }
 
     const timeDropdown = this.querySelector(".trends-filter-container");
     const timeBtnLabel = timeDropdown?.querySelector(".trends-filter-label");
-    const timeDropdownItems = timeDropdown?.querySelectorAll(".trends-filter-menu li");
-    
+    const timeDropdownItems = timeDropdown?.querySelectorAll(
+      ".trends-filter-menu li",
+    );
+
     if (timeBtnLabel) {
       timeBtnLabel.textContent = TIME_WINDOWS[this._windowIndex].label;
     }
@@ -179,7 +189,7 @@ export class ErrorTrendsCard extends HTMLElement {
       const warnHeightPct = (bucket.warningCount / trendData.maxTotal) * 100;
 
       // Construct a neat localized timestamp span for the tooltip display
-      const timeString = `${new Date(bucket.start).toLocaleTimeString(undefined, {hour: '2-digit', minute:'2-digit'})} - ${new Date(bucket.end).toLocaleTimeString(undefined, {hour: '2-digit', minute:'2-digit'})}`;
+      const timeString = `${new Date(bucket.start).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })} - ${new Date(bucket.end).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })}`;
 
       // Build CSS-driven overlay interactive tooltip component card
       const tooltip = document.createElement("div");

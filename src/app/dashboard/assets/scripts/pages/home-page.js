@@ -1,6 +1,10 @@
 import { projectScope } from "../core/project-scope.js";
 import { deploymentScope } from "../core/deployment-scope.js";
-import { getEventById, getHomeDashboardData, getActivityDashboardData } from "../core/dashboard-data.js";
+import {
+  getEventById,
+  getHomeDashboardData,
+  getActivityDashboardData,
+} from "../core/dashboard-data.js";
 import { dataStore } from "../core/data-store.js";
 import "../components/activity-list.js";
 import "../components/dashboard-banner.js";
@@ -10,7 +14,7 @@ import "../components/panel-section.js";
 import "../components/path-count-list.js";
 import "../components/summary-metrics.js";
 import "../components/uptime-card.js";
-import "../components/time-series-chart.js"; 
+import "../components/time-series-chart.js";
 
 export class HomePage extends HTMLElement {
   constructor() {
