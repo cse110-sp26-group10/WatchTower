@@ -50,7 +50,7 @@ async function publishNtfy(
   { title, message, html, priority = "default", tags = [] },
 ) {
   const uploadHeaders = {
-    "X-Filename": `WTReport_${new Date().toISOString().replace(/\D/g, '').slice(0, 14)}.html`,
+    "X-Filename": `WTReport_${new Date().toISOString().replace(/\D/g, "").slice(0, 14)}.html`,
   };
   const uploadResponse = await fetch(
     `${NTFY_BASE_URL}/${encodeURIComponent(NTFY_PREFIX + topic + NTFY_STORAGE_SUFFIX)}`,
@@ -58,37 +58,36 @@ async function publishNtfy(
       method: "POST",
       headers: uploadHeaders,
       body: html,
-    }
+    },
   );
-  if (!uploadResponse.ok) throw new Error(`ntfy responded ${uploadResponse.status}`);
+  if (!uploadResponse.ok)
+    throw new Error(`ntfy responded ${uploadResponse.status}`);
   const uploadResult = await uploadResponse.json();
-  if (!uploadResult?.attachment?.url) throw new Error(`ntfy attachment url not found`);
+  if (!uploadResult?.attachment?.url)
+    throw new Error(`ntfy attachment url not found`);
   const headers = {
     "Content-Type": "application/json",
     "X-Markdown": "yes",
     "X-Priority": String(priority),
   };
   const payload = {
-    "topic": NTFY_PREFIX + topic,
-    "title": title,
-    "message": `${message}\n\nPlease review the full report:`,
-    "actions": [
+    topic: NTFY_PREFIX + topic,
+    title: title,
+    message: `${message}\n\nPlease review the full report:`,
+    actions: [
       {
-        "action": "view",
-        "label": "📋 Download HTML Report",
-        "url": uploadResult.attachment.url,
-      }
+        action: "view",
+        label: "📋 Download HTML Report",
+        url: uploadResult.attachment.url,
+      },
     ],
   };
   if (tags.length) headers["X-Tags"] = tags.join(",");
-  const response = await fetch(
-    `${NTFY_BASE_URL}`,
-    {
-      method: "POST",
-      headers,
-      body: JSON.stringify(payload),
-    },
-  );
+  const response = await fetch(`${NTFY_BASE_URL}`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(payload),
+  });
   if (!response.ok) throw new Error(`ntfy responded ${response.status}`);
 }
 
@@ -216,8 +215,7 @@ export async function notifyError(event) {
     (event.metadata && event.metadata.message) || "An error was reported.";
   const urlInfo = `URL: ${event.current_url}`;
   const timestampInfo = `Timestamp: ${event.timestamp}`;
-  const deploymentInfo =
-    `Deployment ID: ${event.deployment.id}\nVersion: ${event.deployment.version}\nCommit: ${event.deployment.commit_hash}`;
+  const deploymentInfo = `Deployment ID: ${event.deployment.id}\nVersion: ${event.deployment.version}\nCommit: ${event.deployment.commit_hash}`;
   const browserInfo = `Browser: ${event.browser.name} ${event.browser.version}`;
 
   // Skip if an identical error was already notified within the cooldown window.
@@ -285,13 +283,15 @@ async function getProjectUsers(projectId) {
 }
 
 function generateDowntimeHtml(project, uptimeCheck) {
-  const logoUrl = 'https://cdn.jsdelivr.net/gh/cse110-sp26-group10/WatchTower@main/src/app/dashboard/public/logo.svg';
-  const latestError = uptimeCheck.attempts?.at(-1)?.error?.cause?.code || 'UNKNOWN_ERROR';
-  const badgeBg = '#fef2f2';
-  const badgeBorder = '#fecaca';
-  const badgeTextColor = '#dc2626';
-  const indicatorStrip = '#ef4444';
-  const emoji = '🚨';
+  const logoUrl =
+    "https://cdn.jsdelivr.net/gh/cse110-sp26-group10/WatchTower@main/src/app/dashboard/public/logo.svg";
+  const latestError =
+    uptimeCheck.attempts?.at(-1)?.error?.cause?.code || "UNKNOWN_ERROR";
+  const badgeBg = "#fef2f2";
+  const badgeBorder = "#fecaca";
+  const badgeTextColor = "#dc2626";
+  const indicatorStrip = "#ef4444";
+  const emoji = "🚨";
   return `
     <!DOCTYPE html>
     <html>
@@ -353,7 +353,7 @@ function generateDowntimeHtml(project, uptimeCheck) {
                     </tr>
                     <tr style="border-bottom: 1px solid #e2e8f0;">
                       <td style="padding: 10px 0; color: #64748b; font-weight: 500;">HTTP Status</td>
-                      <td style="padding: 10px 0; color: #0f172a; font-weight: bold; font-family: monospace;">${uptimeCheck.status || 'N/A'}</td>
+                      <td style="padding: 10px 0; color: #0f172a; font-weight: bold; font-family: monospace;">${uptimeCheck.status || "N/A"}</td>
                     </tr>
                     <tr style="border-bottom: 1px solid #e2e8f0;">
                       <td style="padding: 10px 0; color: #64748b; font-weight: 500;">Latency Check</td>
@@ -398,18 +398,21 @@ function generateDowntimeHtml(project, uptimeCheck) {
 }
 
 function generateErrorHtml(project, event) {
-  const logoUrl = 'https://cdn.jsdelivr.net/gh/cse110-sp26-group10/WatchTower@main/src/app/dashboard/public/logo.svg';
-  const errorMessage = event.metadata?.message || 'Unknown exceptions caught in target application execution context.';
-  const severity = (event.metadata?.severity || 'error').toUpperCase();
-  
+  const logoUrl =
+    "https://cdn.jsdelivr.net/gh/cse110-sp26-group10/WatchTower@main/src/app/dashboard/public/logo.svg";
+  const errorMessage =
+    event.metadata?.message ||
+    "Unknown exceptions caught in target application execution context.";
+  const severity = (event.metadata?.severity || "error").toUpperCase();
+
   // Decide contextual tint borders dynamically
-  const badgeBg = severity === 'CRITICAL' ? '#fef2f2' : '#fffbeb';
-  const badgeBorder = severity === 'CRITICAL' ? '#fecaca' : '#fef3c7';
-  const badgeTextColor = severity === 'CRITICAL' ? '#dc2626' : '#d97706';
-  const indicatorStrip = severity === 'CRITICAL' ? '#ef4444' : '#f59e0b';
-  const emoji = severity === 'CRITICAL' ? '🚨' : '⚠️';
-  const referrerHref = event.referrer ? `href="${event.referrer}"` : '';
-  const referrerColor = event.referrer ? '#2563eb' : '#334155';
+  const badgeBg = severity === "CRITICAL" ? "#fef2f2" : "#fffbeb";
+  const badgeBorder = severity === "CRITICAL" ? "#fecaca" : "#fef3c7";
+  const badgeTextColor = severity === "CRITICAL" ? "#dc2626" : "#d97706";
+  const indicatorStrip = severity === "CRITICAL" ? "#ef4444" : "#f59e0b";
+  const emoji = severity === "CRITICAL" ? "🚨" : "⚠️";
+  const referrerHref = event.referrer ? `href="${event.referrer}"` : "";
+  const referrerColor = event.referrer ? "#2563eb" : "#334155";
 
   return `
     <!DOCTYPE html>
@@ -471,19 +474,19 @@ function generateErrorHtml(project, event) {
                     <tr style="border-bottom: 1px solid #e2e8f0;">
                       <td style="padding: 10px 0; color: #64748b; font-weight: 500;">Referrer Origin</td>
                       <td style="padding: 10px 0; color: #2563eb; word-break: break-all;">
-                        <a ${referrerHref} target="_blank" style="color: ${referrerColor}; text-decoration: none;">${event.referrer || 'N/A'}</a>
+                        <a ${referrerHref} target="_blank" style="color: ${referrerColor}; text-decoration: none;">${event.referrer || "N/A"}</a>
                       </td>
                     </tr>
                     <tr style="border-bottom: 1px solid #e2e8f0;">
                       <td style="padding: 10px 0; color: #64748b; font-weight: 500;">Deployment ID</td>
                       <td style="padding: 10px 0; color: #334155; font-family: monospace; font-weight: bold;">
-                        ${event.deployment?.id || 'N/A'} (${event.deployment?.version || 'system'})
+                        ${event.deployment?.id || "N/A"} (${event.deployment?.version || "system"})
                       </td>
                     </tr>
                     <tr style="border-bottom: 1px solid #e2e8f0;">
                       <td style="padding: 10px 0; color: #64748b; font-weight: 500;">Commit Hash</td>
                       <td style="padding: 10px 0; color: #334155; font-family: monospace; font-weight: bold;">
-                        ${event.deployment?.commit_hash || 'N/A'} (${event.deployment?.author || 'System'})
+                        ${event.deployment?.commit_hash || "N/A"} (${event.deployment?.author || "System"})
                       </td>
                     </tr>
                     <tr style="border-bottom: 1px solid #e2e8f0;">
@@ -497,7 +500,7 @@ function generateErrorHtml(project, event) {
                     <tr>
                       <td style="padding: 10px 0; color: #64748b; font-weight: 500;">Client Browser</td>
                       <td style="padding: 10px 0; color: #0f172a; font-family: monospace;">
-                        ${event.browser?.name || 'N/A'} ${event.browser?.version || ''}</td>
+                        ${event.browser?.name || "N/A"} ${event.browser?.version || ""}</td>
                     </tr>
                   </table>
                 </td>
