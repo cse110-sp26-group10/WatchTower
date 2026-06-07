@@ -49,7 +49,8 @@ export class SummaryMetrics extends HTMLElement {
       card.className = classes.join(" ");
 
       // Errors tile opens the errors page; the rest open the activity page.
-      const targetHash = isError ? "#/errors" : "#/activity";
+      const isWarning = /warnings?/i.test(item.label);
+      const targetHash = (isError || isWarning) ? "#/errors" : "#/activity";
       card.setAttribute("role", "link");
       card.tabIndex = 0;
       const navigate = () => {
