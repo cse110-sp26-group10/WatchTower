@@ -34,6 +34,12 @@ export class FeedbackPage extends HTMLElement {
   render() {
     this.className = "dashboard-viewport";
     this.innerHTML = `
+      <section class="projects-header">
+        <div>
+          <h1 class="dashboard-title">Feedback</h1>
+          <p class="dashboard-subtitle">View survey responses and user-submitted feedback from your monitored projects.</p>
+        </div>
+      </section>
       <summary-metrics></summary-metrics>
 
       <panel-section heading="User Feedback" subheading="most recent first">

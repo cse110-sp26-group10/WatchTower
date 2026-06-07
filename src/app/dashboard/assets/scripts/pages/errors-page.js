@@ -53,6 +53,13 @@ export class ErrorsPage extends HTMLElement {
   render() {
     this.className = "dashboard-viewport";
     this.innerHTML = `
+      <section class="projects-header">
+        <div>
+          <h1 class="dashboard-title">Errors</h1>
+          <p class="dashboard-subtitle">Track and resolve errors caught across your monitored projects.</p>
+        </div>
+      </section>
+    
       <summary-metrics></summary-metrics>
 
       <panel-section heading="Errors" subheading="click an error row for full details">
