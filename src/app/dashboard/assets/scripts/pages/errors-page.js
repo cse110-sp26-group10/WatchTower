@@ -9,6 +9,7 @@ import "../components/error-detail-modal.js";
 import "../components/error-list.js";
 import "../components/panel-section.js";
 import "../components/summary-metrics.js";
+import "../components/error-trends-card.js"; 
 
 export class ErrorsPage extends HTMLElement {
   constructor() {
@@ -62,6 +63,8 @@ export class ErrorsPage extends HTMLElement {
     
       <summary-metrics></summary-metrics>
 
+      <error-trends-card id="errors-page-trends"></error-trends-card>
+
       <panel-section heading="Errors" subheading="click an error row for full details">
         <error-list id="errors-page-list"></error-list>
       </panel-section>
@@ -74,12 +77,19 @@ export class ErrorsPage extends HTMLElement {
     this.metrics = this.querySelector("summary-metrics");
     this.errorList = this.querySelector("#errors-page-list");
     this.errorModal = this.querySelector("#errors-page-modal");
+    // 3. Cache component selector reference reference
+    this.errorTrends = this.querySelector("#errors-page-trends"); 
   }
 
   updatePageData() {
     const data = getErrorsDashboardData();
     this.metrics.items = data.metrics;
     this.errorList.errors = data.errors;
+    
+    // 4. Pass errors forward into trend compiler
+    if (this.errorTrends) {
+      this.errorTrends.errors = data.errors;
+    }
   }
 
   openErrorModal(errorId) {
