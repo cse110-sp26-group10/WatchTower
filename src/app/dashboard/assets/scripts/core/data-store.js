@@ -319,8 +319,7 @@ let PROJECTS = [
   },
 ];
 
-const projectById = (id) =>
-  PROJECTS.find((p) => String(p.id) === String(id));
+const projectById = (id) => PROJECTS.find((p) => String(p.id) === String(id));
 
 let PROFILE = {
   email: "test@gmail.com",

@@ -484,7 +484,8 @@ export const dbHelper = {
       projects: data
         .map((entry) => ({
           ...entry.projects,
-          permission_level: entry.permission_level || permissionLevel || "Owner",
+          permission_level:
+            entry.permission_level || permissionLevel || "Owner",
         }))
         .filter(
           (project) =>
