@@ -1,6 +1,11 @@
 # Changelog
 All team members must document any notable changes to the WatchTower project in this file and use [Semantic Versioning](https://semver.org/): `MAJOR.MINOR.PATCH`
 
+## [0.4.2] - 2026-06-07 (PR 105)
+
+### Changed
+- Revamped ntfy and email notifications. Added additional details in the ntfy notifications, along with an action button to download a full HTML report of the incident. Email notifications contain the same HTML report.
+
 ## [0.4.1] - 2026-06-04 (PR 104, PR 103)
 
 ### Added
