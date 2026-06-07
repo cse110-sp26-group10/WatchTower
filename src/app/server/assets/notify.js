@@ -1,10 +1,11 @@
 import "dotenv/config";
-import { supabase } from "./db.js";
+import { supabase, dbHelper } from "./db.js";
 import nodemailer from "nodemailer";
 
 // Public ntfy server by default. Override with NTFY_BASE_URL to self-host.
 const NTFY_BASE_URL = process.env.NTFY_BASE_URL || "https://ntfy.sh";
 const NTFY_PREFIX = "WatchTower_";
+const NTFY_STORAGE_SUFFIX = "_Storage";
 const MAX_TRIES = 3;
 const RETRY_INTERVAL = 5; // seconds
 
@@ -46,20 +47,46 @@ async function getUserEmail(user) {
  */
 async function publishNtfy(
   topic,
-  { title, message, priority = "default", tags = [] },
+  { title, message, html, priority = "default", tags = [] },
 ) {
+  const uploadHeaders = {
+    "X-Filename": `WTReport_${new Date().toISOString().replace(/\D/g, '').slice(0, 14)}.html`,
+  };
+  const uploadResponse = await fetch(
+    `${NTFY_BASE_URL}/${encodeURIComponent(NTFY_PREFIX + topic + NTFY_STORAGE_SUFFIX)}`,
+    {
+      method: "POST",
+      headers: uploadHeaders,
+      body: html,
+    }
+  );
+  if (!uploadResponse.ok) throw new Error(`ntfy responded ${uploadResponse.status}`);
+  const uploadResult = await uploadResponse.json();
+  if (!uploadResult?.attachment?.url) throw new Error(`ntfy attachment url not found`);
   const headers = {
-    "Content-Type": "text/plain",
-    "X-Title": title,
+    "Content-Type": "application/json",
+    "X-Markdown": "yes",
     "X-Priority": String(priority),
+  };
+  const payload = {
+    "topic": NTFY_PREFIX + topic,
+    "title": title,
+    "message": `${message}\n\nPlease review the full report:`,
+    "actions": [
+      {
+        "action": "view",
+        "label": "📋 Download HTML Report",
+        "url": uploadResult.attachment.url,
+      }
+    ],
   };
   if (tags.length) headers["X-Tags"] = tags.join(",");
   const response = await fetch(
-    `${NTFY_BASE_URL}/${encodeURIComponent(NTFY_PREFIX + topic)}`,
+    `${NTFY_BASE_URL}`,
     {
       method: "POST",
       headers,
-      body: message,
+      body: JSON.stringify(payload),
     },
   );
   if (!response.ok) throw new Error(`ntfy responded ${response.status}`);
@@ -85,7 +112,7 @@ function getTransporter() {
  * @param {Object} payload Notification fields (title, message).
  * @returns {Promise<boolean>} True if the email was sent.
  */
-async function sendEmail(to, { title, message }) {
+async function sendEmail(to, { title, html }) {
   const mailer = getTransporter();
   if (!mailer) {
     console.warn(`Email skipped (SMTP not configured): would email ${to}`);
@@ -95,7 +122,7 @@ async function sendEmail(to, { title, message }) {
     from: process.env.SMTP_FROM || process.env.SMTP_USER,
     to,
     subject: title,
-    text: message,
+    html,
   });
   console.log("Email sent");
   return true;
@@ -156,15 +183,22 @@ export async function notify(user, payload) {
  * @param {Object} uptimeCheck The failing UptimeCheck.
  * @returns {Promise<void>}
  */
-export async function notifyDowntime(project) {
+export async function notifyDowntime(project, uptimeCheck) {
   const users = await getProjectUsers(project.id);
+  const detail = `${project.name} appears to be offline.`;
+  const urlInfo = `URL: ${project.website_url}`;
+  const timestampInfo = `Timestamp: ${uptimeCheck.timestamp}`;
+  const errorInfo = `Error: ${uptimeCheck.attempts?.at(-1)?.error?.cause?.code || "UNKNOWN_ERROR"}`;
+  const statusInfo = `HTTP Status: ${uptimeCheck.status || "N/A"}`;
+  const latencyInfo = `Latency: ${uptimeCheck.latency} ms`;
   await Promise.allSettled(
     users.map((user) =>
       notify(user, {
         title: `${project.name} is down`,
-        message: `${project.website_url} appears to be offline.`,
+        message: `[CRITICAL] ${detail}\n\n${urlInfo}\n${timestampInfo}\n${errorInfo}\n${statusInfo}\n${latencyInfo}`,
+        html: generateDowntimeHtml(project, uptimeCheck),
         priority: "high",
-        tags: ["warning"],
+        tags: ["rotating_light"],
       }),
     ),
   );
@@ -180,6 +214,11 @@ export async function notifyError(event) {
   const severity = event.metadata && event.metadata.severity;
   const detail =
     (event.metadata && event.metadata.message) || "An error was reported.";
+  const urlInfo = `URL: ${event.current_url}`;
+  const timestampInfo = `Timestamp: ${event.timestamp}`;
+  const deploymentInfo =
+    `Deployment ID: ${event.deployment.id}\nVersion: ${event.deployment.version}\nCommit: ${event.deployment.commit_hash}`;
+  const browserInfo = `Browser: ${event.browser.name} ${event.browser.version}`;
 
   // Skip if an identical error was already notified within the cooldown window.
   if (isErrorOnCooldown(event, severity, detail)) {
@@ -187,14 +226,16 @@ export async function notifyError(event) {
     return;
   }
 
+  const { project } = await dbHelper.getProjectFromId(event.project_id);
   const users = await getProjectUsers(event.project_id);
   await Promise.allSettled(
     users.map((user) =>
       notify(user, {
-        title: `Error on ${event.host}`,
-        message: `${severity ? `[${severity}] ` : ""}${detail}\n${event.current_url}`,
-        priority: severity === "high" ? "high" : "default",
-        tags: ["rotating_light"],
+        title: `Error on ${project?.name || event.host}`,
+        message: `${severity ? `[${severity.toUpperCase()}] ` : ""}${detail}\n\n${urlInfo}\n${timestampInfo}\n${deploymentInfo}\n${browserInfo}`,
+        html: generateErrorHtml(project, event),
+        priority: severity === "critical" ? "high" : "default",
+        tags: [severity === "critical" ? "rotating_light" : "warning"],
       }),
     ),
   );
@@ -241,4 +282,253 @@ async function getProjectUsers(projectId) {
     return [];
   }
   return (data || []).flatMap((row) => row.users || []);
+}
+
+function generateDowntimeHtml(project, uptimeCheck) {
+  const logoUrl = 'https://cdn.jsdelivr.net/gh/cse110-sp26-group10/WatchTower@main/src/app/dashboard/public/logo.svg';
+  const latestError = uptimeCheck.attempts?.at(-1)?.error?.cause?.code || 'UNKNOWN_ERROR';
+  const badgeBg = '#fef2f2';
+  const badgeBorder = '#fecaca';
+  const badgeTextColor = '#dc2626';
+  const indicatorStrip = '#ef4444';
+  const emoji = '🚨';
+  return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>WatchTower Alert: Website Down</title>
+    </head>
+    <body style="margin: 0; padding: 0; background-color: #f4f5f7; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased;">
+      <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f4f5f7; padding: 20px 0;">
+        <tr>
+          <td align="center">
+            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #e1e4e8;">
+              
+              <!-- Header Section -->
+              <tr>
+                <td style="background-color: #1a1f2c; padding: 24px; text-align: center; border-bottom: 4px solid ${indicatorStrip};">
+                  <img src="${logoUrl}" alt="WatchTower Logo" width="40" style="display: block; margin: 0 auto 12px auto; max-width: 40px; height: auto; filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.2));" />
+                  <span style="color: #ffffff; font-size: 14px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;">WatchTower Incident Alert</span>
+                </td>
+              </tr>
+
+              <!-- Alert Status Panel -->
+              <tr>
+                <td style="padding: 32px 32px 20px 32px; text-align: center;">
+                  <div style="display: inline-block; background-color: ${badgeBg}; border: 1px solid ${badgeBorder}; border-radius: 20px; padding: 6px 16px; margin-bottom: 16px;">
+                    <span style="color: ${badgeTextColor}; font-size: 14px; font-weight: 700; text-transform: uppercase;">${emoji} DOWNTIME DETECTED</span>
+                  </div>
+                  <h1 style="color: #0f172a; font-size: 24px; font-weight: 700; margin: 0 0 8px 0; line-height: 1.3;">Your website is currently down</h1>
+                  <p style="color: #64748b; font-size: 16px; margin: 0; line-height: 1.5;">WatchTower monitors detected a critical outage for your project.</p>
+                </td>
+              </tr>
+
+              <!-- Target URL Details Box -->
+              <tr>
+                <td style="padding: 0 32px 24px 32px;">
+                  <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 16px; text-align: left;">
+                    <div style="font-size: 12px; font-weight: 600; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px;">Target URL</div>
+                    <div style="font-size: 15px; font-weight: 500; color: #0f172a; word-break: break-all;"><a href="${uptimeCheck.url}" target="_blank" style="color: #2563eb; text-decoration: none;">${uptimeCheck.url}</a></div>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Incident Properties Table -->
+              <tr>
+                <td style="padding: 0 32px 24px 32px;">
+                  <table border="0" cellpadding="0" cellspacing="0" width="100%" style="font-size: 14px; border-collapse: collapse;">
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                      <td style="padding: 10px 0; color: #64748b; font-weight: 500; width: 35%;">Project Name</td>
+                      <td style="padding: 10px 0; color: #0f172a; font-weight: 600;">${project.name}</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                      <td style="padding: 10px 0; color: #64748b; font-weight: 500;">Detected At</td>
+                      <td style="padding: 10px 0; color: #0f172a;">${uptimeCheck.timestamp}</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                      <td style="padding: 10px 0; color: #64748b; font-weight: 500;">Error Code</td>
+                      <td style="padding: 10px 0; color: #ef4444; font-weight: bold; font-family: monospace;">${latestError}</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                      <td style="padding: 10px 0; color: #64748b; font-weight: 500;">HTTP Status</td>
+                      <td style="padding: 10px 0; color: #0f172a; font-weight: bold; font-family: monospace;">${uptimeCheck.status || 'N/A'}</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                      <td style="padding: 10px 0; color: #64748b; font-weight: 500;">Latency Check</td>
+                      <td style="padding: 10px 0; color: #0f172a;">${uptimeCheck.latency} ms</td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 10px 0; color: #64748b; font-weight: 500;">Failed Attempts</td>
+                      <td style="padding: 10px 0; color: #0f172a;">${uptimeCheck.attempts?.length || 0} sequential retries</td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+
+              <!-- Dynamic CTA Button Box -->
+              <tr>
+                <td align="center" style="padding: 8px 32px 36px 32px;">
+                  <table border="0" cellpadding="0" cellspacing="0">
+                    <tr>
+                      <td align="center" bgcolor="#1a1f2c" style="border-radius: 6px;">
+                        <a href="${project.website_url}" target="_blank" style="display: inline-block; padding: 12px 28px; color: #ffffff; font-size: 15px; font-weight: 600; text-decoration: none; border-radius: 6px;">Go to Project Root</a>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+
+              <!-- Footer Metadata Block -->
+              <tr>
+                <td style="background-color: #f8fafc; border-top: 1px solid #e2e8f0; padding: 24px 32px; text-align: center;">
+                  <p style="margin: 0 0 4px 0; font-size: 12px; color: #94a3b8;">This automated incident dispatch was sent by your configured WatchTower Agent.</p>
+                  <p style="margin: 0; font-size: 11px; color: #cbd5e1; font-family: monospace;">API Key: ${project.api_key}</p>
+                </td>
+              </tr>
+
+            </table>
+          </td>
+        </tr>
+      </table>
+    </body>
+    </html>
+  `;
+}
+
+function generateErrorHtml(project, event) {
+  const logoUrl = 'https://cdn.jsdelivr.net/gh/cse110-sp26-group10/WatchTower@main/src/app/dashboard/public/logo.svg';
+  const errorMessage = event.metadata?.message || 'Unknown exceptions caught in target application execution context.';
+  const severity = (event.metadata?.severity || 'error').toUpperCase();
+  
+  // Decide contextual tint borders dynamically
+  const badgeBg = severity === 'CRITICAL' ? '#fef2f2' : '#fffbeb';
+  const badgeBorder = severity === 'CRITICAL' ? '#fecaca' : '#fef3c7';
+  const badgeTextColor = severity === 'CRITICAL' ? '#dc2626' : '#d97706';
+  const indicatorStrip = severity === 'CRITICAL' ? '#ef4444' : '#f59e0b';
+  const emoji = severity === 'CRITICAL' ? '🚨' : '⚠️';
+  const referrerHref = event.referrer ? `href="${event.referrer}"` : '';
+  const referrerColor = event.referrer ? '#2563eb' : '#334155';
+
+  return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>WatchTower Telemetry: App Exception Trace</title>
+    </head>
+    <body style="margin: 0; padding: 0; background-color: #f4f5f7; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased;">
+      <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f4f5f7; padding: 20px 0;">
+        <tr>
+          <td align="center">
+            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #e1e4e8;">
+              
+              <!-- Header Section -->
+              <tr>
+                <td style="background-color: #1a1f2c; padding: 24px; text-align: center; border-bottom: 4px solid ${indicatorStrip};">
+                  <img src="${logoUrl}" alt="WatchTower Logo" width="40" style="display: block; margin: 0 auto 12px auto; max-width: 40px; height: auto; filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.2));" />
+                  <span style="color: #ffffff; font-size: 14px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;">WatchTower Incident Alert</span>
+                </td>
+              </tr>
+
+              <!-- Alert Status Panel -->
+              <tr>
+                <td style="padding: 32px 32px 20px 32px; text-align: center;">
+                  <div style="display: inline-block; background-color: ${badgeBg}; border: 1px solid ${badgeBorder}; border-radius: 20px; padding: 6px 16px; margin-bottom: 16px;">
+                    <span style="color: ${badgeTextColor}; font-size: 14px; font-weight: 700; text-transform: uppercase;">${emoji} RUNTIME CRASH [${severity}]</span>
+                  </div>
+                  <h1 style="color: #0f172a; font-size: 24px; font-weight: 700; margin: 0 0 8px 0; line-height: 1.3;">New event exception captured</h1>
+                  <p style="color: #64748b; font-size: 16px; margin: 0; line-height: 1.5;">WatchTower tracker detected an unhandled client error inside production builds.</p>
+                </td>
+              </tr>
+
+              <!-- Error Code Display Block -->
+              <tr>
+                <td style="padding: 0 32px 24px 32px;">
+                  <div style="background-color: #0f172a; border-radius: 6px; padding: 20px; text-align: left; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);">
+                    <div style="font-size: 11px; font-weight: bold; color: #64748b; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px;">Exception Payload Message</div>
+                    <div style="font-family: 'Courier New', Courier, monospace; font-size: 14px; color: #f8fafc; line-height: 1.6; word-break: break-word;">${errorMessage}</div>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Metadata Metrics Details -->
+              <tr>
+                <td style="padding: 0 32px 24px 32px;">
+                  <table border="0" cellpadding="0" cellspacing="0" width="100%" style="font-size: 14px; border-collapse: collapse;">
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                      <td style="padding: 10px 0; color: #64748b; font-weight: 500; width: 35%;">Project Name</td>
+                      <td style="padding: 10px 0; color: #0f172a; font-weight: 600;">${project.name}</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                      <td style="padding: 10px 0; color: #64748b; font-weight: 500;">Incident Route</td>
+                      <td style="padding: 10px 0; color: #2563eb; word-break: break-all;">
+                        <a href="${event.current_url}" target="_blank" style="color: #2563eb; text-decoration: none;">${event.pathname || event.current_url}</a>
+                      </td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                      <td style="padding: 10px 0; color: #64748b; font-weight: 500;">Referrer Origin</td>
+                      <td style="padding: 10px 0; color: #2563eb; word-break: break-all;">
+                        <a ${referrerHref} target="_blank" style="color: ${referrerColor}; text-decoration: none;">${event.referrer || 'N/A'}</a>
+                      </td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                      <td style="padding: 10px 0; color: #64748b; font-weight: 500;">Deployment ID</td>
+                      <td style="padding: 10px 0; color: #334155; font-family: monospace; font-weight: bold;">
+                        ${event.deployment?.id || 'N/A'} (${event.deployment?.version || 'system'})
+                      </td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                      <td style="padding: 10px 0; color: #64748b; font-weight: 500;">Commit Hash</td>
+                      <td style="padding: 10px 0; color: #334155; font-family: monospace; font-weight: bold;">
+                        ${event.deployment?.commit_hash || 'N/A'} (${event.deployment?.author || 'System'})
+                      </td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                      <td style="padding: 10px 0; color: #64748b; font-weight: 500;">Captured At</td>
+                      <td style="padding: 10px 0; color: #0f172a;">${event.timestamp}</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                      <td style="padding: 10px 0; color: #64748b; font-weight: 500;">Origin Client IP</td>
+                      <td style="padding: 10px 0; color: #0f172a; font-family: monospace;">${event.ip}</td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 10px 0; color: #64748b; font-weight: 500;">Client Browser</td>
+                      <td style="padding: 10px 0; color: #0f172a; font-family: monospace;">
+                        ${event.browser?.name || 'N/A'} ${event.browser?.version || ''}</td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+
+              <!-- Dynamic CTA Button Box -->
+              <tr>
+                <td align="center" style="padding: 8px 32px 36px 32px;">
+                  <table border="0" cellpadding="0" cellspacing="0">
+                    <tr>
+                      <td align="center" bgcolor="#1a1f2c" style="border-radius: 6px;">
+                        <a href="${project.website_url}" target="_blank" style="display: inline-block; padding: 12px 28px; color: #ffffff; font-size: 15px; font-weight: 600; text-decoration: none; border-radius: 6px;">Go to Project Root</a>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+
+              <!-- Footer Metadata Block -->
+              <tr>
+                <td style="background-color: #f8fafc; border-top: 1px solid #e2e8f0; padding: 24px 32px; text-align: center;">
+                  <p style="margin: 0 0 4px 0; font-size: 12px; color: #94a3b8;">This automated incident dispatch was sent by your configured WatchTower Agent.</p>
+                  <p style="margin: 0; font-size: 11px; color: #cbd5e1; font-family: monospace;">API Key: ${project.api_key}</p>
+                </td>
+              </tr>
+
+            </table>
+          </td>
+        </tr>
+      </table>
+    </body>
+    </html>
+  `;
 }
