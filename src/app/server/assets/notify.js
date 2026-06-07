@@ -4,7 +4,7 @@ import nodemailer from "nodemailer";
 
 // Public ntfy server by default. Override with NTFY_BASE_URL to self-host.
 const NTFY_BASE_URL = process.env.NTFY_BASE_URL || "https://ntfy.sh";
-const NTFY_PREFIX = "WatchTower/";
+const NTFY_PREFIX = "WatchTower_";
 const MAX_TRIES = 3;
 const RETRY_INTERVAL = 5; // seconds
 
