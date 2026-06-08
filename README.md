@@ -25,37 +25,51 @@ https://youtu.be/1RdMwzMQqv8
 **Link**: 
 
 ## Repository Structure
+
 ```
 WatchTower/
 ├── .github/
-│   └── workflows/                # CI/CD GitHub Actions pipelines
+│   └── workflows/               # GitHub Actions CI workflow
 ├── admin/
-│   └── sprints/                  # Sprint logs and planning docs
-│       └── sprint-template.md
+│   ├── feedback/                # Team feedback and retrospectives
+│   └── sprints/                 # Sprint planning and status documents
+├── archive/                     # Archived prototypes and legacy code
 ├── docs/
-│   ├── adr/                      # Architecture Decision Records (MADR format)
-│   │   └── ADR-00X-template.md
-│   ├── design/                   # Design artifacts and wireframes
-│   ├── specs/
-│   │   ├── MVP_DEFINITION.md     # Minimal viable product scope
-│   │   ├── TECHNICAL_SPECS.md   # Stack, structure, and process requirements
-│   │   ├── CHANGELOG.md          # Version history
-│   │   └── GENAI.md              # AI assistance disclosure log
-│   ├── user/                     # User personas and user stories
-│   └── pr-template.md            # Pull request template
+│   ├── adr/                     # Architecture Decision Records
+│   ├── design/                  # Design plans and artifacts
+│   ├── process/                 # Development process documentation
+│   ├── questions/               # Questions and notes for stakeholders
+│   ├── research/                # Research and competitive analysis
+│   ├── specs/                   # MVP, technical specifications, changelog
+│   ├── superpowers/             # Team superpower planning documents
+│   ├── testing/                 # Testing plans and strategy
+│   ├── ucd/                     # User-centered design artifacts
+│   ├── user/                    # User documentation
+│   └── pr-template.md           # Pull request template
 ├── src/
-│   └── assets/                   # JS, CSS, images
-├── tests/                        # Unit and E2E tests
+│   ├── js/                      # Shared application scripts
+│   ├── prototype/               # Main WatchTower prototype
+│   │   ├── dashboard/           # Dashboard frontend
+│   │   ├── server/              # Backend API and notification services
+│   │   └── tracker/             # Client-side monitoring script
+│   └── test-app/               # Sample application used for testing
+├── supabase/
+│   ├── migrations/             # Database schema migrations
+│   └── seed.sql                # Seed data
+├── tests/
+│   ├── e2e/                    # Playwright end-to-end tests
+│   └── unit/                   # Vitest unit tests
 ├── .gitignore
-├── .htmlvalidate.json             # HTML validation config
-├── .stylelintrc.json              # CSS linting config
-├── eslint.config.js               # JS linting config
-├── package.json                   # Node dependencies and scripts
+├── .htmlvalidate.json          # HTML validation configuration
+├── .stylelintrc.json           # Stylelint configuration
+├── eslint.config.js            # ESLint configuration
+├── package.json                # Project dependencies and scripts
 ├── package-lock.json
-├── playwright.config.js           # E2E test config
-├── vitest.config.js               # Unit test config
-└── README.md                      # You are here
+├── playwright.config.js        # Playwright configuration
+├── vitest.config.js            # Vitest configuration
+└── README.md                   # Project overview and setup guide
 ```
+
 ## Tech Stack
 
 - **HTML5** — standards-based markup
