@@ -533,6 +533,10 @@ export const dataStore = {
   },
 
   async resolveErrors(ids) {
+    const idSet = new Set(ids);
+    EVENTS = EVENTS.filter((e) => !idSet.has(e.id));
+    document.dispatchEvent(new CustomEvent("watchtower:data-update"));
+
     const { error } = await postToServer("/api/events/resolve", { ids });
     if (error) {
       console.log("Error resolve failed:", error);
