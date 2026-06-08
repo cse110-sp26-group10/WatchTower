@@ -110,16 +110,35 @@ export class ErrorDistributionChart extends HTMLElement {
       // Add a corresponding legend row entry with an integrated robust HTML CSS tooltip inside it
       const legendItem = document.createElement("div");
       legendItem.className = "pie-legend-item";
-      legendItem.innerHTML = `
-        <span class="pie-legend-bullet" style="background: ${color}"></span>
-        <span class="pie-legend-text" title="${slice.path}">${slice.path}</span>
-        <span class="pie-legend-value">${slice.count}</span>
-        
-        <div class="pie-grid-tooltip">
-          <div class="pie-tip-path">${slice.path}</div>
-          <div class="pie-tip-metric">Errors: <strong>${slice.count}</strong> (${(percentage * 100).toFixed(1)}%)</div>
-        </div>
-      `;
+      const bullet = document.createElement("span");
+      bullet.className = "pie-legend-bullet";
+      bullet.style.background = color;
+
+      const text = document.createElement("span");
+      text.className = "pie-legend-text";
+      text.title = slice.path;
+      text.textContent = slice.path;
+
+      const value = document.createElement("span");
+      value.className = "pie-legend-value";
+      value.textContent = String(slice.count);
+
+      const tip = document.createElement("div");
+      tip.className = "pie-grid-tooltip";
+
+      const tipPath = document.createElement("div");
+      tipPath.className = "pie-tip-path";
+      tipPath.textContent = slice.path;
+
+      const tipMetric = document.createElement("div");
+      tipMetric.className = "pie-tip-metric";
+      tipMetric.textContent = `Errors: `;
+      const strong = document.createElement("strong");
+      strong.textContent = String(slice.count);
+      tipMetric.append(strong, ` (${(percentage * 100).toFixed(1)}%)`);
+
+      tip.append(tipPath, tipMetric);
+      legendItem.append(bullet, text, value, tip);
 
       // Bridge connection: hovering items highlights corresponding SVG slices cleanly
       if (sliceEl) {

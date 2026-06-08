@@ -415,7 +415,7 @@ export const dbHelper = {
     }
     const noPermissionMessage = "Insufficient permission";
     if (
-      !user_project.permission_level === "Owner" &&
+      user_project.permission_level !== "Owner" &&
       user_project.permission_level !== "Co-Owner"
     ) {
       console.error("Failed to unshare project:", noPermissionMessage);

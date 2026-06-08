@@ -4,7 +4,7 @@ const METHODS = [
   ["push", "Push notifications", "Browser/device push alerts."],
   ["email", "Email", "Alerts sent to your account email."],
 ];
-const NTFY_PREFIX = "WatchTower/";
+const NTFY_PREFIX = "WatchTower_";
 
 /**
  * @class SettingsPage
