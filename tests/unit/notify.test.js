@@ -100,11 +100,9 @@ const errorEvent = {
 function makeFetchSuccess() {
   return vi.fn().mockResolvedValue({
     ok: true,
-    json: vi
-      .fn()
-      .mockResolvedValue({
-        attachment: { url: "https://ntfy.sh/attachment/report.html" },
-      }),
+    json: vi.fn().mockResolvedValue({
+      attachment: { url: "https://ntfy.sh/attachment/report.html" },
+    }),
   });
 }
 
@@ -236,11 +234,9 @@ describe("notify", () => {
       .mockResolvedValueOnce({ ok: false })
       .mockResolvedValue({
         ok: true,
-        json: vi
-          .fn()
-          .mockResolvedValue({
-            attachment: { url: "https://ntfy.sh/attachment/report.html" },
-          }),
+        json: vi.fn().mockResolvedValue({
+          attachment: { url: "https://ntfy.sh/attachment/report.html" },
+        }),
       });
 
     const promise = notify(baseUser, payload);
