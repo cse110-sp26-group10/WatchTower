@@ -40,18 +40,18 @@ WatchTower/
 ├── docs/
 │   ├── adr/                     # Architecture Decision Records
 │   ├── design/                  # Design plans and artifacts
-│       └──  lo-fi wireframes
-│       └──  high-fi wireframes
-│       └──  study guide
+│       └──  lo-fi wireframes    # Lo-Fi Wireframes from Figma
+│       └──  high-fi wireframes  # High-Fi Wireframes from Figma
+│       └──  study guide         # Study Guide From Figma
 │   ├── process/                 # Development process documentation
 │   ├── questions/               # Questions and notes for stakeholders
 │   ├── research/                # Research and competitive analysis
-│       └──  research infographics
+│       └──  research infographics # Research infographics from Figma 
 │   ├── specs/                   # MVP, technical specifications, changelog
 │   ├── superpowers/             # Team superpower planning documents
 │   ├── testing/                 # Testing plans and strategy
 │   ├── ucd/                     # User-centered design artifacts
-│       └──  user personas infographics
+│       └──  user persona infographics # User persona infographics from Figma 
 │   ├── user/                    # User documentation
 │   └── pr-template.md           # Pull request template
 ├── src/
