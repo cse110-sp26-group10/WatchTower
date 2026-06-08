@@ -36,6 +36,13 @@ export class ActivityPage extends HTMLElement {
   render() {
     this.className = "dashboard-viewport";
     this.innerHTML = `
+      <section class="projects-header">
+        <div>
+          <h1 class="dashboard-title">Activity</h1>
+          <p class="dashboard-subtitle">Explore page loads, clicks, and events across all your monitored projects.</p>
+        </div>
+      </section>
+      
       <summary-metrics></summary-metrics>
 
       <section class="dashboard-double-row is-spaced">

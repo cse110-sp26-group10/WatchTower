@@ -4,7 +4,7 @@ const METHODS = [
   ["push", "Push notifications", "Browser/device push alerts."],
   ["email", "Email", "Alerts sent to your account email."],
 ];
-const NTFY_PREFIX = "WatchTower/";
+const NTFY_PREFIX = "WatchTower_";
 
 /**
  * @class SettingsPage
@@ -29,18 +29,18 @@ export class SettingsPage extends HTMLElement {
     const alertId = profile.alert_id || "";
 
     this.innerHTML = `
-      <div class="settings-card">
-        <h1 class="settings-title">Notification settings</h1>
-        <p class="settings-subtitle">Choose how you want to be notified about alerts.</p>
+      <div class="dashboard-surface settings-card">
+        <h1 class="dashboard-title settings-title">Notification settings</h1>
+        <p class="dashboard-subtitle settings-subtitle">Choose how you want to be notified about alerts.</p>
 
         ${
           alertId
             ? `
-          <div class="settings-ntfy">
+          <div class="dashboard-inset-surface settings-ntfy">
             <span class="settings-ntfy-label">Your ntfy topic</span>
             <div class="settings-ntfy-row">
               <code class="settings-ntfy-topic" id="settings-ntfy-topic">${NTFY_PREFIX + alertId}</code>
-              <button class="settings-ntfy-copy" id="settings-ntfy-copy" type="button">Copy</button>
+              <button class="secondary-action settings-ntfy-copy" id="settings-ntfy-copy" type="button">Copy</button>
             </div>
             <p class="settings-ntfy-hint">Subscribe to this topic in the ntfy app to receive push alerts.</p>
           </div>
@@ -52,14 +52,14 @@ export class SettingsPage extends HTMLElement {
           <legend class="sr-only">Notification methods</legend>
           ${METHODS.map(
             ([id, label, desc]) => `
-            <label class="settings-method" for="notify-${id}">
+            <label class="dashboard-inset-surface settings-method" for="notify-${id}">
               <input
                 type="checkbox"
                 id="notify-${id}"
                 value="${id}"
                 ${selected.has(id) ? "checked" : ""}
               />
-              <span class="settings-method-text">
+              <span class="form-stack settings-method-text">
                 <span class="settings-method-label">${label}</span>
                 <span class="settings-method-desc">${desc}</span>
               </span>
@@ -68,22 +68,22 @@ export class SettingsPage extends HTMLElement {
           ).join("")}
         </fieldset>
 
-        <p class="settings-status" id="settings-status" aria-live="polite" hidden></p>
+        <p class="form-error settings-status" id="settings-status" aria-live="polite" hidden></p>
 
-        <button class="settings-save" id="settings-save" type="button">
+        <button class="primary-action settings-save" id="settings-save" type="button">
           <span class="settings-save-label">Save preferences</span>
         </button>
 
         <hr class="settings-divider" />
 
         <div class="settings-section">
-          <h2 class="settings-section-title">Appearance</h2>
+          <h2 class="dashboard-title settings-section-title">Appearance</h2>
           <div class="settings-row">
             <div>
               <span class="settings-row-label">Theme</span>
-              <span class="settings-row-desc">Switch between light and dark mode.</span>
+              <span class="dashboard-subtitle settings-row-desc">Switch between light and dark mode.</span>
             </div>
-            <button class="settings-theme-btn" id="settings-theme-btn" type="button">
+            <button class="secondary-action settings-theme-btn" id="settings-theme-btn" type="button">
               <span id="settings-theme-label">Light</span>
             </button>
           </div>
@@ -92,13 +92,13 @@ export class SettingsPage extends HTMLElement {
         <hr class="settings-divider" />
 
         <div class="settings-section">
-          <h2 class="settings-section-title">Account</h2>
+          <h2 class="dashboard-title settings-section-title">Account</h2>
           <div class="settings-row">
             <div>
               <span class="settings-row-label">Log out</span>
-              <span class="settings-row-desc">Sign out of your WatchTower account.</span>
+              <span class="dashboard-subtitle settings-row-desc">Sign out of your WatchTower account.</span>
             </div>
-            <button class="settings-logout-btn" id="settings-logout-btn" type="button">Log out</button>
+            <button class="secondary-action settings-logout-btn" id="settings-logout-btn" type="button">Log out</button>
           </div>
         </div>
       </div>

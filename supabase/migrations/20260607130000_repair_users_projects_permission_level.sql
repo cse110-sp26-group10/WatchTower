@@ -8,5 +8,3 @@ where "permission_level" is null;
 alter table "public"."users_projects"
   alter column "permission_level" set default 'Owner',
   alter column "permission_level" set not null;
-
-

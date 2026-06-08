@@ -37,7 +37,7 @@ vi.mock("@supabase/supabase-js", () => ({
 }));
 vi.mock("ws", () => ({ default: class {} }));
 vi.mock("dotenv/config", () => ({}));
-const { dbHelper } = await import("../../src/prototype/server/assets/db.js");
+const { dbHelper } = await import("../../src/app/server/assets/db.js");
 const authUser = {
   id: "43ec5a9a-74bb-460a-b368-4767846455e0",
   email: "test123@ucsd.edu",
@@ -389,7 +389,10 @@ describe("getProjects", () => {
         : chain({ data: null, error: null }),
     );
     expect(await dbHelper.getProjects(appUser)).toEqual({
-      projects: [{ id: 10 }, { id: 11 }],
+      projects: [
+        { id: 10, permission_level: "Owner" },
+        { id: 11, permission_level: "Owner" },
+      ],
       error: null,
     });
   });
@@ -473,11 +476,11 @@ describe("deleteProject", () => {
   it("Returns message when project not owned", async () => {
     mockFrom((t) =>
       t === "users_projects"
-        ? chain({ data: [], error: null })
+        ? chain({ data: null, error: null })
         : chain({ data: null, error: null }),
     );
     expect(await dbHelper.deleteProject(appUser, 10)).toBe(
-      "Project not found or project does not belong to user",
+      "Project not found for user",
     );
   });
   it("Returns error when delete fails", async () => {

@@ -16,9 +16,9 @@ export class ErrorDetailModal extends HTMLElement {
   render() {
     this.innerHTML = `
       <div id="error-detail-modal" class="error-detail-modal">
-        <div class="workspace-panel-card error-detail-card">
+        <div class="dashboard-surface workspace-panel-card error-detail-card">
           <header class="workspace-panel-header error-detail-header">
-            <h2 class="workspace-panel-title error-detail-title modal-title-row">
+            <h2 class="dashboard-title workspace-panel-title error-detail-title modal-title-row">
               <span id="modal-severity-badge"></span>
               <span id="modal-error-title">Error Logs Detail</span>
             </h2>

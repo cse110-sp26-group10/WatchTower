@@ -1,5 +1,6 @@
 import { deploymentScope } from "../core/deployment-scope.js";
 import { relativeTime } from "../core/formatters.js";
+import { dataStore } from "../core/data-store.js";
 
 /**
  * App topbar. Has selectors for project and deployment information.
@@ -31,42 +32,65 @@ export class AppTopbar extends HTMLElement {
     this.innerHTML = `
       <header class="topbar">
         <div class="topbar-left">
+          <!-- Commented out logo on top bar (uncomment to show)
           <a href="#/" class="brand-name" style="display: flex; align-items: center; gap: 0.5rem; text-decoration: none;">
             <img src="public/logo.svg" alt="WatchTower logo" style="height: 1.75rem; width: auto;">
             <span style="color: var(--wt-text); font-weight: 700; font-size: 1.15rem;">WatchTower</span>
           </a>
-
+          -->
+      
           <div class="topbar-filter-group">
-            <label class="topbar-filter-label">Project:</label>
+            <label class="topbar-filter-label" for="project-filter">Project:</label>
             <project-filter></project-filter>
           </div>
 
           <div class="topbar-filter-group">
-            <label class="topbar-filter-label">Deployment:</label>
+            <label class="topbar-filter-label" for="deployment-filter">Deployment:</label>
             <deployment-filter></deployment-filter>
             <span id="header-metadata-strip" class="topbar-metadata-strip"></span>
           </div>
         </div>
+        <div class="topbar-right">
+          <span class="topbar-user-email" id="topbar-user-email"></span>
+        </div>
       </header>
     `;
+    this.querySelector("#topbar-user-email").textContent =
+      dataStore.getProfile()?.email || "";
   }
 
   updateActiveMetadata() {
     const metaContainer = this.querySelector("#header-metadata-strip");
     if (!metaContainer) return;
+    metaContainer.replaceChildren();
 
     const currentDep = deploymentScope.deployment;
     if (!currentDep || deploymentScope.id === "all") {
-      metaContainer.innerHTML = `<span class="metadata-muted">All active clusters monitored</span>`;
+      const muted = document.createElement("span");
+      muted.className = "metadata-muted";
+      muted.textContent = "All active clusters monitored";
+      metaContainer.append(muted);
       return;
     }
 
-    metaContainer.innerHTML = `
-      <span class="metadata-badge">version: <b>${currentDep.version}</b></span>
-      <span class="metadata-badge">commit: <b>${currentDep.commit_hash}</b></span>
-      <span class="metadata-badge">deployed: <b>${relativeTime(currentDep.deployed_at)}</b></span>
-    `;
+    metaContainer.append(
+      createMetadataBadge("version", currentDep.version),
+      createMetadataBadge("commit", currentDep.commit_hash),
+      createMetadataBadge("deployed", relativeTime(currentDep.deployed_at)),
+    );
   }
+}
+
+function createMetadataBadge(label, value) {
+  const badge = document.createElement("span");
+  badge.className = "metadata-badge";
+  badge.append(`${label}: `);
+
+  const strong = document.createElement("b");
+  strong.textContent = value || "-";
+  badge.append(strong);
+
+  return badge;
 }
 
 customElements.define("app-topbar", AppTopbar);

@@ -56,14 +56,14 @@ export class SignUpPage extends HTMLElement {
           </div>
 
           <div class="login-card-wrap">
-            <div class="login-card" role="main">
-              <h1 class="login-card-title">Sign Up</h1>
+            <div class="dashboard-surface login-card" role="main">
+              <h1 class="dashboard-title login-card-title">Sign Up</h1>
 
-              <div class="login-form" id="signup-form" novalidate>
-                <div class="login-field">
+              <div class="form-stack login-form" id="signup-form" novalidate>
+                <div class="form-field login-field">
                   <label class="sr-only" for="signup-email">Email</label>
                   <input
-                    class="login-input"
+                    class="form-input login-input"
                     type="email"
                     id="signup-email"
                     name="email"
@@ -73,10 +73,10 @@ export class SignUpPage extends HTMLElement {
                   />
                 </div>
 
-                <div class="login-field">
+                <div class="form-field login-field">
                   <label class="sr-only" for="signup-password">Password</label>
                   <input
-                    class="login-input"
+                    class="form-input login-input"
                     type="password"
                     id="signup-password"
                     name="password"
@@ -86,10 +86,10 @@ export class SignUpPage extends HTMLElement {
                   />
                 </div>
 
-                <div class="login-field">
+                <div class="form-field login-field">
                   <label class="sr-only" for="signup-confirm-password">Confirm Password</label>
                   <input
-                    class="login-input"
+                    class="form-input login-input"
                     type="password"
                     id="signup-confirm-password"
                     name="confirm-password"
@@ -99,9 +99,9 @@ export class SignUpPage extends HTMLElement {
                   />
                 </div>
 
-                <p class="login-error" id="signup-error" aria-live="polite" hidden></p>
+                <p class="form-error login-error" id="signup-error" aria-live="polite" hidden></p>
 
-                <button class="login-submit" id="signup-submit" type="button">
+                <button class="primary-action login-submit" id="signup-submit" type="button">
                   <span class="login-submit-label">Create Account</span>
                   <span class="login-submit-spinner" hidden aria-hidden="true"></span>
                 </button>

@@ -1,13 +1,24 @@
 # Changelog
 All team members must document any notable changes to the WatchTower project in this file and use [Semantic Versioning](https://semver.org/): `MAJOR.MINOR.PATCH`
 
+## [0.4.2] - 2026-06-07 (PR 105)
+
+### Changed
+- Revamped ntfy and email notifications. Added additional details in the ntfy notifications, along with an action button to download a full HTML report of the incident. Email notifications contain the same HTML report.
+
 ## [0.4.1] - 2026-06-04 (PR 104, PR 103)
 
 ### Added
 - Backend implementation of project sharing with permission levels Owner, Co-Owner, and Viewer. New server endpoints `/api/projects/share` (accepts project id, user id, permission level) and `/api/projects/unshare` (accepts project id, user id) are created.
+- Charts added to the activity page for visualizing error and event trends over time.
+- Dashboard summary metric cards are now clickable and navigate to the relevant page.
+- Fix error button added to error cards, allowing users to resolve errors directly from the list.
 
 ### Changed
 - Deployment filter to update when receiving data from the server.
+- All inline CSS moved out of JavaScript files and into styles.css for cleaner separation of concerns.
+- Error card turns green when there are no active errors.
+- Brand colors and error emphasis styling updated for stronger visual hierarchy.
 
 ### Fixed
 - UUID regex to comply with the format used by Supabase.

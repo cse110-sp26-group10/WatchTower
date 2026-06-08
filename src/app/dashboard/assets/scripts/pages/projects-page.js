@@ -46,36 +46,36 @@ export class ProjectsPage extends HTMLElement {
     this.innerHTML = `
       <section class="projects-header">
         <div>
-          <h1>Projects</h1>
-          <p>Add the apps and websites you want WatchTower to monitor.</p>
+          <h1 class="dashboard-title">Projects</h1>
+          <p class="dashboard-subtitle">Add the apps and websites you want WatchTower to monitor.</p>
         </div>
       </section>
 
       <section class="projects-layout">
-        <form class="project-form" id="project-form" novalidate>
+        <form class="dashboard-surface form-stack project-form" id="project-form" novalidate>
           <div class="project-form-heading">
-            <h2>Add Project</h2>
+            <h2 class="dashboard-title">Add Project</h2>
             <span id="project-count"></span>
           </div>
 
-          <label class="project-field">
+          <label class="form-field project-field">
             <span>Name</span>
-            <input id="project-name" name="name" type="text" placeholder="Example Project" autocomplete="off" required>
+            <input class="form-input" id="project-name" name="name" type="text" placeholder="Example Project" autocomplete="off" required>
           </label>
 
-          <label class="project-field">
+          <label class="form-field project-field">
             <span>Website or App URL</span>
-            <input id="project-url" name="url" type="url" placeholder="https://example.com" autocomplete="off" required>
+            <input class="form-input" id="project-url" name="url" type="url" placeholder="https://example.com" autocomplete="off" required>
           </label>
 
-          <p class="project-error" id="project-error" aria-live="polite" hidden></p>
+          <p class="form-error project-error" id="project-error" aria-live="polite" hidden></p>
 
-          <button class="project-submit" type="submit">Add Project</button>
+          <button class="primary-action project-submit" type="submit">Add Project</button>
         </form>
 
-        <div class="projects-list-wrap">
+        <div class="dashboard-surface projects-list-wrap">
           <div class="projects-list-heading">
-            <h2>Your Projects</h2>
+            <h2 class="dashboard-title">Your Projects</h2>
           </div>
           <div class="projects-list" id="projects-list"></div>
         </div>
@@ -172,7 +172,7 @@ export class ProjectsPage extends HTMLElement {
 
     if (!this.projects.length) {
       list.innerHTML =
-        '<div class="projects-empty">No projects yet. Add your first app or website to start monitoring.</div>';
+        '<div class="dashboard-empty projects-empty">No projects yet. Add your first app or website to start monitoring.</div>';
       return;
     }
 
@@ -183,15 +183,15 @@ export class ProjectsPage extends HTMLElement {
         const created_at = escapeHtml(formatDate(project.created_at));
 
         return `
-      <article class="project-card">
+      <article class="dashboard-inset-surface project-card">
         <div class="project-card-header">
-          <h3>${name}</h3>
+          <h3 class="dashboard-title">${name}</h3>
         </div>
         <a class="project-url" href="${url}" target="_blank" rel="noreferrer">${url}</a>
         <div class="project-meta">Added ${created_at}</div>
         <div class="project-card-actions">
-          <button class="project-remove" type="button" data-remove-project="${project.id}">Remove</button>
-          <button class="project-copy-key" type="button" data-copy-key="${project.api_key}" data-default="Copy API Key">Copy API Key</button>
+          <button class="secondary-action project-remove" type="button" data-remove-project="${project.id}">Remove</button>
+          <button class="secondary-action project-copy-key" type="button" data-copy-key="${project.api_key}" data-default="Copy API Key">Copy API Key</button>
         </div>
       </article>
     `;
