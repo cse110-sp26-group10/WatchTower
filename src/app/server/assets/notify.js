@@ -236,7 +236,8 @@ export async function notifyError(event) {
     (event.metadata && event.metadata.message) || "An error was reported.";
   const urlInfo = `URL: ${event.current_url}`;
   const timestampInfo = `Timestamp: ${event.timestamp}`;
-  const deploymentInfo = `Deployment ID: ${event.deployment.id}\nVersion: ${event.deployment.version}\nCommit: ${event.deployment.commit_hash}`;
+  const deploymentInfo = `Deployment ID: ${event.deployment.id} (${event.deployment.version})
+    \nCommit Hash: ${event.deployment.commit_hash} (${event.deployment.author})`;
   const browserInfo = `Browser: ${event.browser.name} ${event.browser.version}`;
 
   // Skip if an identical error was already notified within the cooldown window.
@@ -251,7 +252,8 @@ export async function notifyError(event) {
     users.map((user) =>
       notify(user, {
         title: `Error on ${project?.name || event.host}`,
-        message: `${severity ? `[${severity.toUpperCase()}] ` : ""}${detail}\n\n${urlInfo}\n${timestampInfo}\n${deploymentInfo}\n${browserInfo}`,
+        message: `${severity ? `[${severity.toUpperCase()}] ` : ""}${detail}
+          \n\n${urlInfo}\n${timestampInfo}\n${deploymentInfo}\n${browserInfo}`,
         html: generateErrorHtml(project, event),
         priority: severity === "critical" ? "high" : "default",
         tags: [severity === "critical" ? "rotating_light" : "warning"],
