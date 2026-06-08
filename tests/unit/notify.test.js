@@ -84,7 +84,12 @@ const errorEvent = {
   pathname: "/checkout",
   timestamp: "2026-05-19T12:00:00.000Z",
   ip: "127.0.0.1",
-  deployment: { id: "dep_001", version: "1.0.0", commit_hash: "abc", author: "evan" },
+  deployment: {
+    id: "dep_001",
+    version: "1.0.0",
+    commit_hash: "abc",
+    author: "evan",
+  },
   browser: { name: "Chrome", version: "120" },
   referrer: "",
   metadata: { severity: "critical", message: "boom" },
@@ -97,7 +102,9 @@ function makeFetchSuccess() {
     ok: true,
     json: vi
       .fn()
-      .mockResolvedValue({ attachment: { url: "https://ntfy.sh/attachment/report.html" } }),
+      .mockResolvedValue({
+        attachment: { url: "https://ntfy.sh/attachment/report.html" },
+      }),
   });
 }
 
@@ -115,9 +122,8 @@ beforeEach(async () => {
   mockDbHelper.getProjectFromId.mockResolvedValue({ project, error: null });
   mockProjectUsers([]);
 
-  ({ notify, notifyDowntime, notifyError } = await import(
-    "../../src/app/server/assets/notify.js"
-  ));
+  ({ notify, notifyDowntime, notifyError } =
+    await import("../../src/app/server/assets/notify.js"));
 });
 
 afterEach(() => {
@@ -232,7 +238,9 @@ describe("notify", () => {
         ok: true,
         json: vi
           .fn()
-          .mockResolvedValue({ attachment: { url: "https://ntfy.sh/attachment/report.html" } }),
+          .mockResolvedValue({
+            attachment: { url: "https://ntfy.sh/attachment/report.html" },
+          }),
       });
 
     const promise = notify(baseUser, payload);
