@@ -71,13 +71,13 @@
 ### Stand-up 2 — 06/05/2026
 | Name | Did | Doing | Blockers |
 |------|-----|-------|----------|
-| Nicole Sutedja | | | |
+| Nicole Sutedja | look over ui changes and repo structure/documentation | add username info and start merging ui polish to main | final studying |
 | Evan Marriott | made UI changes for settings menu and hamburger menu on desktop, merged code into main, cleaned up repo by deleting old branches | continue working on UI improvements and documentation | final studying |
 | Jensen Guo | Tweak frontend so that the brand colors are more emphasized | More frontend polishing | Finals |
 | Han Yang-Lin | Implemented project sharing server endpoints, and fixed UUID regex, fixed deployment filter, and favicon and logo paths | Update project documentation | Finals |
 | Kevin Wang | refined some of the frontend | further polish the frontend | final |
 | Benedict Luis | update Changelog + sprint-4.md (final sprint doc) + TECH_SPEC.md. Fixed tampered data in sprint-4.md | finish up left issues and wrapping up docs | Studying for finals |
-| Aron Wu | | | |
+| Aron Wu | update repo tree and start mobile responsiveness | finish mobile responsiveness | studying for finals |
 | Kaley Chung | Tried to delegate the mobile responsivness task | Add user persona (Figma) to repo and ensure all tasks are majority completed | Fever, midterms, quizzes, and finals |
 | Prakhar Shah | Audit all documentation (sprints, ADRs, changelog, AI use log, etc.) | Update README and project setup docs and start working in wiki | Finals |
 | Bethany Miyamoto | repo cleanup and added more detail to PR and issues | demo dry run | finals |
