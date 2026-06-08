@@ -110,16 +110,20 @@ export class SettingsPage extends HTMLElement {
     const themeBtn = this.querySelector("#settings-theme-btn");
     const themeLabel = this.querySelector("#settings-theme-label");
     const updateThemeLabel = () => {
-      const current =
-        document.documentElement.getAttribute("data-theme") || "light";
-      themeLabel.textContent = current === "dark" ? "Dark" : "Light";
+      const html = document.documentElement;
+      const isDark = html.dataset.theme?.includes("dark");
+      themeLabel.textContent = isDark ? "Dark" : "Light";
     };
     updateThemeLabel();
     themeBtn?.addEventListener("click", () => {
-      const current =
-        document.documentElement.getAttribute("data-theme") || "light";
-      const next = current === "dark" ? "light" : "dark";
-      document.documentElement.setAttribute("data-theme", next);
+      const html = document.documentElement;
+      const isDark = html.dataset.theme?.includes("dark");
+      const flags = [];
+      if (!isDark) flags.push("dark");
+      if (localStorage.getItem("wt_colorblind") === "1")
+        flags.push("colorblind");
+      html.dataset.theme = flags.join(" ");
+      localStorage.setItem("wt_dark", isDark ? "0" : "1");
       updateThemeLabel();
     });
 
