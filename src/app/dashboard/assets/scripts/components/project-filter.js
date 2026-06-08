@@ -21,7 +21,7 @@ export class ProjectFilter extends HTMLElement {
       }
     });
 
-    document.addEventListener("watchtower:data-update", () => {
+    this.handleDataUpdate = () => {
       const projects = new Set(
         dataStore.getProjects().map((project) => project.id),
       ).add(ALL_ID);
@@ -30,7 +30,7 @@ export class ProjectFilter extends HTMLElement {
           isNaN(select.value) ? select.value : Number(select.value),
         ),
       );
-      if (projects.size === options.size && projects.isSubsetOf(options)) {
+      if (setsEqual(projects, options)) {
         // If the two sets are identical (no change occurred)
         return;
       }
@@ -43,11 +43,16 @@ export class ProjectFilter extends HTMLElement {
       } else {
         this.syncSelectValue();
       }
-    });
+    };
+    document.addEventListener("watchtower:data-update", this.handleDataUpdate);
   }
 
   disconnectedCallback() {
     this.unsubscribe?.();
+    document.removeEventListener(
+      "watchtower:data-update",
+      this.handleDataUpdate,
+    );
   }
 
   render() {
@@ -112,3 +117,11 @@ export class ProjectFilter extends HTMLElement {
 }
 
 customElements.define("project-filter", ProjectFilter);
+
+function setsEqual(left, right) {
+  if (left.size !== right.size) return false;
+  for (const value of left) {
+    if (!right.has(value)) return false;
+  }
+  return true;
+}

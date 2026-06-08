@@ -10,9 +10,15 @@ All team members must document any notable changes to the WatchTower project in 
 
 ### Added
 - Backend implementation of project sharing with permission levels Owner, Co-Owner, and Viewer. New server endpoints `/api/projects/share` (accepts project id, user id, permission level) and `/api/projects/unshare` (accepts project id, user id) are created.
+- Charts added to the activity page for visualizing error and event trends over time.
+- Dashboard summary metric cards are now clickable and navigate to the relevant page.
+- Fix error button added to error cards, allowing users to resolve errors directly from the list.
 
 ### Changed
 - Deployment filter to update when receiving data from the server.
+- All inline CSS moved out of JavaScript files and into styles.css for cleaner separation of concerns.
+- Error card turns green when there are no active errors.
+- Brand colors and error emphasis styling updated for stronger visual hierarchy.
 
 ### Fixed
 - UUID regex to comply with the format used by Supabase.

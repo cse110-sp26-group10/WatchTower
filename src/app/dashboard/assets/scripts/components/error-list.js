@@ -78,7 +78,7 @@ export class ErrorList extends HTMLElement {
       fixBtn.textContent = "Mark as Fixed";
       fixBtn.addEventListener("click", (e) => {
         e.stopPropagation();
-        this.resolveError(group);
+        this.resolveError(group, row);
       });
       right.append(fixBtn);
     }
@@ -131,14 +131,24 @@ export class ErrorList extends HTMLElement {
   }
 
   // Resolve every occurrence in the group so the row does not reappear on the
-  // next fetch. The errors page listens for this and calls the data store.
-  resolveError(group) {
-    this.dispatchEvent(
-      new CustomEvent("error-resolve", {
-        bubbles: true,
-        detail: { ids: group.ids },
-      }),
-    );
+  // next fetch. We play a brief removal animation first, then dispatch so the
+  // errors page only re-fetches (and re-renders the list) once the row is gone.
+  resolveError(group, row) {
+    const dispatch = () =>
+      this.dispatchEvent(
+        new CustomEvent("error-resolve", {
+          bubbles: true,
+          detail: { ids: group.ids },
+        }),
+      );
+
+    if (!row) {
+      dispatch();
+      return;
+    }
+
+    row.classList.add("is-removing");
+    row.addEventListener("animationend", dispatch, { once: true });
   }
 }
 

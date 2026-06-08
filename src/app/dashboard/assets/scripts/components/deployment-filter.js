@@ -21,7 +21,7 @@ export class DeploymentFilter extends HTMLElement {
       }
     });
 
-    document.addEventListener("watchtower:data-update", () => {
+    this.handleDataUpdate = () => {
       const deployments = new Set(
         dataStore.getDeployments().map((deployment) => deployment.id),
       ).add(ALL_ID);
@@ -30,10 +30,7 @@ export class DeploymentFilter extends HTMLElement {
           isNaN(select.value) ? select.value : select.value,
         ),
       );
-      if (
-        deployments.size === options.size &&
-        deployments.isSubsetOf(options)
-      ) {
+      if (setsEqual(deployments, options)) {
         // If the two sets are identical (no change occurred)
         return;
       }
@@ -46,11 +43,16 @@ export class DeploymentFilter extends HTMLElement {
       } else {
         this.syncSelectValue();
       }
-    });
+    };
+    document.addEventListener("watchtower:data-update", this.handleDataUpdate);
   }
 
   disconnectedCallback() {
     this.unsubscribe?.();
+    document.removeEventListener(
+      "watchtower:data-update",
+      this.handleDataUpdate,
+    );
   }
 
   render() {
@@ -113,3 +115,11 @@ export class DeploymentFilter extends HTMLElement {
 }
 
 customElements.define("deployment-filter", DeploymentFilter);
+
+function setsEqual(left, right) {
+  if (left.size !== right.size) return false;
+  for (const value of left) {
+    if (!right.has(value)) return false;
+  }
+  return true;
+}

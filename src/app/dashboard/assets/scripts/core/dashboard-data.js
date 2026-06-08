@@ -31,15 +31,17 @@ export function getScopedEvents(
   projectId = getCurrentProjectId(),
 ) {
   const events = dataStore.getEvents() || [];
+  const projectScopeId = String(projectId);
+  const deploymentScopeId = String(deploymentId);
   const projectScopedEvents =
     !projectId || projectId === "all"
       ? events
-      : events.filter((event) => event.project_id === projectId);
+      : events.filter((event) => String(event.project_id) === projectScopeId);
   const scopedEvents =
     !deploymentId || deploymentId === "all"
       ? projectScopedEvents
       : projectScopedEvents.filter(
-          (event) => event.deployment?.id === deploymentId,
+          (event) => String(event.deployment?.id) === deploymentScopeId,
         );
 
   return sortEventsByTimestamp(scopedEvents);
