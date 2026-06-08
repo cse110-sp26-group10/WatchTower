@@ -31,7 +31,9 @@ const esc = (s) =>
 const safeUrl = (u) => {
   try {
     const p = new URL(String(u ?? ""));
-    return p.protocol === "http:" || p.protocol === "https:" ? esc(p.href) : "#";
+    return p.protocol === "http:" || p.protocol === "https:"
+      ? esc(p.href)
+      : "#";
   } catch {
     return "#";
   }
@@ -430,7 +432,9 @@ function generateErrorHtml(project, event) {
   const badgeTextColor = severity === "CRITICAL" ? "#dc2626" : "#d97706";
   const indicatorStrip = severity === "CRITICAL" ? "#ef4444" : "#f59e0b";
   const emoji = severity === "CRITICAL" ? "🚨" : "⚠️";
-  const referrerHref = event.referrer ? `href="${safeUrl(event.referrer)}"` : "";
+  const referrerHref = event.referrer
+    ? `href="${safeUrl(event.referrer)}"`
+    : "";
   const referrerColor = event.referrer ? "#2563eb" : "#334155";
 
   return `
