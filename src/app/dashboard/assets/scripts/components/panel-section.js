@@ -19,13 +19,13 @@ export class PanelSection extends HTMLElement {
     this.replaceChildren();
 
     const article = document.createElement("article");
-    article.className = "workspace-panel-card";
+    article.className = "dashboard-surface workspace-panel-card";
 
     const header = document.createElement("header");
     header.className = "workspace-panel-header";
 
     const title = document.createElement("h2");
-    title.className = "workspace-panel-title";
+    title.className = "dashboard-title workspace-panel-title";
     title.textContent = heading;
 
     const hint = document.createElement("span");

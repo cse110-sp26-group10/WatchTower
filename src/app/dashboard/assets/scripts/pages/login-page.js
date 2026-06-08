@@ -85,15 +85,15 @@ export class LoginPage extends HTMLElement {
 
           <!-- Right: login card -->
           <div class="login-card-wrap">
-            <div class="login-card" role="main">
-              <h1 class="login-card-title">Login</h1>
+            <div class="dashboard-surface login-card" role="main">
+              <h1 class="dashboard-title login-card-title">Login</h1>
 
-              <div class="login-form" id="login-form" novalidate>
+              <div class="form-stack login-form" id="login-form" novalidate>
 
-                <div class="login-field">
+                <div class="form-field login-field">
                   <label class="sr-only" for="login-email">Email</label>
                   <input
-                    class="login-input"
+                    class="form-input login-input"
                     type="text"
                     id="login-email"
                     name="email"
@@ -103,11 +103,11 @@ export class LoginPage extends HTMLElement {
                   />
                 </div>
 
-                <div class="login-field">
+                <div class="form-field login-field">
                   <label class="sr-only" for="login-password">Password</label>
                   <div class="login-password-wrap">
                     <input
-                      class="login-input"
+                      class="form-input login-input"
                       type="password"
                       id="login-password"
                       name="password"
@@ -125,9 +125,9 @@ export class LoginPage extends HTMLElement {
                   </div>
                 </div>
 
-                <p class="login-error" id="login-error" aria-live="polite" hidden></p>
+                <p class="form-error login-error" id="login-error" aria-live="polite" hidden></p>
 
-                <button class="login-submit" id="login-submit" type="button">
+                <button class="primary-action login-submit" id="login-submit" type="button">
                   <span class="login-submit-label">Sign In</span>
                   <span class="login-submit-spinner" hidden aria-hidden="true"></span>
                 </button>

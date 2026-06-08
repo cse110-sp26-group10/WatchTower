@@ -18,6 +18,27 @@ const errorNotifyCooldowns = new Map(); // key -> last-notified timestamp (ms)
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+// HTML-escapes a value for safe interpolation into HTML text or attribute content.
+const esc = (s) =>
+  String(s ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+
+// Returns the URL only if it uses http(s); otherwise returns '#'.
+const safeUrl = (u) => {
+  try {
+    const p = new URL(String(u ?? ""));
+    return p.protocol === "http:" || p.protocol === "https:"
+      ? esc(p.href)
+      : "#";
+  } catch {
+    return "#";
+  }
+};
+
 /**
  * Looks up the email address tied to a WatchTower user via Supabase Auth.
  * The email is not stored in public.users, so we read it from auth.users
@@ -215,7 +236,8 @@ export async function notifyError(event) {
     (event.metadata && event.metadata.message) || "An error was reported.";
   const urlInfo = `URL: ${event.current_url}`;
   const timestampInfo = `Timestamp: ${event.timestamp}`;
-  const deploymentInfo = `Deployment ID: ${event.deployment.id}\nVersion: ${event.deployment.version}\nCommit: ${event.deployment.commit_hash}`;
+  const deploymentInfo = `Deployment ID: ${event.deployment.id} (${event.deployment.version})
+    \nCommit Hash: ${event.deployment.commit_hash} (${event.deployment.author})`;
   const browserInfo = `Browser: ${event.browser.name} ${event.browser.version}`;
 
   // Skip if an identical error was already notified within the cooldown window.
@@ -230,7 +252,8 @@ export async function notifyError(event) {
     users.map((user) =>
       notify(user, {
         title: `Error on ${project?.name || event.host}`,
-        message: `${severity ? `[${severity.toUpperCase()}] ` : ""}${detail}\n\n${urlInfo}\n${timestampInfo}\n${deploymentInfo}\n${browserInfo}`,
+        message: `${severity ? `[${severity.toUpperCase()}] ` : ""}${detail}
+          \n\n${urlInfo}\n${timestampInfo}\n${deploymentInfo}\n${browserInfo}`,
         html: generateErrorHtml(project, event),
         priority: severity === "critical" ? "high" : "default",
         tags: [severity === "critical" ? "rotating_light" : "warning"],
@@ -330,7 +353,7 @@ function generateDowntimeHtml(project, uptimeCheck) {
                 <td style="padding: 0 32px 24px 32px;">
                   <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 16px; text-align: left;">
                     <div style="font-size: 12px; font-weight: 600; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px;">Target URL</div>
-                    <div style="font-size: 15px; font-weight: 500; color: #0f172a; word-break: break-all;"><a href="${uptimeCheck.url}" target="_blank" style="color: #2563eb; text-decoration: none;">${uptimeCheck.url}</a></div>
+                    <div style="font-size: 15px; font-weight: 500; color: #0f172a; word-break: break-all;"><a href="${safeUrl(uptimeCheck.url)}" target="_blank" style="color: #2563eb; text-decoration: none;">${esc(uptimeCheck.url)}</a></div>
                   </div>
                 </td>
               </tr>
@@ -341,23 +364,23 @@ function generateDowntimeHtml(project, uptimeCheck) {
                   <table border="0" cellpadding="0" cellspacing="0" width="100%" style="font-size: 14px; border-collapse: collapse;">
                     <tr style="border-bottom: 1px solid #e2e8f0;">
                       <td style="padding: 10px 0; color: #64748b; font-weight: 500; width: 35%;">Project Name</td>
-                      <td style="padding: 10px 0; color: #0f172a; font-weight: 600;">${project.name}</td>
+                      <td style="padding: 10px 0; color: #0f172a; font-weight: 600;">${esc(project.name)}</td>
                     </tr>
                     <tr style="border-bottom: 1px solid #e2e8f0;">
                       <td style="padding: 10px 0; color: #64748b; font-weight: 500;">Detected At</td>
-                      <td style="padding: 10px 0; color: #0f172a;">${uptimeCheck.timestamp}</td>
+                      <td style="padding: 10px 0; color: #0f172a;">${esc(uptimeCheck.timestamp)}</td>
                     </tr>
                     <tr style="border-bottom: 1px solid #e2e8f0;">
                       <td style="padding: 10px 0; color: #64748b; font-weight: 500;">Error Code</td>
-                      <td style="padding: 10px 0; color: #ef4444; font-weight: bold; font-family: monospace;">${latestError}</td>
+                      <td style="padding: 10px 0; color: #ef4444; font-weight: bold; font-family: monospace;">${esc(latestError)}</td>
                     </tr>
                     <tr style="border-bottom: 1px solid #e2e8f0;">
                       <td style="padding: 10px 0; color: #64748b; font-weight: 500;">HTTP Status</td>
-                      <td style="padding: 10px 0; color: #0f172a; font-weight: bold; font-family: monospace;">${uptimeCheck.status || "N/A"}</td>
+                      <td style="padding: 10px 0; color: #0f172a; font-weight: bold; font-family: monospace;">${esc(uptimeCheck.status || "N/A")}</td>
                     </tr>
                     <tr style="border-bottom: 1px solid #e2e8f0;">
                       <td style="padding: 10px 0; color: #64748b; font-weight: 500;">Latency Check</td>
-                      <td style="padding: 10px 0; color: #0f172a;">${uptimeCheck.latency} ms</td>
+                      <td style="padding: 10px 0; color: #0f172a;">${esc(uptimeCheck.latency)} ms</td>
                     </tr>
                     <tr>
                       <td style="padding: 10px 0; color: #64748b; font-weight: 500;">Failed Attempts</td>
@@ -373,7 +396,7 @@ function generateDowntimeHtml(project, uptimeCheck) {
                   <table border="0" cellpadding="0" cellspacing="0">
                     <tr>
                       <td align="center" bgcolor="#1a1f2c" style="border-radius: 6px;">
-                        <a href="${project.website_url}" target="_blank" style="display: inline-block; padding: 12px 28px; color: #ffffff; font-size: 15px; font-weight: 600; text-decoration: none; border-radius: 6px;">Go to Project Root</a>
+                        <a href="${safeUrl(project.website_url)}" target="_blank" style="display: inline-block; padding: 12px 28px; color: #ffffff; font-size: 15px; font-weight: 600; text-decoration: none; border-radius: 6px;">Go to Project Root</a>
                       </td>
                     </tr>
                   </table>
@@ -384,7 +407,7 @@ function generateDowntimeHtml(project, uptimeCheck) {
               <tr>
                 <td style="background-color: #f8fafc; border-top: 1px solid #e2e8f0; padding: 24px 32px; text-align: center;">
                   <p style="margin: 0 0 4px 0; font-size: 12px; color: #94a3b8;">This automated incident dispatch was sent by your configured WatchTower Agent.</p>
-                  <p style="margin: 0; font-size: 11px; color: #cbd5e1; font-family: monospace;">API Key: ${project.api_key}</p>
+                  <p style="margin: 0; font-size: 11px; color: #cbd5e1; font-family: monospace;">Project: ${esc(project.id)}</p>
                 </td>
               </tr>
 
@@ -411,7 +434,9 @@ function generateErrorHtml(project, event) {
   const badgeTextColor = severity === "CRITICAL" ? "#dc2626" : "#d97706";
   const indicatorStrip = severity === "CRITICAL" ? "#ef4444" : "#f59e0b";
   const emoji = severity === "CRITICAL" ? "🚨" : "⚠️";
-  const referrerHref = event.referrer ? `href="${event.referrer}"` : "";
+  const referrerHref = event.referrer
+    ? `href="${safeUrl(event.referrer)}"`
+    : "";
   const referrerColor = event.referrer ? "#2563eb" : "#334155";
 
   return `
@@ -440,7 +465,7 @@ function generateErrorHtml(project, event) {
               <tr>
                 <td style="padding: 32px 32px 20px 32px; text-align: center;">
                   <div style="display: inline-block; background-color: ${badgeBg}; border: 1px solid ${badgeBorder}; border-radius: 20px; padding: 6px 16px; margin-bottom: 16px;">
-                    <span style="color: ${badgeTextColor}; font-size: 14px; font-weight: 700; text-transform: uppercase;">${emoji} RUNTIME CRASH [${severity}]</span>
+                    <span style="color: ${badgeTextColor}; font-size: 14px; font-weight: 700; text-transform: uppercase;">${emoji} RUNTIME CRASH [${esc(severity)}]</span>
                   </div>
                   <h1 style="color: #0f172a; font-size: 24px; font-weight: 700; margin: 0 0 8px 0; line-height: 1.3;">New event exception captured</h1>
                   <p style="color: #64748b; font-size: 16px; margin: 0; line-height: 1.5;">WatchTower tracker detected an unhandled client error inside production builds.</p>
@@ -452,7 +477,7 @@ function generateErrorHtml(project, event) {
                 <td style="padding: 0 32px 24px 32px;">
                   <div style="background-color: #0f172a; border-radius: 6px; padding: 20px; text-align: left; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);">
                     <div style="font-size: 11px; font-weight: bold; color: #64748b; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px;">Exception Payload Message</div>
-                    <div style="font-family: 'Courier New', Courier, monospace; font-size: 14px; color: #f8fafc; line-height: 1.6; word-break: break-word;">${errorMessage}</div>
+                    <div style="font-family: 'Courier New', Courier, monospace; font-size: 14px; color: #f8fafc; line-height: 1.6; word-break: break-word;">${esc(errorMessage)}</div>
                   </div>
                 </td>
               </tr>
@@ -463,44 +488,44 @@ function generateErrorHtml(project, event) {
                   <table border="0" cellpadding="0" cellspacing="0" width="100%" style="font-size: 14px; border-collapse: collapse;">
                     <tr style="border-bottom: 1px solid #e2e8f0;">
                       <td style="padding: 10px 0; color: #64748b; font-weight: 500; width: 35%;">Project Name</td>
-                      <td style="padding: 10px 0; color: #0f172a; font-weight: 600;">${project.name}</td>
+                      <td style="padding: 10px 0; color: #0f172a; font-weight: 600;">${esc(project.name)}</td>
                     </tr>
                     <tr style="border-bottom: 1px solid #e2e8f0;">
                       <td style="padding: 10px 0; color: #64748b; font-weight: 500;">Incident Route</td>
                       <td style="padding: 10px 0; color: #2563eb; word-break: break-all;">
-                        <a href="${event.current_url}" target="_blank" style="color: #2563eb; text-decoration: none;">${event.pathname || event.current_url}</a>
+                        <a href="${safeUrl(event.current_url)}" target="_blank" style="color: #2563eb; text-decoration: none;">${esc(event.pathname || event.current_url)}</a>
                       </td>
                     </tr>
                     <tr style="border-bottom: 1px solid #e2e8f0;">
                       <td style="padding: 10px 0; color: #64748b; font-weight: 500;">Referrer Origin</td>
                       <td style="padding: 10px 0; color: #2563eb; word-break: break-all;">
-                        <a ${referrerHref} target="_blank" style="color: ${referrerColor}; text-decoration: none;">${event.referrer || "N/A"}</a>
+                        <a ${referrerHref} target="_blank" style="color: ${referrerColor}; text-decoration: none;">${esc(event.referrer || "N/A")}</a>
                       </td>
                     </tr>
                     <tr style="border-bottom: 1px solid #e2e8f0;">
                       <td style="padding: 10px 0; color: #64748b; font-weight: 500;">Deployment ID</td>
                       <td style="padding: 10px 0; color: #334155; font-family: monospace; font-weight: bold;">
-                        ${event.deployment?.id || "N/A"} (${event.deployment?.version || "system"})
+                        ${esc(event.deployment?.id || "N/A")} (${esc(event.deployment?.version || "system")})
                       </td>
                     </tr>
                     <tr style="border-bottom: 1px solid #e2e8f0;">
                       <td style="padding: 10px 0; color: #64748b; font-weight: 500;">Commit Hash</td>
                       <td style="padding: 10px 0; color: #334155; font-family: monospace; font-weight: bold;">
-                        ${event.deployment?.commit_hash || "N/A"} (${event.deployment?.author || "System"})
+                        ${esc(event.deployment?.commit_hash || "N/A")} (${esc(event.deployment?.author || "System")})
                       </td>
                     </tr>
                     <tr style="border-bottom: 1px solid #e2e8f0;">
                       <td style="padding: 10px 0; color: #64748b; font-weight: 500;">Captured At</td>
-                      <td style="padding: 10px 0; color: #0f172a;">${event.timestamp}</td>
+                      <td style="padding: 10px 0; color: #0f172a;">${esc(event.timestamp)}</td>
                     </tr>
                     <tr style="border-bottom: 1px solid #e2e8f0;">
                       <td style="padding: 10px 0; color: #64748b; font-weight: 500;">Origin Client IP</td>
-                      <td style="padding: 10px 0; color: #0f172a; font-family: monospace;">${event.ip}</td>
+                      <td style="padding: 10px 0; color: #0f172a; font-family: monospace;">${esc(event.ip)}</td>
                     </tr>
                     <tr>
                       <td style="padding: 10px 0; color: #64748b; font-weight: 500;">Client Browser</td>
                       <td style="padding: 10px 0; color: #0f172a; font-family: monospace;">
-                        ${event.browser?.name || "N/A"} ${event.browser?.version || ""}</td>
+                        ${esc(event.browser?.name || "N/A")} ${esc(event.browser?.version || "")}</td>
                     </tr>
                   </table>
                 </td>
@@ -512,7 +537,7 @@ function generateErrorHtml(project, event) {
                   <table border="0" cellpadding="0" cellspacing="0">
                     <tr>
                       <td align="center" bgcolor="#1a1f2c" style="border-radius: 6px;">
-                        <a href="${project.website_url}" target="_blank" style="display: inline-block; padding: 12px 28px; color: #ffffff; font-size: 15px; font-weight: 600; text-decoration: none; border-radius: 6px;">Go to Project Root</a>
+                        <a href="${safeUrl(project.website_url)}" target="_blank" style="display: inline-block; padding: 12px 28px; color: #ffffff; font-size: 15px; font-weight: 600; text-decoration: none; border-radius: 6px;">Go to Project Root</a>
                       </td>
                     </tr>
                   </table>
@@ -523,7 +548,7 @@ function generateErrorHtml(project, event) {
               <tr>
                 <td style="background-color: #f8fafc; border-top: 1px solid #e2e8f0; padding: 24px 32px; text-align: center;">
                   <p style="margin: 0 0 4px 0; font-size: 12px; color: #94a3b8;">This automated incident dispatch was sent by your configured WatchTower Agent.</p>
-                  <p style="margin: 0; font-size: 11px; color: #cbd5e1; font-family: monospace;">API Key: ${project.api_key}</p>
+                  <p style="margin: 0; font-size: 11px; color: #cbd5e1; font-family: monospace;">Project: ${esc(project.id)}</p>
                 </td>
               </tr>
 

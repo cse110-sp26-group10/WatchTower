@@ -18,7 +18,7 @@ export class DashboardBanner extends HTMLElement {
     const label = healthy ? "ONLINE" : "OFFLINE";
     const message = healthy ? "System Live" : "System Down";
     this.innerHTML = `
-      <section class="deployment-banner-strip ${stateClass}">
+      <section class="dashboard-surface deployment-banner-strip ${stateClass}">
         <div class="status-indicator-block">
           <span class="status-indicator-dot"></span>
           <strong class="status-indicator-label">${label}</strong>

@@ -455,6 +455,30 @@ const server = http.createServer(async (req, res) => {
           invalidateRequest(res);
           console.error("Project unsharing failed:", error);
         }
+      } else if (requestPath === "/api/events/resolve") {
+        const { user, error: accessError } = await getUserFromRequest(req);
+        if (accessError) {
+          unauthorizedRequest(res);
+          console.error("Unauthorized:", accessError);
+          return;
+        }
+        try {
+          const { ids } = JSON.parse(body);
+          if (!Array.isArray(ids) || ids.length === 0)
+            throw new Error("Missing event ids");
+          if (!ids.every((id) => Number.isInteger(id)))
+            throw new Error("Invalid event id");
+          const error = await dbHelper.resolveEvents(user, ids);
+          if (error) {
+            invalidateRequest(res);
+            return;
+          }
+          res.writeHead(200, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ status: "success" }));
+        } catch (error) {
+          invalidateRequest(res);
+          console.error("Event resolve failed:", error);
+        }
       } else if (requestPath === "/api/notifications/methods") {
         const { user, error: accessError } = await getUserFromRequest(req);
         if (accessError) {
