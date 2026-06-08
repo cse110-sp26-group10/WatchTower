@@ -2,31 +2,11 @@
 
 A centralized observability system for tracking errors, performance degradation,
 and upset user signals. Built for CSE 110 Spring 2026 at UC San Diego.
-Please refer to the [Wiki](https://github.com/cse110-sp26-group10/WatchTower/wiki) for all relevant information, including onboarding, structure, and how to run it locally.
-
-## Team Status Video Link
-https://youtu.be/1RdMwzMQqv8
-
-## Figma Link
-https://tinyurl.com/4hcp36yr
-
-## Team Roster
-
-| Name | GitHub |
-|------|--------|
-| Nicole Sutedja | [@nicolesutedja](https://github.com/nicolesutedja) |
-| Evan Marriott | [@evangmarriott](https://github.com/evangmarriott) |
-| Aron Wu | [@arw008-droid](https://github.com/arw008-droid) |
-| Bethany Miyamoto | [@b3-m0](https://github.com/b3-m0) |
-| Jensen Guo | [@jguo55](https://github.com/jguo55) |
-| Kaley Chung | [@chungkaley](https://github.com/chungkaley) |
-| Xuanye Wang | [@KeeevinW](https://github.com/KeeevinW) |
-| Benedict Luis | [@bluis1](https://github.com/bluis1) |
-| Han Yang-Lin | [@hyanglin0](https://github.com/hyanglin0) |
-| Prakhar Shah | [@prs-016](https://github.com/prs-016) |
+Please refer to the [Wiki](https://github.com/cse110-sp26-group10/WatchTower/wiki) for all relevant information, including documentation links, onboarding, repo structure, and how to run it locally.
 
 ## Deployment
 **Link**: https://cse110-sp26-group10.github.io/WatchTower/src/app/dashboard/
+
 
 ## Repository Structure
 
@@ -95,3 +75,10 @@ WatchTower/
 - Weekly TA meetings
 - Human code reviews required for PRs > 300 lines
 - Conventional Commits enforced
+
+## Team Status Video Link
+https://youtu.be/1RdMwzMQqv8
+
+## Figma Link
+https://tinyurl.com/4hcp36yr
+
