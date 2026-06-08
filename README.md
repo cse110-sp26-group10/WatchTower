@@ -7,7 +7,7 @@ and upset user signals. Built for CSE 110 Spring 2026 at UC San Diego.
 https://youtu.be/1RdMwzMQqv8
 
 # Figma Link
-https://www.figma.com/design/rFF9NQnwunN9XZw9jF6BNm/WatchTower-Product---Design?node-id=102-2&t=iDh4jg6S2oQpA3v6-1
+https://tinyurl.com/4hcp36yr
 
 ## Team Roster
 
