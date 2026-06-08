@@ -86,15 +86,15 @@
 ### Stand-up 3 — 06/06/2026
 | Name | Did | Doing | Blockers |
 |------|-----|-------|----------|
-| Nicole Sutedja | | | |
-| Evan Marriott | | | |
-| Jensen Guo | | | |
-| Han Yang-Lin | | | |
-| Kevin Wang | | | |
-| Benedict Luis | | | |
-| Aron Wu | | | |
-| Kaley Chung | | | |
-| Prakhar Shah | | | |
+| Nicole Sutedja | i commented out the old topbar watchtower, i added hover info to all of the charts, changed up home page layout, added username, changed errors page + added charts, moved order of feedback (switch with activity) on the sidebar | approve PRs | None |
+| Evan Marriott | Full repo documentation audit, found and catalogued all outdated docs (README setup guide, tracker CDN URL, server paths, repo structure tree). Cleaned up all stale local and remote branches. Reviewed all open GitHub issues and identified what's done vs. still needed. Merged branches into main | Continue to work on documentation gaps | None |
+| Jensen Guo | Frontend update and security fixes | Documentation | Final |
+| Han Yang-Lin | Revamped ntfy and email notifications, and started working on API documentation | Complete API documentation | Finals |
+| Kevin Wang | fix frontend bugs, test features | help with the documentation if needed | None |
+| Benedict Luis | Reviewing + finalizing docs and scrum master audit | help anyone who needs a hand in wrapping up | Finals |
+| Aron Wu | Add comments for all closed issues to track resolving commit/pr, added css rules specific for mobile topbar and detailed error display | Work on demo videos | Finals |
+| Kaley Chung | Uploaded the Figma and checked that all tasks are majority completed | Cross-check everything against Audria's original requirements spec | Finals and fever |
+| Prakhar Shah | finished Wiki, checked all docs(sprint,changelog, technicalspec, etc) updated changelog | finished with tasks, work on final demo | finals |
 | Bethany Miyamoto | | | |
 
 ---
