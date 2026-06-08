@@ -37,13 +37,17 @@ WatchTower/
 ├── docs/
 │   ├── adr/                     # Architecture Decision Records
 │   ├── design/                  # Design plans and artifacts
+│       └──  lo-fi wireframes
+│       └──  high-fi wireframes
 │   ├── process/                 # Development process documentation
 │   ├── questions/               # Questions and notes for stakeholders
 │   ├── research/                # Research and competitive analysis
+│       └──  research infographics
 │   ├── specs/                   # MVP, technical specifications, changelog
 │   ├── superpowers/             # Team superpower planning documents
 │   ├── testing/                 # Testing plans and strategy
 │   ├── ucd/                     # User-centered design artifacts
+│       └──  user personas infographics
 │   ├── user/                    # User documentation
 │   └── pr-template.md           # Pull request template
 ├── src/
