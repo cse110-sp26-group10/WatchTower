@@ -108,42 +108,45 @@
 ---
 ## Sprint Review
 ### What was completed:
-- The main backend–frontend integration work was completed, so the app is now connected to live backend data.
-- The notification system was added and documented with email and ntfy support.
-- Browser-type detection was merged and checked in the dashboard.
-- A lot of final UI polish was completed, including responsiveness fixes, sidebar updates, layout cleanup, and app directory restructuring.
-- The CI pipeline additions were finished and merged, including dependency checking and Prettier formatting checks.
-- Sprint/process documentation was updated as part of the final Sprint 4 closeout work.
+- The main frontend and backend integration was completed, so the dashboard is now connected to live backend data.
+- The notification system was finished and improved, with both email and ntfy support working and documented.
+- Browser-type detection was merged, checked and reflected in the dashboard.
+- A lot of final UI polish got done, including layout cleanup, chart hover details, sidebar updates and mobile responsiveness fixes.
+- The repo was cleaned up a lot by removing stale branches, deleting unused files/pages and making `src/app/` the main application directory.
+- We did a full documentation audit and found the outdated setup instructions, old tracker references and other cleanup items that still need to be updated before the presentation.
+- CI and testing pipeline improvements were finished and merged, including dependency checks and formatting checks.
+- Figma files and other final supporting materials were also added and organized for submission.
 
 ### What was not completed:
 - Screen/display size tracking for error events was not started.
-- The final demo dry-run and demo video are still scheduled before code freeze.
-- Some final documentation cleanup, issue-board comments, metrics, and scope checks are still in progress.
-- The Supabase ADR still needs the final auth reasoning details
+- The Supabase ADR still needs the final auth reasoning added.
+- Some documentation cleanup is still in progress, especially the README/Wiki setup instructions and a few outdated references.
+- Final GitHub issue comments, sprint metrics, and a few last repo cleanup items still need to be wrapped up.
+- The final demo dry-run and demo video still need to be completed before submission.
 
 ### Reason(s):
-- Sprint 4 had a lot of final integration, documentation, polish, and demo-readiness work happening at the same time.
-- Some items depend on the final team update, the demo dry-run, and the last GitHub issue-board cleanup.
-- Standup 3 and some final metrics should be filled in after the next team update instead of guessing early
+- Sprint 4 had a lot happening at once, especially final integration, polishing, documentation, cleanup and demo prep.
+- A few of the remaining tasks were end-of-sprint cleanup items, so they got pushed back until the bigger feature work was done.
+- Some final updates still depend on the last documentation pass, demo dry-run and final team wrap-up.
 
 ---
+
 ## Sprint Retrospective
 ### What went well:
-- The team made strong progress on connecting the frontend and backend.
-- CI/testing work was finished and merged into main.
-- The app became more polished and demo-ready through UI fixes, responsiveness work, and cleanup.
-- Team members were actively reviewing docs, PRs, issues, and final requirements.
+- The team made strong progress on the biggest Sprint 4 priorities, especially finishing the frontend-backend integration and getting the app into a much more complete state.
+- A lot of polish work got done near the end of the sprint, including UI cleanup, responsiveness fixes, notification improvements and repo cleanup.
+- Documentation, PRs, and GitHub issues were reviewed more carefully toward the end, which helped us catch outdated setup instructions and other project details before the presentation.
+- CI/testing work was completed and merged, which helped keep the repo stable while final changes were being wrapped up.
 
 ### What didn't go well:
-- Some sprint documentation and GitHub issue statuses were not updated as consistently during the sprint.
-- A few tasks stayed open late because they depended on final review, demo prep, or code freeze timing.
-- Final metrics and issue comments still needed manual cleanup near the end.
+- Some documentation fell behind the actual state of the project, so we had to spend time late in the sprint doing a full audit and identifying outdated sections.
+- A few tasks stayed open until the very end because they depended on final review, demo prep or end-of-sprint cleanup.
+- Issue comments, sprint metrics and some repo bookkeeping were not updated as consistently during the sprint as they could have been.
 
 ### What we'll do differently:
-- Update sprint docs and issue statuses more regularly during the sprint.
-- Track metrics earlier instead of waiting until the end.
-- Add final issue comments and remaining-work notes as part of the normal PR/issue closeout process.
-
+- Update README/setup docs and other shared documentation earlier whenever architecture or folder structure changes.
+- Keep GitHub issues, sprint docs and completion notes up to date throughout the sprint instead of saving most of it for the end.
+- Set aside dedicated time earlier for final audit work, demo prep and submission cleanup so those tasks do not pile up all at once.
 ---
 ## Metrics
 | Metric | Value |
