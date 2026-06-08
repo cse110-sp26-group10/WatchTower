@@ -5,7 +5,7 @@ import {
   attemptSuccess,
   UptimeCheckAttempt,
   UptimeCheck,
-} from "../../src/prototype/server/assets/UptimeCheck.js";
+} from "../../src/app/server/assets/UptimeCheck.js";
 
 const BASE_TIME = 1_700_000_000_000;
 const mkAttempt = (offsetMs, status, error = null) => ({

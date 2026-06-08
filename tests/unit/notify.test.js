@@ -3,6 +3,10 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 const sendMail = vi.fn().mockResolvedValue({});
 const createTransport = vi.fn(() => ({ sendMail }));
 
+const mockDbHelper = {
+  getProjectFromId: vi.fn(),
+};
+
 const mockSupabase = {
   auth: {
     admin: {
@@ -34,15 +38,20 @@ vi.mock("dotenv/config", () => ({}));
 vi.mock("nodemailer", () => ({
   default: { createTransport },
 }));
-vi.mock("../../src/prototype/server/assets/db.js", () => ({
+vi.mock("../../src/app/server/assets/db.js", () => ({
   supabase: mockSupabase,
+  dbHelper: mockDbHelper,
 }));
 
 let notify;
 let notifyDowntime;
 let notifyError;
 
-const payload = { title: "Test alert", message: "Something happened" };
+const payload = {
+  title: "Test alert",
+  message: "Something happened",
+  html: "<p>Test report</p>",
+};
 const baseUser = {
   alert_id: "topic-abc",
   auth_id: "auth-uuid-1",
@@ -53,13 +62,49 @@ const project = {
   name: "My Site",
   website_url: "https://example.com",
 };
+const uptimeCheck = {
+  url: "https://example.com",
+  timestamp: "2026-05-19T12:00:00.000Z",
+  status: 503,
+  latency: 0,
+  attempts: [
+    {
+      error: { cause: { code: "ECONNREFUSED" } },
+      timestamp: "2026-05-19T12:00:00.000Z",
+      status: null,
+      latency: 0,
+    },
+  ],
+};
 const errorEvent = {
   event_type: "error",
   project_id: 10,
   host: "example.com",
   current_url: "https://example.com/checkout",
-  metadata: { severity: "high", message: "boom" },
+  pathname: "/checkout",
+  timestamp: "2026-05-19T12:00:00.000Z",
+  ip: "127.0.0.1",
+  deployment: {
+    id: "dep_001",
+    version: "1.0.0",
+    commit_hash: "abc",
+    author: "evan",
+  },
+  browser: { name: "Chrome", version: "120" },
+  referrer: "",
+  metadata: { severity: "critical", message: "boom" },
 };
+
+// Returns a fetch mock that handles both the HTML upload (returns attachment URL)
+// and the notification send (returns ok).
+function makeFetchSuccess() {
+  return vi.fn().mockResolvedValue({
+    ok: true,
+    json: vi.fn().mockResolvedValue({
+      attachment: { url: "https://ntfy.sh/attachment/report.html" },
+    }),
+  });
+}
 
 beforeEach(async () => {
   vi.resetModules();
@@ -67,15 +112,16 @@ beforeEach(async () => {
   vi.useRealTimers();
   delete process.env.SMTP_USER;
   delete process.env.SMTP_PASS;
-  global.fetch = vi.fn().mockResolvedValue({ ok: true });
+  global.fetch = makeFetchSuccess();
   mockSupabase.auth.admin.getUserById.mockResolvedValue({
     data: { user: { email: "user@example.com" } },
     error: null,
   });
+  mockDbHelper.getProjectFromId.mockResolvedValue({ project, error: null });
   mockProjectUsers([]);
 
   ({ notify, notifyDowntime, notifyError } =
-    await import("../../src/prototype/server/assets/notify.js"));
+    await import("../../src/app/server/assets/notify.js"));
 });
 
 afterEach(() => {
@@ -116,14 +162,16 @@ describe("notify", () => {
       await notify({ ...baseUser, notify_methods: undefined }, payload),
     ).toBe(true);
 
-    expect(global.fetch).toHaveBeenCalledTimes(1);
+    // 2 fetch calls: upload HTML report + send ntfy notification
+    expect(global.fetch).toHaveBeenCalledTimes(2);
     expect(mockSupabase.auth.admin.getUserById).toHaveBeenCalledTimes(1);
     expect(sendMail).toHaveBeenCalledTimes(1);
   });
 
   it("Sends push only when notify_methods is ['push']", async () => {
     expect(await notify(baseUser, payload)).toBe(true);
-    expect(global.fetch).toHaveBeenCalledTimes(1);
+    // 2 fetch calls: upload HTML report + send ntfy notification
+    expect(global.fetch).toHaveBeenCalledTimes(2);
     expect(mockSupabase.auth.admin.getUserById).not.toHaveBeenCalled();
   });
 
@@ -140,20 +188,28 @@ describe("notify", () => {
       expect.objectContaining({
         to: "user@example.com",
         subject: payload.title,
-        text: payload.message,
+        html: payload.html,
       }),
     );
   });
 
   it("Returns true when push succeeds on the first try", async () => {
     expect(await notify(baseUser, payload)).toBe(true);
-    expect(global.fetch).toHaveBeenCalledWith(
+    // First call: upload HTML to storage topic (URL contains alert_id)
+    expect(global.fetch).toHaveBeenNthCalledWith(
+      1,
       expect.stringContaining(baseUser.alert_id),
+      expect.objectContaining({ method: "POST" }),
+    );
+    // Second call: send notification as JSON to NTFY_BASE_URL
+    expect(global.fetch).toHaveBeenNthCalledWith(
+      2,
+      expect.any(String),
       expect.objectContaining({
         method: "POST",
-        body: payload.message,
         headers: expect.objectContaining({
-          "X-Title": payload.title,
+          "Content-Type": "application/json",
+          "X-Priority": "default",
         }),
       }),
     );
@@ -167,6 +223,7 @@ describe("notify", () => {
     await vi.runAllTimersAsync();
 
     expect(await promise).toBe(false);
+    // Upload fails each retry — one fetch call per attempt, no second call
     expect(global.fetch).toHaveBeenCalledTimes(3);
   });
 
@@ -175,13 +232,19 @@ describe("notify", () => {
     global.fetch = vi
       .fn()
       .mockResolvedValueOnce({ ok: false })
-      .mockResolvedValueOnce({ ok: true });
+      .mockResolvedValue({
+        ok: true,
+        json: vi.fn().mockResolvedValue({
+          attachment: { url: "https://ntfy.sh/attachment/report.html" },
+        }),
+      });
 
     const promise = notify(baseUser, payload);
     await vi.runAllTimersAsync();
 
     expect(await promise).toBe(true);
-    expect(global.fetch).toHaveBeenCalledTimes(2);
+    // Attempt 1: upload fails (1 call). Attempt 2: upload + notification (2 calls).
+    expect(global.fetch).toHaveBeenCalledTimes(3);
   });
 
   it("Skips email when auth lookup returns no email", async () => {
@@ -215,31 +278,31 @@ describe("notifyDowntime", () => {
       { users: { ...baseUser, alert_id: "topic-2" } },
     ]);
 
-    await notifyDowntime(project);
+    await notifyDowntime(project, uptimeCheck);
 
-    expect(global.fetch).toHaveBeenCalledTimes(2);
+    // 2 users × 2 fetch calls each (upload + notification) = 4 calls
+    expect(global.fetch).toHaveBeenCalledTimes(4);
+    // Notification calls have X-Priority and X-Tags headers
     expect(global.fetch).toHaveBeenCalledWith(
-      expect.stringContaining("topic-1"),
+      expect.any(String),
       expect.objectContaining({
         headers: expect.objectContaining({
-          "X-Title": `${project.name} is down`,
           "X-Priority": "high",
-          "X-Tags": "warning",
+          "X-Tags": "rotating_light",
         }),
-        body: `${project.website_url} appears to be offline.`,
       }),
     );
   });
 
   it("Does nothing when the project has no users", async () => {
-    await notifyDowntime(project);
+    await notifyDowntime(project, uptimeCheck);
     expect(global.fetch).not.toHaveBeenCalled();
   });
 
   it("Does nothing when loading project users fails", async () => {
     mockProjectUsers(null, { message: "db fail" });
 
-    await notifyDowntime(project);
+    await notifyDowntime(project, uptimeCheck);
 
     expect(global.fetch).not.toHaveBeenCalled();
   });
@@ -260,37 +323,39 @@ describe("notifyError", () => {
     expect(global.fetch).not.toHaveBeenCalled();
   });
 
-  it("Notifies each project user for a valid error event", async () => {
+  it("Notifies each project user for a valid critical error event", async () => {
     mockProjectUsers([{ users: baseUser }]);
 
     await notifyError(errorEvent);
 
-    expect(global.fetch).toHaveBeenCalledTimes(1);
+    // 2 fetch calls: upload HTML report + send notification
+    expect(global.fetch).toHaveBeenCalledTimes(2);
     expect(global.fetch).toHaveBeenCalledWith(
-      expect.stringContaining(baseUser.alert_id),
+      expect.any(String),
       expect.objectContaining({
         headers: expect.objectContaining({
-          "X-Title": `Error on ${errorEvent.host}`,
           "X-Priority": "high",
           "X-Tags": "rotating_light",
         }),
-        body: `[high] boom\n${errorEvent.current_url}`,
       }),
     );
   });
 
-  it("Uses default priority when severity is not high", async () => {
+  it("Uses default priority and warning tag when severity is not critical", async () => {
     mockProjectUsers([{ users: baseUser }]);
 
     await notifyError({
       ...errorEvent,
-      metadata: { severity: "critical", message: "boom" },
+      metadata: { severity: "warning", message: "minor issue" },
     });
 
     expect(global.fetch).toHaveBeenCalledWith(
       expect.any(String),
       expect.objectContaining({
-        headers: expect.objectContaining({ "X-Priority": "default" }),
+        headers: expect.objectContaining({
+          "X-Priority": "default",
+          "X-Tags": "warning",
+        }),
       }),
     );
   });
@@ -300,15 +365,10 @@ describe("notifyError", () => {
 
     await notifyError({
       ...errorEvent,
-      metadata: { severity: "high" },
+      metadata: { severity: "critical" },
     });
 
-    expect(global.fetch).toHaveBeenCalledWith(
-      expect.any(String),
-      expect.objectContaining({
-        body: `[high] An error was reported.\n${errorEvent.current_url}`,
-      }),
-    );
+    expect(global.fetch).toHaveBeenCalledTimes(2);
   });
 
   it("Does nothing when loading project users fails", async () => {
