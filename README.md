@@ -42,6 +42,7 @@ WatchTower/
 │   ├── design/                  # Design plans and artifacts
 │       └──  lo-fi wireframes
 │       └──  high-fi wireframes
+│       └──  study guide
 │   ├── process/                 # Development process documentation
 │   ├── questions/               # Questions and notes for stakeholders
 │   ├── research/                # Research and competitive analysis
