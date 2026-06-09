@@ -40,49 +40,42 @@ For detailed database setup and migration instructions see [`src/app/server/READ
 ```
 WatchTower/
 ├── .github/
-│   └── workflows/               # GitHub Actions CI workflow
+│   └── workflows/                # GitHub Actions CI workflow
 ├── admin/
-│   ├── feedback/                # Team feedback and retrospectives
-│   └── sprints/                 # Sprint planning and status documents
-├── archive/                     # Archived prototypes and legacy code
+│   ├── feedback/                 # Team feedback and retrospectives
+│   ├── sprints/                  # Sprint planning and status documents
+│   └── pr-template.md            # Pull request template
+├── archive/                      # Archived prototypes and legacy code
 ├── docs/
-│   ├── adr/                     # Architecture Decision Records
-│   ├── design/                  # Design plans and artifacts
-│       └──  lo-fi wireframes    # Lo-Fi Wireframes from Figma
-│       └──  high-fi wireframes  # High-Fi Wireframes from Figma
-│       └──  study guide         # Study Guide From Figma
-│   ├── process/                 # Development process documentation
-│   ├── questions/               # Questions and notes for stakeholders
-│   ├── research/                # Research and competitive analysis
-│       └──  research infographics # Research infographics from Figma 
-│   ├── specs/                   # MVP, technical specifications, changelog
-│   ├── superpowers/             # Team superpower planning documents
-│   ├── testing/                 # Testing plans and strategy
-│   ├── ucd/                     # User-centered design artifacts
-│       └──  user persona infographics # User persona infographics from Figma 
-│   ├── user/                    # User documentation
-│   └── pr-template.md           # Pull request template
+│   ├── adr/                      # Architecture Decision Records
+│   ├── design/                   # Design plans and artifacts
+│   ├── questions/                # Questions and notes for stakeholders
+│   ├── research/                 # Research and competitive analysis
+│   ├── specs/                    # MVP, technical specifications, changelog
+│   ├── testing/                  # Testing plans and strategy
+│   └── user/                     # User documentation
+├── node_modules/
 ├── src/
-│   ├── app/                     # Main WatchTower application
-│   │   ├── dashboard/           # Dashboard frontend (SPA)
-│   │   ├── server/              # Backend API and notification services
-│   │   └── tracker/             # Client-side monitoring script
-│   └── test-app/               # Sample application used for testing
+│   ├── app/                      # Main WatchTower application
+│   ├── test-app/                 # Sample application used for testing
+│   ├── .gitkeep
+│   └── filters.js
 ├── supabase/
-│   ├── migrations/             # Database schema migrations
-│   └── seed.sql                # Seed data
+│   ├── .branches/
+│   ├── .temp/
+│   └── migrations/               # Database schema migrations
 ├── tests/
-│   ├── e2e/                    # Playwright end-to-end tests
-│   └── unit/                   # Vitest unit tests
+│   ├── e2e/                      # Playwright end-to-end tests
+│   └── unit/                     # Vitest unit tests
 ├── .gitignore
-├── .htmlvalidate.json          # HTML validation configuration
-├── .stylelintrc.json           # Stylelint configuration
-├── eslint.config.js            # ESLint configuration
-├── package.json                # Project dependencies and scripts
+├── .htmlvalidate.json            # HTML validation configuration
+├── .stylelintrc.json             # Stylelint configuration
+├── eslint.config.js              # ESLint configuration
+├── package.json                  # Project dependencies and scripts
 ├── package-lock.json
-├── playwright.config.js        # Playwright configuration
-├── vitest.config.js            # Vitest configuration
-└── README.md                   # Project overview and setup guide
+├── playwright.config.js          # Playwright configuration
+├── vitest.config.js              # Vitest configuration
+└── README.md                     # Project overview and setup guide
 ```
 
 ## Tech Stack
