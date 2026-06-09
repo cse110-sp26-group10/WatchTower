@@ -21,7 +21,7 @@ dashboard. Data lives in Supabase; the server talks to it with
 
 ```bash
 npm install                              # repo root — installs the Supabase CLI
-cd src/prototype/server && npm install   # server — supabase-js, dotenv, ws
+cd src/app/server && npm install         # server — supabase-js, dotenv, ws
 ```
 
 ### 1.3 Start local Supabase
@@ -37,7 +37,7 @@ Local URLs: **Studio** (dashboard UI) http://127.0.0.1:54323 ·
 
 ### 1.4 Configure `.env`
 
-Copy `.env.example` to `.env` in `src/prototype/server/`. Set up **both** local
+Copy `.env.example` to `.env` in `src/app/server/`. Set up **both** local
 and remote, and keep the one you're using active (comment the other out).
 
 ```
@@ -58,7 +58,7 @@ SUPABASE_SERVICE_ROLE_KEY=<the "Secret" sb_secret_… key>
 ### 1.5 Run the server
 
 ```bash
-cd src/prototype/server && npm start     # expect "Server running" on :8080
+cd src/app/server && npm start           # expect "Server running" on :8080
 curl http://localhost:8080/api/events    # quick check — returns [] until events exist
 ```
 
