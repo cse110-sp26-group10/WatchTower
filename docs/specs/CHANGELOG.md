@@ -74,8 +74,6 @@ All team members must document any notable changes to the WatchTower project in 
 - Unit tests for uptime check behavior.
 - Dependency security audit step in the CI pipeline (`npm audit --audit-level=high`).
 - Prettier code formatting check in the CI pipeline.
-- ADR 007 documenting the decision to use email and ntfy for user notifications.
-
 ### Changed
 - Relaxed `Event.js` validation: `user_id` and top-level `browser` are no longer required from the tracker payload; the server sets `project_id` via `setField`.
 - Playwright E2E tests updated to target the new SPA dashboard structure (hash routes `/#/errors`, `/#/activity`, auth-gated login check).
