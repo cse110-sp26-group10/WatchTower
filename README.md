@@ -7,6 +7,33 @@ Please refer to the [Wiki](https://github.com/cse110-sp26-group10/WatchTower/wik
 ## Deployment
 **Link**: https://cse110-sp26-group10.github.io/WatchTower/src/app/dashboard/
 
+## How to Run Locally
+
+**Prerequisites:** Node.js 20+, Docker Desktop (running)
+
+```bash
+# 1. Install dependencies
+npm install                        # repo root
+cd src/app/server && npm install   # server dependencies
+
+# 2. Start local Supabase (first run downloads Docker images)
+cd ../../..                        # back to repo root
+npx supabase start
+npx supabase status                # copy the local URLs and keys
+
+# 3. Configure environment
+cp src/app/server/.env.example src/app/server/.env
+# Edit src/app/server/.env with the SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY
+# from `npx supabase status` (use the secret/service_role key, not the anon key)
+
+# 4. Run the server
+cd src/app/server && npm start     # listening on http://localhost:8080
+
+# 5. Open the dashboard
+# Open src/app/dashboard/index.html in a browser, or use VS Code Live Server
+```
+
+For detailed database setup and migration instructions see [`src/app/server/README.md`](src/app/server/README.md).
 
 ## Repository Structure
 
@@ -36,9 +63,8 @@ WatchTower/
 │   ├── user/                    # User documentation
 │   └── pr-template.md           # Pull request template
 ├── src/
-│   ├── js/                      # Shared application scripts
-│   ├── prototype/               # Main WatchTower prototype
-│   │   ├── dashboard/           # Dashboard frontend
+│   ├── app/                     # Main WatchTower application
+│   │   ├── dashboard/           # Dashboard frontend (SPA)
 │   │   ├── server/              # Backend API and notification services
 │   │   └── tracker/             # Client-side monitoring script
 │   └── test-app/               # Sample application used for testing
@@ -64,7 +90,7 @@ WatchTower/
 - **HTML5** — standards-based markup
 - **CSS3** — no frameworks
 - **Vanilla JavaScript (ES6+)** — no frameworks
-- **Jest** — unit testing
+- **Vitest** — unit testing
 - **GitHub Actions** — CI/CD
 - **JSDocs** — code documentation
 - **MADR** — architecture decision records
