@@ -1,4 +1,4 @@
-# WatchTower Prototype
+# WatchTower
 
 ## Event Signal Structure
 
