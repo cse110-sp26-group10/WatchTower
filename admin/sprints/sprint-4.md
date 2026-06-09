@@ -95,7 +95,7 @@
 | Aron Wu | Add comments for all closed issues to track resolving commit/pr, added css rules specific for mobile topbar and detailed error display | Work on demo videos | Finals |
 | Kaley Chung | Uploaded the Figma and checked that all tasks are majority completed | Cross-check everything against Audria's original requirements spec | Finals and fever |
 | Prakhar Shah | finished Wiki, checked all docs(sprint,changelog, technicalspec, etc) updated changelog | finished with tasks, work on final demo | finals |
-| Bethany Miyamoto | | | |
+| Bethany Miyamoto | more repo clean up, fixed readme, contacted dev about demo dry run | demo dry run | Finals |
 
 ---
 ## Decisions Made
