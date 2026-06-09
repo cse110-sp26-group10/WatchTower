@@ -8,7 +8,7 @@ This guide explains how to embed the WatchTower tracker into any web application
 
 - A WatchTower account and a project created in the dashboard
 - Your project's **API key** (a UUID found on the dashboard settings or projects page)
-- A running WatchTower server (see the [server README](../../src/prototype/server/README.md))
+- A running WatchTower server (see the [server README](../../src/app/server/README.md))
 
 ---
 
@@ -18,7 +18,7 @@ Paste the following `<script>` tag into the `<head>` of every page you want to m
 
 ```html
 <script
-  src="https://cdn.jsdelivr.net/gh/cse110-sp26-group10/WatchTower@main/src/prototype/tracker/watchtower.js"
+  src="https://cdn.jsdelivr.net/gh/cse110-sp26-group10/WatchTower@main/src/app/tracker/watchtower.js"
   data-apikey="YOUR_API_KEY"
 ></script>
 ```
@@ -128,7 +128,7 @@ If events are not appearing, check that:
 
     <!-- WatchTower tracker -->
     <script
-      src="https://cdn.jsdelivr.net/gh/cse110-sp26-group10/WatchTower@main/src/prototype/tracker/watchtower.js"
+      src="https://cdn.jsdelivr.net/gh/cse110-sp26-group10/WatchTower@main/src/app/tracker/watchtower.js"
       data-apikey="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
     ></script>
   </head>
