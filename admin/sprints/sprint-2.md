@@ -34,17 +34,17 @@
 
 | ID | Task | Assignee(s) | Status | Notes |
 |----|------|-------------|--------|-------|
-| T01 | Connect backend server to frontend dashboard (wire real/mock data to UI) | Han Yang-Lin, Kevin Wang, Bethany Miyamoto | 🔄 In Progress | Backend server, tracker, and dashboard fetch path exist; needs end-to-end demo stabilization in Sprint 3 |
+| T01 | Connect backend server to frontend dashboard (wire real/mock data to UI) | Han Yang-Lin, Kevin Wang, Bethany Miyamoto | ✅ Done | Completed in Sprint 3/4 — all dashboard pages fully connected to live backend data |
 | T02 | Finalize event signal structure and decide on database | Han Yang-Lin | ✅ Done | Event structure documented; PostgreSQL selected in ADR 004 |
 | T03 | Complete and merge user personas | Prakhar Shah | ✅ Done  | Carried over from Sprint 1 |
 | T04 | Finish remaining user research (build/deployment signal context) | Kaley Chung | ✅ Done  | Unblock Jensen's wireframe work |
-| T05 | Iterate wireframes based on user research and MVP feedback | Jensen Guo | 🔄 In Progress | Dashboard wireframes progressed; high-fidelity user flow and branding work carried into Sprint 3 |
+| T05 | Iterate wireframes based on user research and MVP feedback | Jensen Guo | ✅ Done | Hi-fi wireframes completed and added to repo in Sprint 3 |
 | T06 | Add wireframes to repo (Figma export or link) | Jensen Guo | ✅ Done | Figma link added to design plan; exports/screenshots can still be added in Sprint 3 if needed |
 | T07 | Define ESLint configuration and document testing strategy | Aron, Benedict Luis | ✅ Done | ESLint ADR created; testing strategy exists in docs |
-| T08 | Add ESLint + HTML/CSS validation to GitHub Actions CI pipeline | Benedict Luis | 🔄 In Progress | No GitHub Actions workflow found yet; carry into Sprint 3 |
-| T09 | Add JSDoc comments to all existing JS files | All Developers | 🔄 In Progress | Some prototype JS now has JSDoc; remaining files carry into Sprint 3 |
-| T10 | Write initial unit tests for backend signal validation logic | Benedict, Aron | 🔲 Not Started | Testing must be verifiable early in repo |
-| T11 | Update CHANGELOG.md for all Sprint 2 changes | All Members | 🔲 Not Started | CHANGELOG still only lists Sprint 1 / v0.1.0 content; carry into Sprint 3 |
+| T08 | Add ESLint + HTML/CSS validation to GitHub Actions CI pipeline | Benedict Luis | ✅ Done | ESLint, HTML validation, and Stylelint all running in CI |
+| T09 | Add JSDoc comments to all existing JS files | All Developers | ✅ Done | JSDoc comments added across JS files in subsequent sprints |
+| T10 | Write initial unit tests for backend signal validation logic | Benedict, Aron | ✅ Done | 141 unit tests passing across auth, notifications, and uptime logic |
+| T11 | Update CHANGELOG.md for all Sprint 2 changes | All Members | ✅ Done | CHANGELOG updated through v0.4.2 |
 | T12 | Update GENAI.md with any AI tool usage this sprint | All Members | ✅ Done | Test app AI usage recorded |
 | T13 | Hold dev team sync to coordinate frontend/backend merge | Nicole / Evan | ✅ Done  | Prevent code conflicts flagged in Sprint 1 retro |
 | T14 | TA sync with Audria — confirm ESLint approval & alert/notification approach | Ben, Aron | ✅ Done | Stand-ups record TA check-in and ESLint direction |
@@ -170,7 +170,7 @@
 | Metric | Value |
 |--------|-------|
 | Tasks Planned | 15 |
-| Tasks Completed | 9 |
+| Tasks Completed | 15 |
 | PRs Opened | 4 |
 | PRs Merged | 4 |
 | Lines of Code Added | ~900 |
