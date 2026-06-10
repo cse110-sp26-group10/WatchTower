@@ -52,18 +52,15 @@ WatchTower/
 │   ├── questions/                # Questions and notes for stakeholders
 │   ├── research/                 # Research and competitive analysis
 │   ├── specs/                    # MVP, technical specifications, changelog
-│   ├── testing/                  # Testing plans and strategy
-│   └── user/                     # User documentation
-├── node_modules/
+│   ├── testing/                  # Testing plans and CI strategy
+│   └── user/                     # User documentation and personas
 ├── src/
 │   ├── app/                      # Main WatchTower application
 │   ├── test-app/                 # Sample application used for testing
-│   ├── .gitkeep
 │   └── filters.js
 ├── supabase/
-│   ├── .branches/
-│   ├── .temp/
-│   └── migrations/               # Database schema migrations
+│   ├── migrations/               # Database schema migrations
+│   └── seed.sql                  # Seed data
 ├── tests/
 │   ├── e2e/                      # Playwright end-to-end tests
 │   └── unit/                     # Vitest unit tests
@@ -83,9 +80,15 @@ WatchTower/
 - **HTML5** — standards-based markup
 - **CSS3** — no frameworks
 - **Vanilla JavaScript (ES6+)** — no frameworks
+- **Node.js** — backend server
+- **Supabase (PostgreSQL)** — database and auth
+- **NodeMailer** — email notifications via Gmail SMTP
+- **ntfy** — push notifications
 - **Vitest** — unit testing
+- **Playwright** — end-to-end testing
+- **ESLint / html-validate / Stylelint** — linting and validation
 - **GitHub Actions** — CI/CD
-- **JSDocs** — code documentation
+- **JSDoc** — code documentation
 - **MADR** — architecture decision records
 
 ## Process
