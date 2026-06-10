@@ -39,17 +39,17 @@
 | T03 | Add an uptime card to the dashboard | Kevin Wang, Han Yang-Lin | ✅ Done | Stand-up 1 notes uptime card and backend-connected uptime display |
 | T04 | Add an uptime graph/history view | Kevin Wang, Han Yang-Lin | 🔲 Not Started | Use the website status signal structure from the prototype README |
 | T05 | Implement PostgreSQL persistence with node-postgres | Han Yang-Lin | ✅ Done | Stand-up 1 notes PostgreSQL database implementation |
-| T06 | Develop low-fidelity wireframes into high-fidelity Figma designs | Nicole Sutedja, Jensen Guo, Kaley Chung, Prakhar Shah | 🔄 In Progress | Include visual hierarchy, spacing, color, and component states |
+| T06 | Develop low-fidelity wireframes into high-fidelity Figma designs | Nicole Sutedja, Jensen Guo, Kaley Chung, Prakhar Shah | ✅ Done | Hi-fi wireframes completed and confirmed in sprint review |
 | T07 | Refine user flow across dashboard, issue detail, feedback, errors, activity, and uptime views | Jensen Guo, Product & Design Team | 🔄 In Progress | Make demo path easy to follow and consistent with MVP |
 | T08 | Define WatchTower branding guidance for the hi-fi designs and app UI | Nicole Sutedja, Product & Design Team | 🔄 In Progress | Logo/wordmark usage, color palette, typography, and tone |
 | T09 | Align implemented UI with the high-fidelity dashboard direction | Kevin Wang, Jensen Guo | 🔄 In Progress | Focus on demo-facing screens first; update layout based on Figma |
-| T10 | Continue refactoring/modularizing dashboard pages and scripts | Jensen Guo | 🔄 In Progress | Feedback page, errors page, and signal overview script started |
-| T11 | Add ESLint plus HTML/CSS validation to the GitHub Actions CI pipeline | Benedict Luis, Aron Wu | 🔄 In Progress | Carryover from Sprint 2 T08 |
+| T10 | Continue refactoring/modularizing dashboard pages and scripts | Jensen Guo | ✅ Done | Refactoring and modularization completed per stand-up notes |
+| T11 | Add ESLint plus HTML/CSS validation to the GitHub Actions CI pipeline | Benedict Luis, Aron Wu | ✅ Done | CI pipeline set up and running per sprint review |
 | T12 | Finish useful JSDoc coverage for existing JavaScript files | All Developers | 🔄 In Progress | Carryover from Sprint 2 T09; prioritize shared logic and backend validation |
-| T13 | Write initial unit tests for backend signal validation logic | Benedict Luis, Aron Wu | 🔲 Not Started | Carryover from Sprint 2 T10 |
+| T13 | Write initial unit tests for backend signal validation logic | Benedict Luis, Aron Wu | ✅ Done | 6 unit tests written per sprint metrics |
 | T14 | Update CHANGELOG.md with Sprint 2 and Sprint 3 changes | All Members | 🔲 Not Started | Carryover from Sprint 2 T11; keep entries project-focused |
-| T15 | Prepare and document the project demo script/video plan | Nicole Sutedja, Evan Marriott | 🔄 In Progress | Include setup steps, expected signals, and fallback plan |
-| T16 | Verify the demo manually before sprint review | Nicole Sutedja, Evan Marriott, QA Team | 🔲 Not Started | Run test app actions and confirm dashboard updates |
+| T15 | Prepare and document the project demo script/video plan | Nicole Sutedja, Evan Marriott | ✅ Done | Demo video and script completed before sprint review |
+| T16 | Verify the demo manually before sprint review | Nicole Sutedja, Evan Marriott, QA Team | ✅ Done | Demo manually verified before sprint review |
 
 > Status options: 🔲 Not Started · 🔄 In Progress · ✅ Done · 🚫 Blocked
 
