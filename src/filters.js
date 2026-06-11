@@ -1,7 +1,7 @@
 /**
  * @file filters.js
- * Basic prototype filtering utilities for WatchTower MVP.
- * Used for dashboard dropdowns, search, and timeline filtering.
+ * Filtering utility functions from the WatchTower prototype phase.
+ * Not used by the current SPA dashboard — retained as a standalone module.
  */
 
 /* -------------------------------------------------------------------------- */

@@ -33,7 +33,7 @@
 | T03 | Update Supabase ADR to include auth reasoning | Han Yang-Lin, Kevin Wang | 🔄 In Progress | Add detailed architectural justification for built-in auth |
 | T04 | Finish small UI fixes, polish app/cards to look professional | Jensen Guo | ✅ Done | Rounded corners removed, error emphasis improved, survey message fixed |
 | T05 | Merge browser-type detection PR and validate in dashboard | Evan Marriott, Nicole Sutedja | ✅ Done | Core lead verification |
-| T06 | Implement screen/display size tracking for error events | Evan Marriott, Nicole Sutedja | 🔲 Not Started | Track display context at time of error |
+| T06 | Implement screen/display size tracking for error events | Evan Marriott, Nicole Sutedja | 🚫 Blocked | Descoped at code freeze — not implemented |
 | T07 | Finalize PR structure and close completed GitHub Issues | Evan Marriott, Nicole Sutedja | ✅ Done | Align issue tracker with final repository state |
 | T08 | Write "definition of done" into process docs | Evan Marriott, Nicole Sutedja | ✅ Done | Core process documentation |
 | T09 | Finalize CI pipeline additions (dependency check, changelog, formatting) & open PR from testing branch | Benedict Luis, Aron Wu | ✅ Done | Merged via PR #83; dependency + Prettier on `main` |
@@ -45,10 +45,10 @@
 | T15 | Ensure all tasks are majority completed / adjust to MVP scope if blocked | Kaley Chung, Prakhar Shah, Bethany Miyamoto | 🔄 In Progress | Tracking blockers actively |
 | T16 | Cross-check everything against Audria's original requirements spec | Kaley Chung, Prakhar Shah, Bethany Miyamoto | 🔄 In Progress | In progress |
 | T17 | Repo cleanup: dead code, stale branches, unused files | Kaley Chung, Prakhar Shah, Bethany Miyamoto | ✅ Done | Unused pages deleted; frontend docs and dead imports removed |
-| T18 | Demo dry-run: walk full app flow end-to-end before submission | Kaley Chung, Prakhar Shah, Bethany Miyamoto | 🔲 Not Started | Scheduled before code freeze |
+| T18 | Demo dry-run: walk full app flow end-to-end before submission | Kaley Chung, Prakhar Shah, Bethany Miyamoto | ✅ Done | Completed before submission |
 | T19 | Check previous PRs and GitHub Issues to add more detail if necessary | Kaley Chung, Prakhar Shah, Bethany Miyamoto | 🔄 In Progress | In progress |
 | T20 | Audit all documentation (sprints, ADRs, changelog, AI use log, etc.) | Kaley Chung, Prakhar Shah, Bethany Miyamoto | 🔄 In Progress | In progress — all sprint docs and ADRs being reviewed and filled out |
-| T21 | Ensure demo video is made on time and fully edited | Kaley Chung, Prakhar Shah, Bethany Miyamoto | 🔲 Not Started | Scheduled before code freeze |
+| T21 | Ensure demo video is made on time and fully edited | Kaley Chung, Prakhar Shah, Bethany Miyamoto | ✅ Done | Published at https://youtu.be/1RdMwzMQqv8 |
 
 > Status options: 🔲 Not Started · 🔄 In Progress · ✅ Done · 🚫 Blocked
 
