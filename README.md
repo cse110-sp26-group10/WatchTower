@@ -84,19 +84,48 @@ WatchTower/
 ├── vitest.config.js              # Vitest configuration
 └── README.md                     # Project overview and setup guide
 ```
-
 ## Tech Stack
+WatchTower intentionally avoids heavy third-party frameworks to maintain low performance overhead and high transparency.
 
-- **HTML5** — standards-based markup
-- **CSS3** — no frameworks
-- **Vanilla JavaScript (ES6+)** — no frameworks
-- **Node.js** — backend server
-- **Supabase (PostgreSQL)** — database and auth
-- **NodeMailer** — email notifications via Gmail SMTP
-- **ntfy** — push notifications
-- **Vitest** — unit testing
-- **Playwright** — end-to-end testing
-- **ESLint / html-validate / Stylelint** — linting and validation
-- **GitHub Actions** — CI/CD
-- **JSDoc** — code documentation
-- **MADR** — architecture decision records
+| Layer | Technology | Notes |
+| :--- | :--- | :--- |
+| **Markup** | HTML5 | Semantically structured markup. |
+| **Styling** | CSS3 | Native styling patterns (no UI frameworks or preprocessors). |
+| **Logic** | Vanilla JavaScript | Clean ES6+ implementation without bundler dependencies. |
+| **Backend** | Node.js | HTTP server handling all API routes, event ingestion, and uptime monitoring. |
+| **Database** | Supabase / PostgreSQL | Managed backend layer with strict schema definitions. |
+| **Auth** | Supabase Auth | Email/password login with session management. |
+| **Notifications** | NodeMailer, ntfy | Email alerts via Gmail SMTP and push notifications via ntfy. |
+| **Testing** | Vitest, Playwright | Unit validation alongside end-to-end user flow automation. |
+| **Linting** | ESLint, html-validate, Stylelint | JS, HTML, and CSS validation enforced in CI. |
+| **CI/CD** | GitHub Actions | Automated linting, testing, and security audit pipelines. |
+| **Docs** | JSDoc, MADR | Code-level documentation paired with Architecture Decision Records. |
+
+## Key Documentation
+For more details, be sure to check out our [Wiki](https://github.com/cse110-sp26-group10/WatchTower/wiki) page. 
+| Document | Description |
+|----------|-------------|
+| [MVP Definition](https://github.com/cse110-sp26-group10/WatchTower/blob/main/docs/specs/MVP_DEFINITION.md) | Scope and feature boundaries for the minimum viable product |
+| [Technical Spec](https://github.com/cse110-sp26-group10/WatchTower/blob/main/docs/specs/TECHNICAL_SPEC.md) | Full stack, architecture, and process requirements |
+| [Changelog](https://github.com/cse110-sp26-group10/WatchTower/blob/main/docs/specs/CHANGELOG.md) | Version history using Semantic Versioning |
+| [GenAI Disclosure Log](https://github.com/cse110-sp26-group10/WatchTower/blob/main/docs/specs/GENAI.md) | All AI-assisted code and content disclosed here |
+| [ADRs](https://github.com/cse110-sp26-group10/WatchTower/tree/main/docs/adr) | Architecture Decision Records in MADR format |
+| [Sprint Docs](https://github.com/cse110-sp26-group10/WatchTower/tree/main/admin/sprints) | Sprint planning, stand-ups, reviews, and retrospectives |
+| [Tracker Integration Guide](https://github.com/cse110-sp26-group10/WatchTower/blob/main/docs/user/tracker-integration.md) | How to embed the WatchTower tracker in a web app |
+| [Testing Plan](https://github.com/cse110-sp26-group10/WatchTower/blob/main/docs/testing/testing-plan.md) | Unit and E2E testing strategy |
+
+## Team 10 Roster
+Built by our amazing 10x developers below! :)
+| Name | GitHub |
+|------|--------|
+| Nicole Sutedja | [@nicolesutedja](https://github.com/nicolesutedja) |
+| Evan Marriott | [@evangmarriott](https://github.com/evangmarriott) |
+| Aron Wu | [@arw008-droid](https://github.com/arw008-droid) |
+| Bethany Miyamoto | [@b3-m0](https://github.com/b3-m0) |
+| Jensen Guo | [@jguo55](https://github.com/jguo55) |
+| Kaley Chung | [@chungkaley](https://github.com/chungkaley) |
+| Xuanye Wang | [@KeeevinW](https://github.com/KeeevinW) |
+| Benedict Luis | [@bluis1](https://github.com/bluis1) |
+| Han Yang-Lin | [@hyanglin0](https://github.com/hyanglin0) |
+| Prakhar Shah | [@prs-016](https://github.com/prs-016) |
+
