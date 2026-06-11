@@ -35,8 +35,9 @@ The WatchTower MVP exists to eliminate the anxiety of "silent failures." The pri
 ### Out of Scope
 
 * Historical uptime reporting (SLA reports).
-* User authentication and multi-user permissions.
 * Detailed stack trace exploration (limited to high-level error messages).
+
+> **Note:** User authentication and multi-user permissions were originally listed as out of scope for the early MVP. Both features were implemented in Sprints 3–4: Supabase Auth handles login/signup/session management, and project sharing supports Owner, Co-Owner, and Viewer permission levels.
 
 ---
 
