@@ -48,12 +48,21 @@ SUPABASE_SERVICE_ROLE_KEY=<the "Secret" sb_secret_… key>
 # Remote (Supabase dashboard → Settings → API)
 # SUPABASE_URL=https://ghlddzvbhbztilheeuai.supabase.co
 # SUPABASE_SERVICE_ROLE_KEY=<service_role key, starts with eyJ…>
+
+# Email notifications (Gmail SMTP via NodeMailer) — optional
+# Without these, email alerts are silently skipped; push (ntfy) still works.
+# Use a Gmail App Password (requires 2FA enabled on the account), not your normal password.
+SMTP_USER=your.alerts@gmail.com
+SMTP_PASS=your16charapppassword
+SMTP_FROM=WatchTower <your.alerts@gmail.com>
 ```
 
 - Use the **secret / service_role** key, **not** the anon/publishable key — all
   tables have RLS enabled, so the anon key would be blocked.
 - **Only one pair active at a time**, and **restart the server** after switching
   (`.env` is read once at startup).
+- The SMTP vars are optional — if omitted, email alerts are skipped and a
+  warning is logged, but push notifications via ntfy continue to work normally.
 
 ### 1.5 Run the server
 
