@@ -103,7 +103,7 @@
 |----------|-----------|----------|
 | Add permission levels (Owner, Co-Owner, Viewer) to project sharing | Sharing a project should let the owner control what the other person can do; Viewer covers read-only use and Co-Owner allows management tasks | |
 | Scope project filter to the top bar, not individual cards | Filtering by project at the top level scopes all dashboard cards at once, which is cleaner than per-card dropdowns | |
-| Prefix ntfy topic names with "WatchTower/" | Makes the WatchTower notification channel clearly identifiable in the ntfy app alongside other subscriptions | |
+| Prefix ntfy topic names with "WatchTower_" | Makes the WatchTower notification channel clearly identifiable in the ntfy app alongside other subscriptions | |
 
 ---
 ## Sprint Review

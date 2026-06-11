@@ -33,7 +33,7 @@ All team members must document any notable changes to the WatchTower project in 
 - Project filter dropdown in the top bar, scoping all dashboard cards to the selected project.
 - `src/app/` as the primary application directory, replacing `src/prototype/` references; the prototype directory is archived.
 - Error notification cooldown: repeated identical errors no longer trigger redundant notifications within a configurable window.
-- ntfy topic names now prefixed with `WatchTower/` for clearer channel identification in the ntfy app.
+- ntfy topic names now prefixed with `WatchTower_` for clearer channel identification in the ntfy app.
 - Uptime card filtering by project, with layout and dropdown fixes.
 - Supabase migration (`20260601043232_added_browser.sql`) adding the browser column to the events table in the hosted database.
 - Test user and a deployed project added to `supabase/seed.sql` for local development setup.
