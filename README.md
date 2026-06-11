@@ -113,6 +113,7 @@ For more details, be sure to check out our [Wiki](https://github.com/cse110-sp26
 | [Sprint Docs](https://github.com/cse110-sp26-group10/WatchTower/tree/main/admin/sprints) | Sprint planning, stand-ups, reviews, and retrospectives |
 | [Tracker Integration Guide](https://github.com/cse110-sp26-group10/WatchTower/blob/main/docs/user/tracker-integration.md) | How to embed the WatchTower tracker in a web app |
 | [Testing Plan](https://github.com/cse110-sp26-group10/WatchTower/blob/main/docs/testing/testing-plan.md) | Unit and E2E testing strategy |
+| [API Reference](https://github.com/cse110-sp26-group10/WatchTower/blob/main/docs/specs/API_REFERENCE.md) | API reference doc for all endpoints |
 
 ## Team 10 Roster
 Built by our amazing 10x developers below! :)
