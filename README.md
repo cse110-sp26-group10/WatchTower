@@ -2,15 +2,20 @@
 
 A centralized observability system for tracking errors, performance degradation,
 and upset user signals. Built for CSE 110 Spring 2026 at UC San Diego.
-Please refer to the [Wiki](https://github.com/cse110-sp26-group10/WatchTower/wiki) for all relevant information, including documentation links, onboarding, repo structure, and how to run it locally.
 
 ## Important Links
-- **Deployment**: https://cse110-sp26-group10.github.io/WatchTower/src/app/dashboard/
+
+**Deployment**: https://cse110-sp26-group10.github.io/WatchTower/src/app/dashboard/
+
+**Videos**
 - **Final Project Video (Public)**: https://youtu.be/0o0enaMbSOI
 - **Final Project Video (Private)**: https://youtu.be/iuB-03OBbPw
-
-- **Figma Link**: https://tinyurl.com/4hcp36yr
 - **Team Status Video**: https://youtu.be/1RdMwzMQqv8
+  
+**Resources**
+- **Wiki Page**: https://github.com/cse110-sp26-group10/WatchTower/wiki
+- **Onboarding Doc**: https://github.com/cse110-sp26-group10/WatchTower/wiki/Onboarding
+- **Figma Link**: https://tinyurl.com/4hcp36yr
 
 ## How to Run Locally
 
@@ -95,10 +100,3 @@ WatchTower/
 - **GitHub Actions** — CI/CD
 - **JSDoc** — code documentation
 - **MADR** — architecture decision records
-
-## Process
-
-- 3x weekly stand-ups
-- Weekly TA meetings
-- Human code reviews required for PRs > 300 lines
-- Conventional Commits enforced
