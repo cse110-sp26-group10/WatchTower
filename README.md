@@ -52,7 +52,7 @@ WatchTower/
 ├── .github/
 │   └── workflows/                # GitHub Actions CI workflow
 ├── admin/
-│   ├── feedback/                 # Team feedback and retrospectives
+│   ├── feedback/                 # Our feedback during code review
 │   ├── sprints/                  # Sprint planning and status documents
 │   └── pr-template.md            # Pull request template
 ├── archive/                      # Archived prototypes and legacy code
