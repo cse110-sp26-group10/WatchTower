@@ -28,7 +28,7 @@ The CI jobs are ordered so linting, dependency checks, and formatting run before
 
 ## Changelog
 
-Changelog updates are handled through the team process and PR template (`docs/pr-template.md`). This is not currently enforced as a CI job. The Sprint 4 testing/CI update is included in `docs/specs/CHANGELOG.md`.
+Changelog updates are handled through the team process and PR template (`admin/pr-template.md`). This is not currently enforced as a CI job. The Sprint 4 testing/CI update is included in `docs/specs/CHANGELOG.md`.
 
 ---
 
