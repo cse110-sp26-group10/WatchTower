@@ -43,7 +43,7 @@ cd src/app/server && npm start     # listening on http://localhost:8080
 # Open src/app/dashboard/index.html in a browser, or use VS Code Live Server
 ```
 
-For detailed database setup and migration instructions see [`src/app/server/README.md`](src/app/server/README.md).
+For detailed database setup and migration instructions see [`supabase/README.md`](supabase/README.md).
 
 ## Repository Structure
 

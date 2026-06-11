@@ -44,7 +44,7 @@ npm run test:unit
 | Errors page (direct URL) | `/#/errors` loads error list and summary metrics |
 | Activity page (direct URL) | `/#/activity` loads the activity feed |
 
-The E2E suite requires the server running with a seeded local Supabase instance (see `src/app/server/README.md`).
+The E2E suite requires the server running with a seeded local Supabase instance (see `supabase/README.md`).
 
 Run locally:
 
