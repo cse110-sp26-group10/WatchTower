@@ -42,3 +42,4 @@ npx prettier@3.8.3 --check "src/**/*.{html,js,css}" "tests/**/*.js"
 npm run test:unit
 npx playwright install chromium
 npm run test:e2e
+```
